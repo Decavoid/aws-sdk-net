@@ -56,8 +56,17 @@ namespace Amazon.Util.Internal.PlatformServices
             _factoryInitialized = true;
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
-        public static ServiceFactory Instance = new ServiceFactory();
+        private static ServiceFactory instance;
+
+        public static ServiceFactory Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new ServiceFactory();
+                return instance;
+            }
+        }
 
         public static void RegisterService<T>(Type serviceType)
         {
