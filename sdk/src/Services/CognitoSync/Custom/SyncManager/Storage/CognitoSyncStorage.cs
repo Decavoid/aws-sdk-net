@@ -130,7 +130,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             else if (ase.GetType() == typeof(ResourceConflictException)
                      || ase.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                return new DataConflictException(message);
+                return new DataConflictException(message, ase);
             }
             else if (ase.GetType() == typeof(LimitExceededException))
             {
@@ -144,7 +144,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
                      && ase.Message != null 
                      && ase.Message.StartsWith("Current SyncCount for:", StringComparison.Ordinal))
             {
-                return new DataConflictException(message);
+                return new DataConflictException(message, ase);
             }
             else
             {
