@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
+using UnityEngine;
 
 namespace Amazon.Runtime.Internal
 {
@@ -33,6 +35,8 @@ namespace Amazon.Runtime.Internal
         private Queue<IUnityHttpRequest> _requests = new Queue<IUnityHttpRequest>();
         private Queue<RuntimeAsyncResult> _callbacks = new Queue<RuntimeAsyncResult>();
         private Queue<Action> _mainThreadCallbacks = new Queue<Action>();
+
+        private bool didShutdown = false;
 
         /// <summary>
         /// The private contructor for the singleton class.
@@ -59,8 +63,11 @@ namespace Amazon.Runtime.Internal
         {
             lock (_requestsLock)
             {
-                _requests.Enqueue(request);
-            }            
+                if (didShutdown && request.IsSync)
+                    HaltSyncRequest(request);
+                else
+                    _requests.Enqueue(request);
+            }
         }
 
         /// <summary>
@@ -137,6 +144,35 @@ namespace Amazon.Runtime.Internal
             return action;
         }
 
+        public void Shutdown()
+        {
+            Debug.Log("UnityRequestQueue.Shutdown");
+            didShutdown = true;
+
+            lock (_requestsLock)
+            {
+                Queue<IUnityHttpRequest> newQueue = new Queue<IUnityHttpRequest>();
+
+                while (_requests.Count > 0)
+                {
+                    var request = _requests.Dequeue();
+
+                    if (request.IsSync)
+                        HaltSyncRequest(request);
+                    else
+                        newQueue.Enqueue(request);
+                }
+
+                _requests = newQueue;
+            }
+        }
+
+        private void HaltSyncRequest(IUnityHttpRequest request)
+        {
+            Debug.Log($"UnityRequestQueue.HaltSyncRequest");
+            request.Exception = new WebException("Request halted", WebExceptionStatus.RequestCanceled);
+            request.WaitHandle.Set();
+        }
     }
 
 }
