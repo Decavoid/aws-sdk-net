@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
- * 
+ *
  *  http://aws.amazon.com/apache2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
+using UnityEngine;
 
 namespace Amazon.Runtime.Internal
 {
@@ -34,6 +36,8 @@ namespace Amazon.Runtime.Internal
         private Queue<RuntimeAsyncResult> _callbacks = new Queue<RuntimeAsyncResult>();
         private Queue<Action> _mainThreadCallbacks = new Queue<Action>();
 
+        private bool didShutdown = false;
+
         /// <summary>
         /// The private contructor for the singleton class.
         /// </summary>
@@ -52,15 +56,18 @@ namespace Amazon.Runtime.Internal
 
         /// <summary>
         /// Enqueues a request to be processed by the UnityMainThreadDispatcher.
-        /// Unity 
+        /// Unity
         /// </summary>
         /// <param name="request">An instance of UnityWebRequest.</param>
         public void EnqueueRequest(IUnityHttpRequest request)
         {
             lock (_requestsLock)
             {
-                _requests.Enqueue(request);
-            }            
+                if (didShutdown && request.IsSync)
+                    HaltSyncRequest(request);
+                else
+                    _requests.Enqueue(request);
+            }
         }
 
         /// <summary>
@@ -116,8 +123,8 @@ namespace Amazon.Runtime.Internal
         /// Enqueue an anonymous method on main thread
         /// </summary>
         /// <param name="action"></param>
-        public void ExecuteOnMainThread(Action action) 
-        { 
+        public void ExecuteOnMainThread(Action action)
+        {
             lock(_mainThreadCallbackLock)
             {
                 _mainThreadCallbacks.Enqueue(action);
@@ -137,6 +144,35 @@ namespace Amazon.Runtime.Internal
             return action;
         }
 
+        public void Shutdown()
+        {
+            Debug.Log("UnityRequestQueue.Shutdown");
+            didShutdown = true;
+
+            lock (_requestsLock)
+            {
+                Queue<IUnityHttpRequest> newQueue = new Queue<IUnityHttpRequest>();
+
+                while (_requests.Count > 0)
+                {
+                    var request = _requests.Dequeue();
+
+                    if (request.IsSync)
+                        HaltSyncRequest(request);
+                    else
+                        newQueue.Enqueue(request);
+                }
+
+                _requests = newQueue;
+            }
+        }
+
+        private void HaltSyncRequest(IUnityHttpRequest request)
+        {
+            Debug.Log($"UnityRequestQueue.HaltSyncRequest");
+            request.Exception = new WebException("Request halted", WebExceptionStatus.RequestCanceled);
+            request.WaitHandle.Set();
+        }
     }
 
 }
