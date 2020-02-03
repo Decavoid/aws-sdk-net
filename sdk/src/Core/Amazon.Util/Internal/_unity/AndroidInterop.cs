@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
- * 
+ *
  *  http://aws.amazon.com/apache2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
@@ -25,7 +25,7 @@ namespace Amazon.Util.Internal
 {
     /// <summary>
     /// This class is used to make Android Java calls as an alternative to using Android macro's
-    /// The class uses reflection but doesnto cache the PropertyInfo and MethodInfo, 
+    /// The class uses reflection but doesnto cache the PropertyInfo and MethodInfo,
     /// so it should be sparingly used so as not to impact performance.
     /// </summary>
     public class AndroidInterop
@@ -68,9 +68,11 @@ namespace Amazon.Util.Internal
             if (androidJavaClassType != null)
             {
                 var javaClass = Activator.CreateInstance(androidJavaClassType, className);
-                var callStaticMethod = androidJavaClassType.GetMethods()
-                    .Where(x => x.Name == "CallStatic")
-                    .First(x => x.ContainsGenericParameters);
+
+                var callStaticMethod = androidJavaClassType.GetMethods().Where(x => x.Name == "CallStatic").First(x =>
+                    x.ContainsGenericParameters &&
+                    x.GetParameters().Select(y => y.ParameterType).SequenceEqual(new Type[] { typeof(string), typeof(object[]) })
+                );
 
                 var genericStaticMethod = callStaticMethod.MakeGenericMethod(androidJavaObjectType);
 
@@ -89,7 +91,11 @@ namespace Amazon.Util.Internal
         /// <returns></returns>
         public static T CallMethod<T>(object androidJavaObject, string methodName, params object[] parameters)
         {
-            var method = androidJavaObject.GetType().GetMethods().Where(x => x.Name == "Call").First(x => x.ContainsGenericParameters);
+            var method = androidJavaObject.GetType().GetMethods().Where(x => x.Name == "Call").First(x =>
+                x.ContainsGenericParameters &&
+                x.GetParameters().Select(y => y.ParameterType).SequenceEqual(new Type[] { typeof(string), typeof(object[]) })
+            );
+
             var genericMethod = method.MakeGenericMethod(typeof(T));
             return (T)genericMethod.Invoke(androidJavaObject, new object[] { methodName, parameters });
         }
@@ -104,15 +110,18 @@ namespace Amazon.Util.Internal
         public static object CallMethod(object androidJavaObject, string methodName, params object[] parameters)
         {
             Type androidJavaObjectType = InternalSDKUtils.GetTypeFromUnityEngine("AndroidJavaObject");
-            var method = androidJavaObject.GetType().GetMethods()
-                .Where(x => x.Name == "Call")
-                .First(x => x.ContainsGenericParameters);
+
+            var method = androidJavaObject.GetType().GetMethods().Where(x => x.Name == "Call").First(x =>
+                x.ContainsGenericParameters &&
+                x.GetParameters().Select(y => y.ParameterType).SequenceEqual(new Type[] { typeof(string), typeof(object[]) })
+            );
+
             var genericMethod = method.MakeGenericMethod(androidJavaObjectType);
             return genericMethod.Invoke(androidJavaObject, new object[] { methodName, parameters });
         }
 
         /// <summary>
-        /// This API get a typed value from a static field 
+        /// This API get a typed value from a static field
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="className"></param>
@@ -169,13 +178,17 @@ namespace Amazon.Util.Internal
         /// <returns></returns>
         public static T GetJavaField<T>(object androidJavaObject, string methodName)
         {
-            var method = androidJavaObject.GetType().GetMethods().Where(x => x.Name == "Get").First(x => x.ContainsGenericParameters);
+            var method = androidJavaObject.GetType().GetMethods().Where(x => x.Name == "Get").First(x =>
+                x.ContainsGenericParameters &&
+                x.GetParameters().Select(y => y.ParameterType).SequenceEqual(new Type[] { typeof(string) })
+            );
+
             var genericMethod = method.MakeGenericMethod(typeof(T));
             return (T)genericMethod.Invoke(androidJavaObject, new object[] { methodName });
         }
 
         /// <summary>
-        /// Returns an AndroidJavaObject 
+        /// Returns an AndroidJavaObject
         /// </summary>
         /// <returns></returns>
         public static object GetAndroidContext()
