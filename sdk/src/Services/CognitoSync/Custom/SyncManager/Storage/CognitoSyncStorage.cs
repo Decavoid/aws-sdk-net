@@ -1,7 +1,7 @@
 //
-// Copyright 2014-2015 Amazon.com, 
+// Copyright 2014-2015 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
-// 
+//
 // SPDX-License-Identifier: Apache-2.0
 //
 using System;
@@ -58,7 +58,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
         #region Constructor
 
         /// <summary>
-        /// Creates an insance of CognitoSyncStorage. 
+        /// Creates an insance of CognitoSyncStorage.
         /// </summary>
         /// <param name="cognitoCredentials"><see cref="Amazon.CognitoIdentity.CognitoAWSCredentials"/></param>
         /// <param name="config"><see cref="Amazon.CognitoSync.AmazonCognitoSyncConfig"/></param>
@@ -130,7 +130,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             else if (ase.GetType() == typeof(ResourceConflictException)
                      || ase.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                return new DataConflictException(message);
+                return new DataConflictException(message, ase);
             }
             else if (ase.GetType() == typeof(LimitExceededException))
             {
@@ -141,10 +141,10 @@ namespace Amazon.CognitoSync.SyncManager.Internal
                 return new NetworkException(message);
             }
             else if (ase.GetType() == typeof(AmazonCognitoSyncException)
-                     && ase.Message != null 
+                     && ase.Message != null
                      && ase.Message.StartsWith("Current SyncCount for:", StringComparison.Ordinal))
             {
-                return new DataConflictException(message);
+                return new DataConflictException(message, ase);
             }
             else
             {
