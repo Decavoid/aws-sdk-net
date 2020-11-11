@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
- *
+ * 
  *  http://aws.amazon.com/apache2.0
- *
+ * 
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace Amazon.Runtime.Internal
 {
-	   /// <summary>
+    /// <summary>
     /// A singleton which stores the list of pending web requests and pending callbacks.
     /// A singleton is used to maintain this state globally across multiple Unity scenes.
     /// </summary>
@@ -56,15 +56,15 @@ namespace Amazon.Runtime.Internal
 
         /// <summary>
         /// Enqueues a request to be processed by the UnityMainThreadDispatcher.
-        /// Unity
+        /// Unity 
         /// </summary>
         /// <param name="request">An instance of UnityWebRequest.</param>
         public void EnqueueRequest(IUnityHttpRequest request)
         {
             lock (_requestsLock)
             {
-                if (didShutdown && request.IsSync)
-                    HaltSyncRequest(request);
+                if (didShutdown)
+                    HaltRequest(request);
                 else
                     _requests.Enqueue(request);
             }
@@ -125,7 +125,7 @@ namespace Amazon.Runtime.Internal
         /// <param name="action"></param>
         public void ExecuteOnMainThread(Action action)
         {
-            lock(_mainThreadCallbackLock)
+            lock (_mainThreadCallbackLock)
             {
                 _mainThreadCallbacks.Enqueue(action);
             }
@@ -134,7 +134,7 @@ namespace Amazon.Runtime.Internal
         public Action DequeueMainThreadOperation()
         {
             Action action = null;
-            lock(_mainThreadCallbackLock)
+            lock (_mainThreadCallbackLock)
             {
                 if (_mainThreadCallbacks.Count > 0)
                 {
@@ -156,23 +156,25 @@ namespace Amazon.Runtime.Internal
                 while (_requests.Count > 0)
                 {
                     var request = _requests.Dequeue();
-
-                    if (request.IsSync)
-                        HaltSyncRequest(request);
-                    else
-                        newQueue.Enqueue(request);
+                    HaltRequest(request);
                 }
 
                 _requests = newQueue;
             }
         }
 
-        private void HaltSyncRequest(IUnityHttpRequest request)
+        public static void HaltRequest(IUnityHttpRequest request)
         {
-            Debug.Log($"UnityRequestQueue.HaltSyncRequest");
-            request.Exception = new WebException("Request halted", WebExceptionStatus.RequestCanceled);
-            request.WaitHandle.Set();
+            Debug.Log($"HaltRequest isSync:{request.IsSync}");
+            if (request.IsSync)
+            {
+                request.Exception = new WebException("Request halted", WebExceptionStatus.RequestCanceled);
+                request.WaitHandle.Set();
+            }
+            else
+            {
+                // nothing
+            }
         }
     }
-
 }
