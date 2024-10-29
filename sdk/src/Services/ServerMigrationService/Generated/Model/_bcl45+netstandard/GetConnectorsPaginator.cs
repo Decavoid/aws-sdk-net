@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ServerMigrationService.Model
@@ -36,7 +37,7 @@ namespace Amazon.ServerMigrationService.Model
         private readonly IAmazonServerMigrationService _client;
         private readonly GetConnectorsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ServerMigrationService.Model
         /// <summary>
         /// Enumerable containing all of the ConnectorList
         /// </summary>
-        public IPaginatedEnumerable<Connector> ConnectorList => 
+        public IPaginatedEnumerable<Connector> ConnectorList =>
             new PaginatedResultKeyResponse<GetConnectorsResponse, Connector>(this, (i) => i.ConnectorList ?? new List<Connector>());
 
         internal GetConnectorsPaginator(IAmazonServerMigrationService client, GetConnectorsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ServerMigrationService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetConnectorsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetConnectorsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

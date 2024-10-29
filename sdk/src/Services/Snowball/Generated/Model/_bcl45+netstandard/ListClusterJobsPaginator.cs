@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Snowball.Model
@@ -36,7 +37,7 @@ namespace Amazon.Snowball.Model
         private readonly IAmazonSnowball _client;
         private readonly ListClusterJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Snowball.Model
         /// <summary>
         /// Enumerable containing all of the JobListEntries
         /// </summary>
-        public IPaginatedEnumerable<JobListEntry> JobListEntries => 
+        public IPaginatedEnumerable<JobListEntry> JobListEntries =>
             new PaginatedResultKeyResponse<ListClusterJobsResponse, JobListEntry>(this, (i) => i.JobListEntries ?? new List<JobListEntry>());
 
         internal ListClusterJobsPaginator(IAmazonSnowball client, ListClusterJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Snowball.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListClusterJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListClusterJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

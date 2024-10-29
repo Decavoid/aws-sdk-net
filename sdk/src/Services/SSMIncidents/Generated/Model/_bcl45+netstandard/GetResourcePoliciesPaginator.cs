@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SSMIncidents.Model
@@ -36,7 +37,7 @@ namespace Amazon.SSMIncidents.Model
         private readonly IAmazonSSMIncidents _client;
         private readonly GetResourcePoliciesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SSMIncidents.Model
         /// <summary>
         /// Enumerable containing all of the ResourcePolicies
         /// </summary>
-        public IPaginatedEnumerable<ResourcePolicy> ResourcePolicies => 
+        public IPaginatedEnumerable<ResourcePolicy> ResourcePolicies =>
             new PaginatedResultKeyResponse<GetResourcePoliciesResponse, ResourcePolicy>(this, (i) => i.ResourcePolicies ?? new List<ResourcePolicy>());
 
         internal GetResourcePoliciesPaginator(IAmazonSSMIncidents client, GetResourcePoliciesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SSMIncidents.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetResourcePoliciesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetResourcePoliciesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

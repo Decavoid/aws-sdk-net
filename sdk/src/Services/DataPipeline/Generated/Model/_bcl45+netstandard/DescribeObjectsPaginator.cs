@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DataPipeline.Model
@@ -36,7 +37,7 @@ namespace Amazon.DataPipeline.Model
         private readonly IAmazonDataPipeline _client;
         private readonly DescribeObjectsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DataPipeline.Model
         /// <summary>
         /// Enumerable containing all of the PipelineObjects
         /// </summary>
-        public IPaginatedEnumerable<PipelineObject> PipelineObjects => 
+        public IPaginatedEnumerable<PipelineObject> PipelineObjects =>
             new PaginatedResultKeyResponse<DescribeObjectsResponse, PipelineObject>(this, (i) => i.PipelineObjects ?? new List<PipelineObject>());
 
         internal DescribeObjectsPaginator(IAmazonDataPipeline client, DescribeObjectsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DataPipeline.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeObjectsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeObjectsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

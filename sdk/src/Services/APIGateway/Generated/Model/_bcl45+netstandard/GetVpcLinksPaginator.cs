@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.APIGateway.Model
@@ -36,7 +37,7 @@ namespace Amazon.APIGateway.Model
         private readonly IAmazonAPIGateway _client;
         private readonly GetVpcLinksRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.APIGateway.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<VpcLink> Items => 
+        public IPaginatedEnumerable<VpcLink> Items =>
             new PaginatedResultKeyResponse<GetVpcLinksResponse, VpcLink>(this, (i) => i.Items ?? new List<VpcLink>());
 
         internal GetVpcLinksPaginator(IAmazonAPIGateway client, GetVpcLinksRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.APIGateway.Model
             do
             {
                 _request.Position = position;
-                response = await _client.GetVpcLinksAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetVpcLinksAsync(_request, cancellationToken).ConfigureAwaitEx();
                 position = response.Position;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

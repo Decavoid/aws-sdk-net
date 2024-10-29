@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Snowball.Model
@@ -36,7 +37,7 @@ namespace Amazon.Snowball.Model
         private readonly IAmazonSnowball _client;
         private readonly DescribeAddressesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Snowball.Model
         /// <summary>
         /// Enumerable containing all of the Addresses
         /// </summary>
-        public IPaginatedEnumerable<Address> Addresses => 
+        public IPaginatedEnumerable<Address> Addresses =>
             new PaginatedResultKeyResponse<DescribeAddressesResponse, Address>(this, (i) => i.Addresses ?? new List<Address>());
 
         internal DescribeAddressesPaginator(IAmazonSnowball client, DescribeAddressesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Snowball.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeAddressesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeAddressesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

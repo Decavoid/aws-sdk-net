@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SupplyChain.Model
@@ -36,7 +37,7 @@ namespace Amazon.SupplyChain.Model
         private readonly IAmazonSupplyChain _client;
         private readonly ListDataLakeDatasetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SupplyChain.Model
         /// <summary>
         /// Enumerable containing all of the Datasets
         /// </summary>
-        public IPaginatedEnumerable<DataLakeDataset> Datasets => 
+        public IPaginatedEnumerable<DataLakeDataset> Datasets =>
             new PaginatedResultKeyResponse<ListDataLakeDatasetsResponse, DataLakeDataset>(this, (i) => i.Datasets ?? new List<DataLakeDataset>());
 
         internal ListDataLakeDatasetsPaginator(IAmazonSupplyChain client, ListDataLakeDatasetsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SupplyChain.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDataLakeDatasetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDataLakeDatasetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

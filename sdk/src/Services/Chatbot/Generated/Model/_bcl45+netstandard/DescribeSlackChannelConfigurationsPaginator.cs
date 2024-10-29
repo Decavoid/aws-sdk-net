@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Chatbot.Model
@@ -36,7 +37,7 @@ namespace Amazon.Chatbot.Model
         private readonly IAmazonChatbot _client;
         private readonly DescribeSlackChannelConfigurationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Chatbot.Model
         /// <summary>
         /// Enumerable containing all of the SlackChannelConfigurations
         /// </summary>
-        public IPaginatedEnumerable<SlackChannelConfiguration> SlackChannelConfigurations => 
+        public IPaginatedEnumerable<SlackChannelConfiguration> SlackChannelConfigurations =>
             new PaginatedResultKeyResponse<DescribeSlackChannelConfigurationsResponse, SlackChannelConfiguration>(this, (i) => i.SlackChannelConfigurations ?? new List<SlackChannelConfiguration>());
 
         internal DescribeSlackChannelConfigurationsPaginator(IAmazonChatbot client, DescribeSlackChannelConfigurationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Chatbot.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeSlackChannelConfigurationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeSlackChannelConfigurationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

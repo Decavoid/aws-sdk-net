@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Deadline.Model
@@ -36,7 +37,7 @@ namespace Amazon.Deadline.Model
         private readonly IAmazonDeadline _client;
         private readonly ListSessionActionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Deadline.Model
         /// <summary>
         /// Enumerable containing all of the SessionActions
         /// </summary>
-        public IPaginatedEnumerable<SessionActionSummary> SessionActions => 
+        public IPaginatedEnumerable<SessionActionSummary> SessionActions =>
             new PaginatedResultKeyResponse<ListSessionActionsResponse, SessionActionSummary>(this, (i) => i.SessionActions ?? new List<SessionActionSummary>());
 
         internal ListSessionActionsPaginator(IAmazonDeadline client, ListSessionActionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Deadline.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSessionActionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSessionActionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

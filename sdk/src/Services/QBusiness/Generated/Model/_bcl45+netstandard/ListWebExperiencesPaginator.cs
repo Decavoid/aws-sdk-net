@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.QBusiness.Model
@@ -36,7 +37,7 @@ namespace Amazon.QBusiness.Model
         private readonly IAmazonQBusiness _client;
         private readonly ListWebExperiencesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.QBusiness.Model
         /// <summary>
         /// Enumerable containing all of the WebExperiences
         /// </summary>
-        public IPaginatedEnumerable<WebExperience> WebExperiences => 
+        public IPaginatedEnumerable<WebExperience> WebExperiences =>
             new PaginatedResultKeyResponse<ListWebExperiencesResponse, WebExperience>(this, (i) => i.WebExperiences ?? new List<WebExperience>());
 
         internal ListWebExperiencesPaginator(IAmazonQBusiness client, ListWebExperiencesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.QBusiness.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListWebExperiencesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWebExperiencesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

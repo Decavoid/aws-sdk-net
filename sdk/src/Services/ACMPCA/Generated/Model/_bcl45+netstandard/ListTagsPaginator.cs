@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ACMPCA.Model
@@ -36,7 +37,7 @@ namespace Amazon.ACMPCA.Model
         private readonly IAmazonACMPCA _client;
         private readonly ListTagsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ACMPCA.Model
         /// <summary>
         /// Enumerable containing all of the Tags
         /// </summary>
-        public IPaginatedEnumerable<Tag> Tags => 
+        public IPaginatedEnumerable<Tag> Tags =>
             new PaginatedResultKeyResponse<ListTagsResponse, Tag>(this, (i) => i.Tags ?? new List<Tag>());
 
         internal ListTagsPaginator(IAmazonACMPCA client, ListTagsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ACMPCA.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTagsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTagsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

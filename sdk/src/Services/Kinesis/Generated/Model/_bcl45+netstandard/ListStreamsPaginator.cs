@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Kinesis.Model
@@ -36,7 +37,7 @@ namespace Amazon.Kinesis.Model
         private readonly IAmazonKinesis _client;
         private readonly ListStreamsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.Kinesis.Model
         /// <summary>
         /// Enumerable containing all of the StreamNames
         /// </summary>
-        public IPaginatedEnumerable<string> StreamNames => 
+        public IPaginatedEnumerable<string> StreamNames =>
             new PaginatedResultKeyResponse<ListStreamsResponse, string>(this, (i) => i.StreamNames ?? new List<string>());
 
         /// <summary>
         /// Enumerable containing all of the StreamSummaries
         /// </summary>
-        public IPaginatedEnumerable<StreamSummary> StreamSummaries => 
+        public IPaginatedEnumerable<StreamSummary> StreamSummaries =>
             new PaginatedResultKeyResponse<ListStreamsResponse, StreamSummary>(this, (i) => i.StreamSummaries ?? new List<StreamSummary>());
 
         internal ListStreamsPaginator(IAmazonKinesis client, ListStreamsRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.Kinesis.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListStreamsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListStreamsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

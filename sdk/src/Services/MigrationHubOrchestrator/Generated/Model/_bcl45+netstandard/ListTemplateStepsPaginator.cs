@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MigrationHubOrchestrator.Model
@@ -36,7 +37,7 @@ namespace Amazon.MigrationHubOrchestrator.Model
         private readonly IAmazonMigrationHubOrchestrator _client;
         private readonly ListTemplateStepsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MigrationHubOrchestrator.Model
         /// <summary>
         /// Enumerable containing all of the TemplateStepSummaryList
         /// </summary>
-        public IPaginatedEnumerable<TemplateStepSummary> TemplateStepSummaryList => 
+        public IPaginatedEnumerable<TemplateStepSummary> TemplateStepSummaryList =>
             new PaginatedResultKeyResponse<ListTemplateStepsResponse, TemplateStepSummary>(this, (i) => i.TemplateStepSummaryList ?? new List<TemplateStepSummary>());
 
         internal ListTemplateStepsPaginator(IAmazonMigrationHubOrchestrator client, ListTemplateStepsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MigrationHubOrchestrator.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTemplateStepsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTemplateStepsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

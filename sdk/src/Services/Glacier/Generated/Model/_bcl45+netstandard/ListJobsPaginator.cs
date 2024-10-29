@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Glacier.Model
@@ -36,7 +37,7 @@ namespace Amazon.Glacier.Model
         private readonly IAmazonGlacier _client;
         private readonly ListJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Glacier.Model
         /// <summary>
         /// Enumerable containing all of the JobList
         /// </summary>
-        public IPaginatedEnumerable<GlacierJobDescription> JobList => 
+        public IPaginatedEnumerable<GlacierJobDescription> JobList =>
             new PaginatedResultKeyResponse<ListJobsResponse, GlacierJobDescription>(this, (i) => i.JobList ?? new List<GlacierJobDescription>());
 
         internal ListJobsPaginator(IAmazonGlacier client, ListJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Glacier.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

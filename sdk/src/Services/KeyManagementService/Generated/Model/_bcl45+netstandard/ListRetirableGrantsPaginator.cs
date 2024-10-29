@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.KeyManagementService.Model
@@ -36,7 +37,7 @@ namespace Amazon.KeyManagementService.Model
         private readonly IAmazonKeyManagementService _client;
         private readonly ListRetirableGrantsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.KeyManagementService.Model
         /// <summary>
         /// Enumerable containing all of the Grants
         /// </summary>
-        public IPaginatedEnumerable<GrantListEntry> Grants => 
+        public IPaginatedEnumerable<GrantListEntry> Grants =>
             new PaginatedResultKeyResponse<ListRetirableGrantsResponse, GrantListEntry>(this, (i) => i.Grants ?? new List<GrantListEntry>());
 
         internal ListRetirableGrantsPaginator(IAmazonKeyManagementService client, ListRetirableGrantsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.KeyManagementService.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListRetirableGrantsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRetirableGrantsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

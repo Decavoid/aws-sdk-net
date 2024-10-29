@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GameLift.Model
@@ -36,7 +37,7 @@ namespace Amazon.GameLift.Model
         private readonly IAmazonGameLift _client;
         private readonly ListComputeRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GameLift.Model
         /// <summary>
         /// Enumerable containing all of the ComputeList
         /// </summary>
-        public IPaginatedEnumerable<Compute> ComputeList => 
+        public IPaginatedEnumerable<Compute> ComputeList =>
             new PaginatedResultKeyResponse<ListComputeResponse, Compute>(this, (i) => i.ComputeList ?? new List<Compute>());
 
         internal ListComputePaginator(IAmazonGameLift client, ListComputeRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GameLift.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListComputeAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListComputeAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

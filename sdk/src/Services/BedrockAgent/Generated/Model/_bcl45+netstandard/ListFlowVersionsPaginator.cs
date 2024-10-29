@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.BedrockAgent.Model
@@ -36,7 +37,7 @@ namespace Amazon.BedrockAgent.Model
         private readonly IAmazonBedrockAgent _client;
         private readonly ListFlowVersionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.BedrockAgent.Model
         /// <summary>
         /// Enumerable containing all of the FlowVersionSummaries
         /// </summary>
-        public IPaginatedEnumerable<FlowVersionSummary> FlowVersionSummaries => 
+        public IPaginatedEnumerable<FlowVersionSummary> FlowVersionSummaries =>
             new PaginatedResultKeyResponse<ListFlowVersionsResponse, FlowVersionSummary>(this, (i) => i.FlowVersionSummaries ?? new List<FlowVersionSummary>());
 
         internal ListFlowVersionsPaginator(IAmazonBedrockAgent client, ListFlowVersionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.BedrockAgent.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListFlowVersionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListFlowVersionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

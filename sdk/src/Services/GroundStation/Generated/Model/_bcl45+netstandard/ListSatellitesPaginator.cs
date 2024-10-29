@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GroundStation.Model
@@ -36,7 +37,7 @@ namespace Amazon.GroundStation.Model
         private readonly IAmazonGroundStation _client;
         private readonly ListSatellitesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GroundStation.Model
         /// <summary>
         /// Enumerable containing all of the Satellites
         /// </summary>
-        public IPaginatedEnumerable<SatelliteListItem> Satellites => 
+        public IPaginatedEnumerable<SatelliteListItem> Satellites =>
             new PaginatedResultKeyResponse<ListSatellitesResponse, SatelliteListItem>(this, (i) => i.Satellites ?? new List<SatelliteListItem>());
 
         internal ListSatellitesPaginator(IAmazonGroundStation client, ListSatellitesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GroundStation.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSatellitesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSatellitesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

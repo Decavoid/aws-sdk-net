@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.BillingConductor.Model
@@ -36,7 +37,7 @@ namespace Amazon.BillingConductor.Model
         private readonly IAmazonBillingConductor _client;
         private readonly ListAccountAssociationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.BillingConductor.Model
         /// <summary>
         /// Enumerable containing all of the LinkedAccounts
         /// </summary>
-        public IPaginatedEnumerable<AccountAssociationsListElement> LinkedAccounts => 
+        public IPaginatedEnumerable<AccountAssociationsListElement> LinkedAccounts =>
             new PaginatedResultKeyResponse<ListAccountAssociationsResponse, AccountAssociationsListElement>(this, (i) => i.LinkedAccounts ?? new List<AccountAssociationsListElement>());
 
         internal ListAccountAssociationsPaginator(IAmazonBillingConductor client, ListAccountAssociationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.BillingConductor.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAccountAssociationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAccountAssociationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

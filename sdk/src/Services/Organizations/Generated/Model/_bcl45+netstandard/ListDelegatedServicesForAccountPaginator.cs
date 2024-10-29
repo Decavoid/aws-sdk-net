@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Organizations.Model
@@ -36,7 +37,7 @@ namespace Amazon.Organizations.Model
         private readonly IAmazonOrganizations _client;
         private readonly ListDelegatedServicesForAccountRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Organizations.Model
         /// <summary>
         /// Enumerable containing all of the DelegatedServices
         /// </summary>
-        public IPaginatedEnumerable<DelegatedService> DelegatedServices => 
+        public IPaginatedEnumerable<DelegatedService> DelegatedServices =>
             new PaginatedResultKeyResponse<ListDelegatedServicesForAccountResponse, DelegatedService>(this, (i) => i.DelegatedServices ?? new List<DelegatedService>());
 
         internal ListDelegatedServicesForAccountPaginator(IAmazonOrganizations client, ListDelegatedServicesForAccountRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Organizations.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDelegatedServicesForAccountAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDelegatedServicesForAccountAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

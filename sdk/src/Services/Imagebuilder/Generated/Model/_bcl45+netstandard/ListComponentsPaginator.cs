@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Imagebuilder.Model
@@ -36,7 +37,7 @@ namespace Amazon.Imagebuilder.Model
         private readonly IAmazonImagebuilder _client;
         private readonly ListComponentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Imagebuilder.Model
         /// <summary>
         /// Enumerable containing all of the ComponentVersionList
         /// </summary>
-        public IPaginatedEnumerable<ComponentVersion> ComponentVersionList => 
+        public IPaginatedEnumerable<ComponentVersion> ComponentVersionList =>
             new PaginatedResultKeyResponse<ListComponentsResponse, ComponentVersion>(this, (i) => i.ComponentVersionList ?? new List<ComponentVersion>());
 
         internal ListComponentsPaginator(IAmazonImagebuilder client, ListComponentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Imagebuilder.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListComponentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListComponentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DevOpsGuru.Model
@@ -36,7 +37,7 @@ namespace Amazon.DevOpsGuru.Model
         private readonly IAmazonDevOpsGuru _client;
         private readonly GetResourceCollectionRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.DevOpsGuru.Model
         /// <summary>
         /// Enumerable containing all of the StackNames
         /// </summary>
-        public IPaginatedEnumerable<string> StackNames => 
+        public IPaginatedEnumerable<string> StackNames =>
             new PaginatedResultKeyResponse<GetResourceCollectionResponse, string>(this, (i) => i.ResourceCollection.CloudFormation.StackNames ?? new List<string>());
 
         /// <summary>
         /// Enumerable containing all of the Tags
         /// </summary>
-        public IPaginatedEnumerable<TagCollectionFilter> Tags => 
+        public IPaginatedEnumerable<TagCollectionFilter> Tags =>
             new PaginatedResultKeyResponse<GetResourceCollectionResponse, TagCollectionFilter>(this, (i) => i.ResourceCollection.Tags ?? new List<TagCollectionFilter>());
 
         internal GetResourceCollectionPaginator(IAmazonDevOpsGuru client, GetResourceCollectionRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.DevOpsGuru.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetResourceCollectionAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetResourceCollectionAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

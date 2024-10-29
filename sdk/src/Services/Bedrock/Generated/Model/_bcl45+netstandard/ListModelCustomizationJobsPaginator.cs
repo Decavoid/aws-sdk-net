@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Bedrock.Model
@@ -36,7 +37,7 @@ namespace Amazon.Bedrock.Model
         private readonly IAmazonBedrock _client;
         private readonly ListModelCustomizationJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Bedrock.Model
         /// <summary>
         /// Enumerable containing all of the ModelCustomizationJobSummaries
         /// </summary>
-        public IPaginatedEnumerable<ModelCustomizationJobSummary> ModelCustomizationJobSummaries => 
+        public IPaginatedEnumerable<ModelCustomizationJobSummary> ModelCustomizationJobSummaries =>
             new PaginatedResultKeyResponse<ListModelCustomizationJobsResponse, ModelCustomizationJobSummary>(this, (i) => i.ModelCustomizationJobSummaries ?? new List<ModelCustomizationJobSummary>());
 
         internal ListModelCustomizationJobsPaginator(IAmazonBedrock client, ListModelCustomizationJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Bedrock.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListModelCustomizationJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListModelCustomizationJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElastiCache.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElastiCache.Model
         private readonly IAmazonElastiCache _client;
         private readonly DescribeCacheEngineVersionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElastiCache.Model
         /// <summary>
         /// Enumerable containing all of the CacheEngineVersions
         /// </summary>
-        public IPaginatedEnumerable<CacheEngineVersion> CacheEngineVersions => 
+        public IPaginatedEnumerable<CacheEngineVersion> CacheEngineVersions =>
             new PaginatedResultKeyResponse<DescribeCacheEngineVersionsResponse, CacheEngineVersion>(this, (i) => i.CacheEngineVersions ?? new List<CacheEngineVersion>());
 
         internal DescribeCacheEngineVersionsPaginator(IAmazonElastiCache client, DescribeCacheEngineVersionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElastiCache.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeCacheEngineVersionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeCacheEngineVersionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

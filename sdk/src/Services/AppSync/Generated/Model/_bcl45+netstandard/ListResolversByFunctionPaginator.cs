@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AppSync.Model
@@ -36,7 +37,7 @@ namespace Amazon.AppSync.Model
         private readonly IAmazonAppSync _client;
         private readonly ListResolversByFunctionRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AppSync.Model
         /// <summary>
         /// Enumerable containing all of the Resolvers
         /// </summary>
-        public IPaginatedEnumerable<Resolver> Resolvers => 
+        public IPaginatedEnumerable<Resolver> Resolvers =>
             new PaginatedResultKeyResponse<ListResolversByFunctionResponse, Resolver>(this, (i) => i.Resolvers ?? new List<Resolver>());
 
         internal ListResolversByFunctionPaginator(IAmazonAppSync client, ListResolversByFunctionRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AppSync.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListResolversByFunctionAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListResolversByFunctionAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

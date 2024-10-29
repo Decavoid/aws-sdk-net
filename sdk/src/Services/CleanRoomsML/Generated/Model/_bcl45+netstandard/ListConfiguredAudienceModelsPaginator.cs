@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CleanRoomsML.Model
@@ -36,7 +37,7 @@ namespace Amazon.CleanRoomsML.Model
         private readonly IAmazonCleanRoomsML _client;
         private readonly ListConfiguredAudienceModelsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CleanRoomsML.Model
         /// <summary>
         /// Enumerable containing all of the ConfiguredAudienceModels
         /// </summary>
-        public IPaginatedEnumerable<ConfiguredAudienceModelSummary> ConfiguredAudienceModels => 
+        public IPaginatedEnumerable<ConfiguredAudienceModelSummary> ConfiguredAudienceModels =>
             new PaginatedResultKeyResponse<ListConfiguredAudienceModelsResponse, ConfiguredAudienceModelSummary>(this, (i) => i.ConfiguredAudienceModels ?? new List<ConfiguredAudienceModelSummary>());
 
         internal ListConfiguredAudienceModelsPaginator(IAmazonCleanRoomsML client, ListConfiguredAudienceModelsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CleanRoomsML.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListConfiguredAudienceModelsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListConfiguredAudienceModelsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

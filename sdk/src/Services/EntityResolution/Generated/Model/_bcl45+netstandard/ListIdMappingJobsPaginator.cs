@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EntityResolution.Model
@@ -36,7 +37,7 @@ namespace Amazon.EntityResolution.Model
         private readonly IAmazonEntityResolution _client;
         private readonly ListIdMappingJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EntityResolution.Model
         /// <summary>
         /// Enumerable containing all of the Jobs
         /// </summary>
-        public IPaginatedEnumerable<JobSummary> Jobs => 
+        public IPaginatedEnumerable<JobSummary> Jobs =>
             new PaginatedResultKeyResponse<ListIdMappingJobsResponse, JobSummary>(this, (i) => i.Jobs ?? new List<JobSummary>());
 
         internal ListIdMappingJobsPaginator(IAmazonEntityResolution client, ListIdMappingJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EntityResolution.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListIdMappingJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListIdMappingJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

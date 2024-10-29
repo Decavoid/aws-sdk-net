@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CognitoIdentityProvider.Model
@@ -36,7 +37,7 @@ namespace Amazon.CognitoIdentityProvider.Model
         private readonly IAmazonCognitoIdentityProvider _client;
         private readonly ListUsersInGroupRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CognitoIdentityProvider.Model
         /// <summary>
         /// Enumerable containing all of the Users
         /// </summary>
-        public IPaginatedEnumerable<UserType> Users => 
+        public IPaginatedEnumerable<UserType> Users =>
             new PaginatedResultKeyResponse<ListUsersInGroupResponse, UserType>(this, (i) => i.Users ?? new List<UserType>());
 
         internal ListUsersInGroupPaginator(IAmazonCognitoIdentityProvider client, ListUsersInGroupRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CognitoIdentityProvider.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListUsersInGroupAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListUsersInGroupAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

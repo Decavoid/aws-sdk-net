@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.NetworkFirewall.Model
@@ -36,7 +37,7 @@ namespace Amazon.NetworkFirewall.Model
         private readonly IAmazonNetworkFirewall _client;
         private readonly ListTLSInspectionConfigurationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.NetworkFirewall.Model
         /// <summary>
         /// Enumerable containing all of the TLSInspectionConfigurations
         /// </summary>
-        public IPaginatedEnumerable<TLSInspectionConfigurationMetadata> TLSInspectionConfigurations => 
+        public IPaginatedEnumerable<TLSInspectionConfigurationMetadata> TLSInspectionConfigurations =>
             new PaginatedResultKeyResponse<ListTLSInspectionConfigurationsResponse, TLSInspectionConfigurationMetadata>(this, (i) => i.TLSInspectionConfigurations ?? new List<TLSInspectionConfigurationMetadata>());
 
         internal ListTLSInspectionConfigurationsPaginator(IAmazonNetworkFirewall client, ListTLSInspectionConfigurationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.NetworkFirewall.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTLSInspectionConfigurationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTLSInspectionConfigurationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

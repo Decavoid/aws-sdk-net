@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EC2.Model
@@ -36,7 +37,7 @@ namespace Amazon.EC2.Model
         private readonly IAmazonEC2 _client;
         private readonly DescribeAwsNetworkPerformanceMetricSubscriptionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EC2.Model
         /// <summary>
         /// Enumerable containing all of the Subscriptions
         /// </summary>
-        public IPaginatedEnumerable<Subscription> Subscriptions => 
+        public IPaginatedEnumerable<Subscription> Subscriptions =>
             new PaginatedResultKeyResponse<DescribeAwsNetworkPerformanceMetricSubscriptionsResponse, Subscription>(this, (i) => i.Subscriptions ?? new List<Subscription>());
 
         internal DescribeAwsNetworkPerformanceMetricSubscriptionsPaginator(IAmazonEC2 client, DescribeAwsNetworkPerformanceMetricSubscriptionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EC2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeAwsNetworkPerformanceMetricSubscriptionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeAwsNetworkPerformanceMetricSubscriptionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.PcaConnectorScep.Model
@@ -36,7 +37,7 @@ namespace Amazon.PcaConnectorScep.Model
         private readonly IAmazonPcaConnectorScep _client;
         private readonly ListChallengeMetadataRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.PcaConnectorScep.Model
         /// <summary>
         /// Enumerable containing all of the Challenges
         /// </summary>
-        public IPaginatedEnumerable<ChallengeMetadataSummary> Challenges => 
+        public IPaginatedEnumerable<ChallengeMetadataSummary> Challenges =>
             new PaginatedResultKeyResponse<ListChallengeMetadataResponse, ChallengeMetadataSummary>(this, (i) => i.Challenges ?? new List<ChallengeMetadataSummary>());
 
         internal ListChallengeMetadataPaginator(IAmazonPcaConnectorScep client, ListChallengeMetadataRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.PcaConnectorScep.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListChallengeMetadataAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListChallengeMetadataAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

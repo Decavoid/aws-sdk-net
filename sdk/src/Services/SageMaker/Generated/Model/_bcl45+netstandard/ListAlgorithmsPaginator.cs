@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SageMaker.Model
@@ -36,7 +37,7 @@ namespace Amazon.SageMaker.Model
         private readonly IAmazonSageMaker _client;
         private readonly ListAlgorithmsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SageMaker.Model
         /// <summary>
         /// Enumerable containing all of the AlgorithmSummaryList
         /// </summary>
-        public IPaginatedEnumerable<AlgorithmSummary> AlgorithmSummaryList => 
+        public IPaginatedEnumerable<AlgorithmSummary> AlgorithmSummaryList =>
             new PaginatedResultKeyResponse<ListAlgorithmsResponse, AlgorithmSummary>(this, (i) => i.AlgorithmSummaryList ?? new List<AlgorithmSummary>());
 
         internal ListAlgorithmsPaginator(IAmazonSageMaker client, ListAlgorithmsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SageMaker.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAlgorithmsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAlgorithmsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

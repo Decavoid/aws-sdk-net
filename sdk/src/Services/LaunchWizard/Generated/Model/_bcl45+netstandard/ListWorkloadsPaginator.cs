@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.LaunchWizard.Model
@@ -36,7 +37,7 @@ namespace Amazon.LaunchWizard.Model
         private readonly IAmazonLaunchWizard _client;
         private readonly ListWorkloadsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.LaunchWizard.Model
         /// <summary>
         /// Enumerable containing all of the Workloads
         /// </summary>
-        public IPaginatedEnumerable<WorkloadDataSummary> Workloads => 
+        public IPaginatedEnumerable<WorkloadDataSummary> Workloads =>
             new PaginatedResultKeyResponse<ListWorkloadsResponse, WorkloadDataSummary>(this, (i) => i.Workloads ?? new List<WorkloadDataSummary>());
 
         internal ListWorkloadsPaginator(IAmazonLaunchWizard client, ListWorkloadsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.LaunchWizard.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListWorkloadsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWorkloadsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

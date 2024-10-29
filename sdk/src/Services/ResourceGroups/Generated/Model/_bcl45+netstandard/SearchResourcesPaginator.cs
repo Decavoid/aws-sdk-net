@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ResourceGroups.Model
@@ -36,7 +37,7 @@ namespace Amazon.ResourceGroups.Model
         private readonly IAmazonResourceGroups _client;
         private readonly SearchResourcesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ResourceGroups.Model
         /// <summary>
         /// Enumerable containing all of the ResourceIdentifiers
         /// </summary>
-        public IPaginatedEnumerable<ResourceIdentifier> ResourceIdentifiers => 
+        public IPaginatedEnumerable<ResourceIdentifier> ResourceIdentifiers =>
             new PaginatedResultKeyResponse<SearchResourcesResponse, ResourceIdentifier>(this, (i) => i.ResourceIdentifiers ?? new List<ResourceIdentifier>());
 
         internal SearchResourcesPaginator(IAmazonResourceGroups client, SearchResourcesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ResourceGroups.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchResourcesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchResourcesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AppMesh.Model
@@ -36,7 +37,7 @@ namespace Amazon.AppMesh.Model
         private readonly IAmazonAppMesh _client;
         private readonly ListRoutesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AppMesh.Model
         /// <summary>
         /// Enumerable containing all of the Routes
         /// </summary>
-        public IPaginatedEnumerable<RouteRef> Routes => 
+        public IPaginatedEnumerable<RouteRef> Routes =>
             new PaginatedResultKeyResponse<ListRoutesResponse, RouteRef>(this, (i) => i.Routes ?? new List<RouteRef>());
 
         internal ListRoutesPaginator(IAmazonAppMesh client, ListRoutesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AppMesh.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRoutesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRoutesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

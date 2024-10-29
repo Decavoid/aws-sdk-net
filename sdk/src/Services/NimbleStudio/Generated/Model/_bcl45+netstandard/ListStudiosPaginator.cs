@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.NimbleStudio.Model
@@ -36,7 +37,7 @@ namespace Amazon.NimbleStudio.Model
         private readonly IAmazonNimbleStudio _client;
         private readonly ListStudiosRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.NimbleStudio.Model
         /// <summary>
         /// Enumerable containing all of the Studios
         /// </summary>
-        public IPaginatedEnumerable<Studio> Studios => 
+        public IPaginatedEnumerable<Studio> Studios =>
             new PaginatedResultKeyResponse<ListStudiosResponse, Studio>(this, (i) => i.Studios ?? new List<Studio>());
 
         internal ListStudiosPaginator(IAmazonNimbleStudio client, ListStudiosRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.NimbleStudio.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListStudiosAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListStudiosAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

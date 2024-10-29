@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DataZone.Model
@@ -36,7 +37,7 @@ namespace Amazon.DataZone.Model
         private readonly IAmazonDataZone _client;
         private readonly ListSubscriptionGrantsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DataZone.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<SubscriptionGrantSummary> Items => 
+        public IPaginatedEnumerable<SubscriptionGrantSummary> Items =>
             new PaginatedResultKeyResponse<ListSubscriptionGrantsResponse, SubscriptionGrantSummary>(this, (i) => i.Items ?? new List<SubscriptionGrantSummary>());
 
         internal ListSubscriptionGrantsPaginator(IAmazonDataZone client, ListSubscriptionGrantsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DataZone.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSubscriptionGrantsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSubscriptionGrantsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

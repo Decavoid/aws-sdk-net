@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoTThingsGraph.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoTThingsGraph.Model
         private readonly IAmazonIoTThingsGraph _client;
         private readonly SearchThingsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoTThingsGraph.Model
         /// <summary>
         /// Enumerable containing all of the Things
         /// </summary>
-        public IPaginatedEnumerable<Thing> Things => 
+        public IPaginatedEnumerable<Thing> Things =>
             new PaginatedResultKeyResponse<SearchThingsResponse, Thing>(this, (i) => i.Things ?? new List<Thing>());
 
         internal SearchThingsPaginator(IAmazonIoTThingsGraph client, SearchThingsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoTThingsGraph.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchThingsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchThingsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

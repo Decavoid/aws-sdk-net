@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoT.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoT.Model
         private readonly IAmazonIoT _client;
         private readonly ListOTAUpdatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoT.Model
         /// <summary>
         /// Enumerable containing all of the OtaUpdates
         /// </summary>
-        public IPaginatedEnumerable<OTAUpdateSummary> OtaUpdates => 
+        public IPaginatedEnumerable<OTAUpdateSummary> OtaUpdates =>
             new PaginatedResultKeyResponse<ListOTAUpdatesResponse, OTAUpdateSummary>(this, (i) => i.OtaUpdates ?? new List<OTAUpdateSummary>());
 
         internal ListOTAUpdatesPaginator(IAmazonIoT client, ListOTAUpdatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoT.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListOTAUpdatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListOTAUpdatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

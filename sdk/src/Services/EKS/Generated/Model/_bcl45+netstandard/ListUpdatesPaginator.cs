@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EKS.Model
@@ -36,7 +37,7 @@ namespace Amazon.EKS.Model
         private readonly IAmazonEKS _client;
         private readonly ListUpdatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EKS.Model
         /// <summary>
         /// Enumerable containing all of the UpdateIds
         /// </summary>
-        public IPaginatedEnumerable<string> UpdateIds => 
+        public IPaginatedEnumerable<string> UpdateIds =>
             new PaginatedResultKeyResponse<ListUpdatesResponse, string>(this, (i) => i.UpdateIds ?? new List<string>());
 
         internal ListUpdatesPaginator(IAmazonEKS client, ListUpdatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EKS.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListUpdatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListUpdatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

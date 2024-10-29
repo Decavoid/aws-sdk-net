@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AmplifyBackend.Model
@@ -36,7 +37,7 @@ namespace Amazon.AmplifyBackend.Model
         private readonly IAmazonAmplifyBackend _client;
         private readonly ListBackendJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AmplifyBackend.Model
         /// <summary>
         /// Enumerable containing all of the Jobs
         /// </summary>
-        public IPaginatedEnumerable<BackendJobRespObj> Jobs => 
+        public IPaginatedEnumerable<BackendJobRespObj> Jobs =>
             new PaginatedResultKeyResponse<ListBackendJobsResponse, BackendJobRespObj>(this, (i) => i.Jobs ?? new List<BackendJobRespObj>());
 
         internal ListBackendJobsPaginator(IAmazonAmplifyBackend client, ListBackendJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AmplifyBackend.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListBackendJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListBackendJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

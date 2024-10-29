@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElasticTranscoder.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElasticTranscoder.Model
         private readonly IAmazonElasticTranscoder _client;
         private readonly ListPipelinesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElasticTranscoder.Model
         /// <summary>
         /// Enumerable containing all of the Pipelines
         /// </summary>
-        public IPaginatedEnumerable<Pipeline> Pipelines => 
+        public IPaginatedEnumerable<Pipeline> Pipelines =>
             new PaginatedResultKeyResponse<ListPipelinesResponse, Pipeline>(this, (i) => i.Pipelines ?? new List<Pipeline>());
 
         internal ListPipelinesPaginator(IAmazonElasticTranscoder client, ListPipelinesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElasticTranscoder.Model
             do
             {
                 _request.PageToken = pageToken;
-                response = await _client.ListPipelinesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPipelinesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 pageToken = response.NextPageToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

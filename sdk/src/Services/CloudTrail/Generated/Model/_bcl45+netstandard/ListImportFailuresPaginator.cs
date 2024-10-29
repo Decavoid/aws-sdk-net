@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudTrail.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudTrail.Model
         private readonly IAmazonCloudTrail _client;
         private readonly ListImportFailuresRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudTrail.Model
         /// <summary>
         /// Enumerable containing all of the Failures
         /// </summary>
-        public IPaginatedEnumerable<ImportFailureListItem> Failures => 
+        public IPaginatedEnumerable<ImportFailureListItem> Failures =>
             new PaginatedResultKeyResponse<ListImportFailuresResponse, ImportFailureListItem>(this, (i) => i.Failures ?? new List<ImportFailureListItem>());
 
         internal ListImportFailuresPaginator(IAmazonCloudTrail client, ListImportFailuresRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudTrail.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListImportFailuresAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListImportFailuresAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

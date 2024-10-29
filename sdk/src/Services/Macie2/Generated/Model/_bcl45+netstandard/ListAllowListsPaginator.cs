@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Macie2.Model
@@ -36,7 +37,7 @@ namespace Amazon.Macie2.Model
         private readonly IAmazonMacie2 _client;
         private readonly ListAllowListsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Macie2.Model
         /// <summary>
         /// Enumerable containing all of the AllowLists
         /// </summary>
-        public IPaginatedEnumerable<AllowListSummary> AllowLists => 
+        public IPaginatedEnumerable<AllowListSummary> AllowLists =>
             new PaginatedResultKeyResponse<ListAllowListsResponse, AllowListSummary>(this, (i) => i.AllowLists ?? new List<AllowListSummary>());
 
         internal ListAllowListsPaginator(IAmazonMacie2 client, ListAllowListsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Macie2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAllowListsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAllowListsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

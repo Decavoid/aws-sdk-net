@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MigrationHubRefactorSpaces.Model
@@ -36,7 +37,7 @@ namespace Amazon.MigrationHubRefactorSpaces.Model
         private readonly IAmazonMigrationHubRefactorSpaces _client;
         private readonly ListEnvironmentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MigrationHubRefactorSpaces.Model
         /// <summary>
         /// Enumerable containing all of the EnvironmentSummaryList
         /// </summary>
-        public IPaginatedEnumerable<EnvironmentSummary> EnvironmentSummaryList => 
+        public IPaginatedEnumerable<EnvironmentSummary> EnvironmentSummaryList =>
             new PaginatedResultKeyResponse<ListEnvironmentsResponse, EnvironmentSummary>(this, (i) => i.EnvironmentSummaryList ?? new List<EnvironmentSummary>());
 
         internal ListEnvironmentsPaginator(IAmazonMigrationHubRefactorSpaces client, ListEnvironmentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MigrationHubRefactorSpaces.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListEnvironmentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEnvironmentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

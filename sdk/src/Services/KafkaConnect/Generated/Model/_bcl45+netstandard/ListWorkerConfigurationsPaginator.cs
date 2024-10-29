@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.KafkaConnect.Model
@@ -36,7 +37,7 @@ namespace Amazon.KafkaConnect.Model
         private readonly IAmazonKafkaConnect _client;
         private readonly ListWorkerConfigurationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.KafkaConnect.Model
         /// <summary>
         /// Enumerable containing all of the WorkerConfigurations
         /// </summary>
-        public IPaginatedEnumerable<WorkerConfigurationSummary> WorkerConfigurations => 
+        public IPaginatedEnumerable<WorkerConfigurationSummary> WorkerConfigurations =>
             new PaginatedResultKeyResponse<ListWorkerConfigurationsResponse, WorkerConfigurationSummary>(this, (i) => i.WorkerConfigurations ?? new List<WorkerConfigurationSummary>());
 
         internal ListWorkerConfigurationsPaginator(IAmazonKafkaConnect client, ListWorkerConfigurationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.KafkaConnect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListWorkerConfigurationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWorkerConfigurationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.BedrockAgent.Model
@@ -36,7 +37,7 @@ namespace Amazon.BedrockAgent.Model
         private readonly IAmazonBedrockAgent _client;
         private readonly ListFlowAliasesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.BedrockAgent.Model
         /// <summary>
         /// Enumerable containing all of the FlowAliasSummaries
         /// </summary>
-        public IPaginatedEnumerable<FlowAliasSummary> FlowAliasSummaries => 
+        public IPaginatedEnumerable<FlowAliasSummary> FlowAliasSummaries =>
             new PaginatedResultKeyResponse<ListFlowAliasesResponse, FlowAliasSummary>(this, (i) => i.FlowAliasSummaries ?? new List<FlowAliasSummary>());
 
         internal ListFlowAliasesPaginator(IAmazonBedrockAgent client, ListFlowAliasesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.BedrockAgent.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListFlowAliasesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListFlowAliasesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

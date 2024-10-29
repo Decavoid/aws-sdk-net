@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ResourceGroupsTaggingAPI.Model
@@ -36,7 +37,7 @@ namespace Amazon.ResourceGroupsTaggingAPI.Model
         private readonly IAmazonResourceGroupsTaggingAPI _client;
         private readonly GetTagKeysRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ResourceGroupsTaggingAPI.Model
         /// <summary>
         /// Enumerable containing all of the TagKeys
         /// </summary>
-        public IPaginatedEnumerable<string> TagKeys => 
+        public IPaginatedEnumerable<string> TagKeys =>
             new PaginatedResultKeyResponse<GetTagKeysResponse, string>(this, (i) => i.TagKeys ?? new List<string>());
 
         internal GetTagKeysPaginator(IAmazonResourceGroupsTaggingAPI client, GetTagKeysRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ResourceGroupsTaggingAPI.Model
             do
             {
                 _request.PaginationToken = paginationToken;
-                response = await _client.GetTagKeysAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetTagKeysAsync(_request, cancellationToken).ConfigureAwaitEx();
                 paginationToken = response.PaginationToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

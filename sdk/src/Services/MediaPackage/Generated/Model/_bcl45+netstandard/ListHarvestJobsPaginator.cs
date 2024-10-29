@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MediaPackage.Model
@@ -36,7 +37,7 @@ namespace Amazon.MediaPackage.Model
         private readonly IAmazonMediaPackage _client;
         private readonly ListHarvestJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MediaPackage.Model
         /// <summary>
         /// Enumerable containing all of the HarvestJobs
         /// </summary>
-        public IPaginatedEnumerable<HarvestJob> HarvestJobs => 
+        public IPaginatedEnumerable<HarvestJob> HarvestJobs =>
             new PaginatedResultKeyResponse<ListHarvestJobsResponse, HarvestJob>(this, (i) => i.HarvestJobs ?? new List<HarvestJob>());
 
         internal ListHarvestJobsPaginator(IAmazonMediaPackage client, ListHarvestJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MediaPackage.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListHarvestJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListHarvestJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

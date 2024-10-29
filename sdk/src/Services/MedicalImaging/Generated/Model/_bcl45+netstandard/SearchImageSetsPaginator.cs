@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MedicalImaging.Model
@@ -36,7 +37,7 @@ namespace Amazon.MedicalImaging.Model
         private readonly IAmazonMedicalImaging _client;
         private readonly SearchImageSetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MedicalImaging.Model
         /// <summary>
         /// Enumerable containing all of the ImageSetsMetadataSummaries
         /// </summary>
-        public IPaginatedEnumerable<ImageSetsMetadataSummary> ImageSetsMetadataSummaries => 
+        public IPaginatedEnumerable<ImageSetsMetadataSummary> ImageSetsMetadataSummaries =>
             new PaginatedResultKeyResponse<SearchImageSetsResponse, ImageSetsMetadataSummary>(this, (i) => i.ImageSetsMetadataSummaries ?? new List<ImageSetsMetadataSummary>());
 
         internal SearchImageSetsPaginator(IAmazonMedicalImaging client, SearchImageSetsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MedicalImaging.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchImageSetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchImageSetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

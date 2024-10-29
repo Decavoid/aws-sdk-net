@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.TaxSettings.Model
@@ -36,7 +37,7 @@ namespace Amazon.TaxSettings.Model
         private readonly IAmazonTaxSettings _client;
         private readonly ListTaxRegistrationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.TaxSettings.Model
         /// <summary>
         /// Enumerable containing all of the AccountDetails
         /// </summary>
-        public IPaginatedEnumerable<AccountDetails> AccountDetails => 
+        public IPaginatedEnumerable<AccountDetails> AccountDetails =>
             new PaginatedResultKeyResponse<ListTaxRegistrationsResponse, AccountDetails>(this, (i) => i.AccountDetails ?? new List<AccountDetails>());
 
         internal ListTaxRegistrationsPaginator(IAmazonTaxSettings client, ListTaxRegistrationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.TaxSettings.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTaxRegistrationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTaxRegistrationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

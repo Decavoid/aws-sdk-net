@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.KafkaConnect.Model
@@ -36,7 +37,7 @@ namespace Amazon.KafkaConnect.Model
         private readonly IAmazonKafkaConnect _client;
         private readonly ListCustomPluginsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.KafkaConnect.Model
         /// <summary>
         /// Enumerable containing all of the CustomPlugins
         /// </summary>
-        public IPaginatedEnumerable<CustomPluginSummary> CustomPlugins => 
+        public IPaginatedEnumerable<CustomPluginSummary> CustomPlugins =>
             new PaginatedResultKeyResponse<ListCustomPluginsResponse, CustomPluginSummary>(this, (i) => i.CustomPlugins ?? new List<CustomPluginSummary>());
 
         internal ListCustomPluginsPaginator(IAmazonKafkaConnect client, ListCustomPluginsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.KafkaConnect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListCustomPluginsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCustomPluginsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

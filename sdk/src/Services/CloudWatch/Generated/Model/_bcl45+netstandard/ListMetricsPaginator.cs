@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudWatch.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudWatch.Model
         private readonly IAmazonCloudWatch _client;
         private readonly ListMetricsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.CloudWatch.Model
         /// <summary>
         /// Enumerable containing all of the Metrics
         /// </summary>
-        public IPaginatedEnumerable<Metric> Metrics => 
+        public IPaginatedEnumerable<Metric> Metrics =>
             new PaginatedResultKeyResponse<ListMetricsResponse, Metric>(this, (i) => i.Metrics ?? new List<Metric>());
 
         /// <summary>
         /// Enumerable containing all of the OwningAccounts
         /// </summary>
-        public IPaginatedEnumerable<string> OwningAccounts => 
+        public IPaginatedEnumerable<string> OwningAccounts =>
             new PaginatedResultKeyResponse<ListMetricsResponse, string>(this, (i) => i.OwningAccounts ?? new List<string>());
 
         internal ListMetricsPaginator(IAmazonCloudWatch client, ListMetricsRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.CloudWatch.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListMetricsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListMetricsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

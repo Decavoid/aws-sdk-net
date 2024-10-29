@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.PinpointSMSVoiceV2.Model
@@ -36,7 +37,7 @@ namespace Amazon.PinpointSMSVoiceV2.Model
         private readonly IAmazonPinpointSMSVoiceV2 _client;
         private readonly DescribeSenderIdsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.PinpointSMSVoiceV2.Model
         /// <summary>
         /// Enumerable containing all of the SenderIds
         /// </summary>
-        public IPaginatedEnumerable<SenderIdInformation> SenderIds => 
+        public IPaginatedEnumerable<SenderIdInformation> SenderIds =>
             new PaginatedResultKeyResponse<DescribeSenderIdsResponse, SenderIdInformation>(this, (i) => i.SenderIds ?? new List<SenderIdInformation>());
 
         internal DescribeSenderIdsPaginator(IAmazonPinpointSMSVoiceV2 client, DescribeSenderIdsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.PinpointSMSVoiceV2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeSenderIdsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeSenderIdsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

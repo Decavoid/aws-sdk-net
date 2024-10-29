@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.StorageGateway.Model
@@ -36,7 +37,7 @@ namespace Amazon.StorageGateway.Model
         private readonly IAmazonStorageGateway _client;
         private readonly ListTapePoolsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.StorageGateway.Model
         /// <summary>
         /// Enumerable containing all of the PoolInfos
         /// </summary>
-        public IPaginatedEnumerable<PoolInfo> PoolInfos => 
+        public IPaginatedEnumerable<PoolInfo> PoolInfos =>
             new PaginatedResultKeyResponse<ListTapePoolsResponse, PoolInfo>(this, (i) => i.PoolInfos ?? new List<PoolInfo>());
 
         internal ListTapePoolsPaginator(IAmazonStorageGateway client, ListTapePoolsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.StorageGateway.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListTapePoolsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTapePoolsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

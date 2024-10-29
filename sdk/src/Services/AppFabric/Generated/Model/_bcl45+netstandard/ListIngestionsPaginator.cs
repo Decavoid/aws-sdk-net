@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AppFabric.Model
@@ -36,7 +37,7 @@ namespace Amazon.AppFabric.Model
         private readonly IAmazonAppFabric _client;
         private readonly ListIngestionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AppFabric.Model
         /// <summary>
         /// Enumerable containing all of the Ingestions
         /// </summary>
-        public IPaginatedEnumerable<IngestionSummary> Ingestions => 
+        public IPaginatedEnumerable<IngestionSummary> Ingestions =>
             new PaginatedResultKeyResponse<ListIngestionsResponse, IngestionSummary>(this, (i) => i.Ingestions ?? new List<IngestionSummary>());
 
         internal ListIngestionsPaginator(IAmazonAppFabric client, ListIngestionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AppFabric.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListIngestionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListIngestionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

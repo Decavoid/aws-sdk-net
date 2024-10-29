@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AppTest.Model
@@ -36,7 +37,7 @@ namespace Amazon.AppTest.Model
         private readonly IAmazonAppTest _client;
         private readonly ListTestCasesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AppTest.Model
         /// <summary>
         /// Enumerable containing all of the TestCases
         /// </summary>
-        public IPaginatedEnumerable<TestCaseSummary> TestCases => 
+        public IPaginatedEnumerable<TestCaseSummary> TestCases =>
             new PaginatedResultKeyResponse<ListTestCasesResponse, TestCaseSummary>(this, (i) => i.TestCases ?? new List<TestCaseSummary>());
 
         internal ListTestCasesPaginator(IAmazonAppTest client, ListTestCasesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AppTest.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTestCasesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTestCasesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

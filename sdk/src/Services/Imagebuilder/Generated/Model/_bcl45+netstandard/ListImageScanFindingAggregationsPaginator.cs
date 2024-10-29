@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Imagebuilder.Model
@@ -36,7 +37,7 @@ namespace Amazon.Imagebuilder.Model
         private readonly IAmazonImagebuilder _client;
         private readonly ListImageScanFindingAggregationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Imagebuilder.Model
         /// <summary>
         /// Enumerable containing all of the Aggregations
         /// </summary>
-        public IPaginatedEnumerable<ImageScanFindingAggregation> Aggregations => 
+        public IPaginatedEnumerable<ImageScanFindingAggregation> Aggregations =>
             new PaginatedResultKeyResponse<ListImageScanFindingAggregationsResponse, ImageScanFindingAggregation>(this, (i) => i.Aggregations ?? new List<ImageScanFindingAggregation>());
 
         internal ListImageScanFindingAggregationsPaginator(IAmazonImagebuilder client, ListImageScanFindingAggregationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Imagebuilder.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListImageScanFindingAggregationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListImageScanFindingAggregationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

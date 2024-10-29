@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ResilienceHub.Model
@@ -36,7 +37,7 @@ namespace Amazon.ResilienceHub.Model
         private readonly IAmazonResilienceHub _client;
         private readonly ListAppAssessmentResourceDriftsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ResilienceHub.Model
         /// <summary>
         /// Enumerable containing all of the ResourceDrifts
         /// </summary>
-        public IPaginatedEnumerable<ResourceDrift> ResourceDrifts => 
+        public IPaginatedEnumerable<ResourceDrift> ResourceDrifts =>
             new PaginatedResultKeyResponse<ListAppAssessmentResourceDriftsResponse, ResourceDrift>(this, (i) => i.ResourceDrifts ?? new List<ResourceDrift>());
 
         internal ListAppAssessmentResourceDriftsPaginator(IAmazonResilienceHub client, ListAppAssessmentResourceDriftsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ResilienceHub.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAppAssessmentResourceDriftsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAppAssessmentResourceDriftsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

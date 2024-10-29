@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53.Model
         private readonly IAmazonRoute53 _client;
         private readonly ListHealthChecksRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53.Model
         /// <summary>
         /// Enumerable containing all of the HealthChecks
         /// </summary>
-        public IPaginatedEnumerable<HealthCheck> HealthChecks => 
+        public IPaginatedEnumerable<HealthCheck> HealthChecks =>
             new PaginatedResultKeyResponse<ListHealthChecksResponse, HealthCheck>(this, (i) => i.HealthChecks ?? new List<HealthCheck>());
 
         internal ListHealthChecksPaginator(IAmazonRoute53 client, ListHealthChecksRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Route53.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListHealthChecksAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListHealthChecksAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Personalize.Model
@@ -36,7 +37,7 @@ namespace Amazon.Personalize.Model
         private readonly IAmazonPersonalize _client;
         private readonly ListDatasetImportJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Personalize.Model
         /// <summary>
         /// Enumerable containing all of the DatasetImportJobs
         /// </summary>
-        public IPaginatedEnumerable<DatasetImportJobSummary> DatasetImportJobs => 
+        public IPaginatedEnumerable<DatasetImportJobSummary> DatasetImportJobs =>
             new PaginatedResultKeyResponse<ListDatasetImportJobsResponse, DatasetImportJobSummary>(this, (i) => i.DatasetImportJobs ?? new List<DatasetImportJobSummary>());
 
         internal ListDatasetImportJobsPaginator(IAmazonPersonalize client, ListDatasetImportJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Personalize.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDatasetImportJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDatasetImportJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

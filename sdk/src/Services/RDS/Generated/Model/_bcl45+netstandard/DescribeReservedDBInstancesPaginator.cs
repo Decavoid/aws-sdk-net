@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.RDS.Model
@@ -36,7 +37,7 @@ namespace Amazon.RDS.Model
         private readonly IAmazonRDS _client;
         private readonly DescribeReservedDBInstancesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.RDS.Model
         /// <summary>
         /// Enumerable containing all of the ReservedDBInstances
         /// </summary>
-        public IPaginatedEnumerable<ReservedDBInstance> ReservedDBInstances => 
+        public IPaginatedEnumerable<ReservedDBInstance> ReservedDBInstances =>
             new PaginatedResultKeyResponse<DescribeReservedDBInstancesResponse, ReservedDBInstance>(this, (i) => i.ReservedDBInstances ?? new List<ReservedDBInstance>());
 
         internal DescribeReservedDBInstancesPaginator(IAmazonRDS client, DescribeReservedDBInstancesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.RDS.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeReservedDBInstancesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeReservedDBInstancesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

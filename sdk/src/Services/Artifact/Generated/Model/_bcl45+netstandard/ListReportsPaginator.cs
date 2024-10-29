@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Artifact.Model
@@ -36,7 +37,7 @@ namespace Amazon.Artifact.Model
         private readonly IAmazonArtifact _client;
         private readonly ListReportsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Artifact.Model
         /// <summary>
         /// Enumerable containing all of the Reports
         /// </summary>
-        public IPaginatedEnumerable<ReportSummary> Reports => 
+        public IPaginatedEnumerable<ReportSummary> Reports =>
             new PaginatedResultKeyResponse<ListReportsResponse, ReportSummary>(this, (i) => i.Reports ?? new List<ReportSummary>());
 
         internal ListReportsPaginator(IAmazonArtifact client, ListReportsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Artifact.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListReportsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListReportsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

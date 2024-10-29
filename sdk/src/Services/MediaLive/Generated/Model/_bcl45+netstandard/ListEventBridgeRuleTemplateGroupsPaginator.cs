@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MediaLive.Model
@@ -36,7 +37,7 @@ namespace Amazon.MediaLive.Model
         private readonly IAmazonMediaLive _client;
         private readonly ListEventBridgeRuleTemplateGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MediaLive.Model
         /// <summary>
         /// Enumerable containing all of the EventBridgeRuleTemplateGroups
         /// </summary>
-        public IPaginatedEnumerable<EventBridgeRuleTemplateGroupSummary> EventBridgeRuleTemplateGroups => 
+        public IPaginatedEnumerable<EventBridgeRuleTemplateGroupSummary> EventBridgeRuleTemplateGroups =>
             new PaginatedResultKeyResponse<ListEventBridgeRuleTemplateGroupsResponse, EventBridgeRuleTemplateGroupSummary>(this, (i) => i.EventBridgeRuleTemplateGroups ?? new List<EventBridgeRuleTemplateGroupSummary>());
 
         internal ListEventBridgeRuleTemplateGroupsPaginator(IAmazonMediaLive client, ListEventBridgeRuleTemplateGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MediaLive.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListEventBridgeRuleTemplateGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEventBridgeRuleTemplateGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53Domains.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53Domains.Model
         private readonly IAmazonRoute53Domains _client;
         private readonly ListOperationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53Domains.Model
         /// <summary>
         /// Enumerable containing all of the Operations
         /// </summary>
-        public IPaginatedEnumerable<OperationSummary> Operations => 
+        public IPaginatedEnumerable<OperationSummary> Operations =>
             new PaginatedResultKeyResponse<ListOperationsResponse, OperationSummary>(this, (i) => i.Operations ?? new List<OperationSummary>());
 
         internal ListOperationsPaginator(IAmazonRoute53Domains client, ListOperationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Route53Domains.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListOperationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListOperationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextPageMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

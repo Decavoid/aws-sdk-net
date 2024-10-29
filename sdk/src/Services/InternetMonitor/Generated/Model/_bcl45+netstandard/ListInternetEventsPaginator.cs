@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.InternetMonitor.Model
@@ -36,7 +37,7 @@ namespace Amazon.InternetMonitor.Model
         private readonly IAmazonInternetMonitor _client;
         private readonly ListInternetEventsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.InternetMonitor.Model
         /// <summary>
         /// Enumerable containing all of the InternetEvents
         /// </summary>
-        public IPaginatedEnumerable<InternetEventSummary> InternetEvents => 
+        public IPaginatedEnumerable<InternetEventSummary> InternetEvents =>
             new PaginatedResultKeyResponse<ListInternetEventsResponse, InternetEventSummary>(this, (i) => i.InternetEvents ?? new List<InternetEventSummary>());
 
         internal ListInternetEventsPaginator(IAmazonInternetMonitor client, ListInternetEventsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.InternetMonitor.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListInternetEventsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListInternetEventsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

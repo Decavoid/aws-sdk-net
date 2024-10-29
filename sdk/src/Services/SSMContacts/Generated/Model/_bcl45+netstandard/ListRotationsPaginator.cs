@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SSMContacts.Model
@@ -36,7 +37,7 @@ namespace Amazon.SSMContacts.Model
         private readonly IAmazonSSMContacts _client;
         private readonly ListRotationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SSMContacts.Model
         /// <summary>
         /// Enumerable containing all of the Rotations
         /// </summary>
-        public IPaginatedEnumerable<Rotation> Rotations => 
+        public IPaginatedEnumerable<Rotation> Rotations =>
             new PaginatedResultKeyResponse<ListRotationsResponse, Rotation>(this, (i) => i.Rotations ?? new List<Rotation>());
 
         internal ListRotationsPaginator(IAmazonSSMContacts client, ListRotationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SSMContacts.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRotationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRotationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

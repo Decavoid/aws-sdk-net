@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.KinesisVideoArchivedMedia.Model
@@ -36,7 +37,7 @@ namespace Amazon.KinesisVideoArchivedMedia.Model
         private readonly IAmazonKinesisVideoArchivedMedia _client;
         private readonly GetImagesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.KinesisVideoArchivedMedia.Model
         /// <summary>
         /// Enumerable containing all of the Images
         /// </summary>
-        public IPaginatedEnumerable<Image> Images => 
+        public IPaginatedEnumerable<Image> Images =>
             new PaginatedResultKeyResponse<GetImagesResponse, Image>(this, (i) => i.Images ?? new List<Image>());
 
         internal GetImagesPaginator(IAmazonKinesisVideoArchivedMedia client, GetImagesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.KinesisVideoArchivedMedia.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetImagesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetImagesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

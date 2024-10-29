@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DirectoryService.Model
@@ -36,7 +37,7 @@ namespace Amazon.DirectoryService.Model
         private readonly IAmazonDirectoryService _client;
         private readonly DescribeUpdateDirectoryRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DirectoryService.Model
         /// <summary>
         /// Enumerable containing all of the UpdateActivities
         /// </summary>
-        public IPaginatedEnumerable<UpdateInfoEntry> UpdateActivities => 
+        public IPaginatedEnumerable<UpdateInfoEntry> UpdateActivities =>
             new PaginatedResultKeyResponse<DescribeUpdateDirectoryResponse, UpdateInfoEntry>(this, (i) => i.UpdateActivities ?? new List<UpdateInfoEntry>());
 
         internal DescribeUpdateDirectoryPaginator(IAmazonDirectoryService client, DescribeUpdateDirectoryRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DirectoryService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeUpdateDirectoryAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeUpdateDirectoryAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

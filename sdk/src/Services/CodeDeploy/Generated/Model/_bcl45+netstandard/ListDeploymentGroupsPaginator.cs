@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodeDeploy.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodeDeploy.Model
         private readonly IAmazonCodeDeploy _client;
         private readonly ListDeploymentGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodeDeploy.Model
         /// <summary>
         /// Enumerable containing all of the DeploymentGroups
         /// </summary>
-        public IPaginatedEnumerable<string> DeploymentGroups => 
+        public IPaginatedEnumerable<string> DeploymentGroups =>
             new PaginatedResultKeyResponse<ListDeploymentGroupsResponse, string>(this, (i) => i.DeploymentGroups ?? new List<string>());
 
         internal ListDeploymentGroupsPaginator(IAmazonCodeDeploy client, ListDeploymentGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodeDeploy.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDeploymentGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDeploymentGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

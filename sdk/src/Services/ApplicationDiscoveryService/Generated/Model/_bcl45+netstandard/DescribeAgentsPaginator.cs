@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ApplicationDiscoveryService.Model
@@ -36,7 +37,7 @@ namespace Amazon.ApplicationDiscoveryService.Model
         private readonly IAmazonApplicationDiscoveryService _client;
         private readonly DescribeAgentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ApplicationDiscoveryService.Model
         /// <summary>
         /// Enumerable containing all of the AgentsInfo
         /// </summary>
-        public IPaginatedEnumerable<AgentInfo> AgentsInfo => 
+        public IPaginatedEnumerable<AgentInfo> AgentsInfo =>
             new PaginatedResultKeyResponse<DescribeAgentsResponse, AgentInfo>(this, (i) => i.AgentsInfo ?? new List<AgentInfo>());
 
         internal DescribeAgentsPaginator(IAmazonApplicationDiscoveryService client, DescribeAgentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ApplicationDiscoveryService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeAgentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeAgentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

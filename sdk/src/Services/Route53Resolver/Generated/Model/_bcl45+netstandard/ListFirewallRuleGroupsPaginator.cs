@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53Resolver.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53Resolver.Model
         private readonly IAmazonRoute53Resolver _client;
         private readonly ListFirewallRuleGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53Resolver.Model
         /// <summary>
         /// Enumerable containing all of the FirewallRuleGroups
         /// </summary>
-        public IPaginatedEnumerable<FirewallRuleGroupMetadata> FirewallRuleGroups => 
+        public IPaginatedEnumerable<FirewallRuleGroupMetadata> FirewallRuleGroups =>
             new PaginatedResultKeyResponse<ListFirewallRuleGroupsResponse, FirewallRuleGroupMetadata>(this, (i) => i.FirewallRuleGroups ?? new List<FirewallRuleGroupMetadata>());
 
         internal ListFirewallRuleGroupsPaginator(IAmazonRoute53Resolver client, ListFirewallRuleGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Route53Resolver.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListFirewallRuleGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListFirewallRuleGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

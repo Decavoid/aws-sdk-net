@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElasticMapReduce.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElasticMapReduce.Model
         private readonly IAmazonElasticMapReduce _client;
         private readonly ListInstanceGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElasticMapReduce.Model
         /// <summary>
         /// Enumerable containing all of the InstanceGroups
         /// </summary>
-        public IPaginatedEnumerable<InstanceGroup> InstanceGroups => 
+        public IPaginatedEnumerable<InstanceGroup> InstanceGroups =>
             new PaginatedResultKeyResponse<ListInstanceGroupsResponse, InstanceGroup>(this, (i) => i.InstanceGroups ?? new List<InstanceGroup>());
 
         internal ListInstanceGroupsPaginator(IAmazonElasticMapReduce client, ListInstanceGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElasticMapReduce.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListInstanceGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListInstanceGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

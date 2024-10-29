@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MigrationHub.Model
@@ -36,7 +37,7 @@ namespace Amazon.MigrationHub.Model
         private readonly IAmazonMigrationHub _client;
         private readonly ListApplicationStatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MigrationHub.Model
         /// <summary>
         /// Enumerable containing all of the ApplicationStateList
         /// </summary>
-        public IPaginatedEnumerable<ApplicationState> ApplicationStateList => 
+        public IPaginatedEnumerable<ApplicationState> ApplicationStateList =>
             new PaginatedResultKeyResponse<ListApplicationStatesResponse, ApplicationState>(this, (i) => i.ApplicationStateList ?? new List<ApplicationState>());
 
         internal ListApplicationStatesPaginator(IAmazonMigrationHub client, ListApplicationStatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MigrationHub.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListApplicationStatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListApplicationStatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

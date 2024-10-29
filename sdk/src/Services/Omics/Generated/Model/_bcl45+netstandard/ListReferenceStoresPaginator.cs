@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Omics.Model
@@ -36,7 +37,7 @@ namespace Amazon.Omics.Model
         private readonly IAmazonOmics _client;
         private readonly ListReferenceStoresRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Omics.Model
         /// <summary>
         /// Enumerable containing all of the ReferenceStores
         /// </summary>
-        public IPaginatedEnumerable<ReferenceStoreDetail> ReferenceStores => 
+        public IPaginatedEnumerable<ReferenceStoreDetail> ReferenceStores =>
             new PaginatedResultKeyResponse<ListReferenceStoresResponse, ReferenceStoreDetail>(this, (i) => i.ReferenceStores ?? new List<ReferenceStoreDetail>());
 
         internal ListReferenceStoresPaginator(IAmazonOmics client, ListReferenceStoresRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Omics.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListReferenceStoresAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListReferenceStoresAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

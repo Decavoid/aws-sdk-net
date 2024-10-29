@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MediaConnect.Model
@@ -36,7 +37,7 @@ namespace Amazon.MediaConnect.Model
         private readonly IAmazonMediaConnect _client;
         private readonly ListGatewaysRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MediaConnect.Model
         /// <summary>
         /// Enumerable containing all of the Gateways
         /// </summary>
-        public IPaginatedEnumerable<ListedGateway> Gateways => 
+        public IPaginatedEnumerable<ListedGateway> Gateways =>
             new PaginatedResultKeyResponse<ListGatewaysResponse, ListedGateway>(this, (i) => i.Gateways ?? new List<ListedGateway>());
 
         internal ListGatewaysPaginator(IAmazonMediaConnect client, ListGatewaysRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MediaConnect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListGatewaysAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListGatewaysAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

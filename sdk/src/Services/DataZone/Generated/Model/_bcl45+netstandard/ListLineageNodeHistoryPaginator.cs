@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DataZone.Model
@@ -36,7 +37,7 @@ namespace Amazon.DataZone.Model
         private readonly IAmazonDataZone _client;
         private readonly ListLineageNodeHistoryRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DataZone.Model
         /// <summary>
         /// Enumerable containing all of the Nodes
         /// </summary>
-        public IPaginatedEnumerable<LineageNodeSummary> Nodes => 
+        public IPaginatedEnumerable<LineageNodeSummary> Nodes =>
             new PaginatedResultKeyResponse<ListLineageNodeHistoryResponse, LineageNodeSummary>(this, (i) => i.Nodes ?? new List<LineageNodeSummary>());
 
         internal ListLineageNodeHistoryPaginator(IAmazonDataZone client, ListLineageNodeHistoryRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DataZone.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListLineageNodeHistoryAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListLineageNodeHistoryAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

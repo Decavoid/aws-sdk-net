@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudWatch.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudWatch.Model
         private readonly IAmazonCloudWatch _client;
         private readonly DescribeAlarmsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.CloudWatch.Model
         /// <summary>
         /// Enumerable containing all of the MetricAlarms
         /// </summary>
-        public IPaginatedEnumerable<MetricAlarm> MetricAlarms => 
+        public IPaginatedEnumerable<MetricAlarm> MetricAlarms =>
             new PaginatedResultKeyResponse<DescribeAlarmsResponse, MetricAlarm>(this, (i) => i.MetricAlarms ?? new List<MetricAlarm>());
 
         /// <summary>
         /// Enumerable containing all of the CompositeAlarms
         /// </summary>
-        public IPaginatedEnumerable<CompositeAlarm> CompositeAlarms => 
+        public IPaginatedEnumerable<CompositeAlarm> CompositeAlarms =>
             new PaginatedResultKeyResponse<DescribeAlarmsResponse, CompositeAlarm>(this, (i) => i.CompositeAlarms ?? new List<CompositeAlarm>());
 
         internal DescribeAlarmsPaginator(IAmazonCloudWatch client, DescribeAlarmsRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.CloudWatch.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeAlarmsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeAlarmsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

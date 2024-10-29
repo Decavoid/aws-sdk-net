@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SecurityHub.Model
@@ -36,7 +37,7 @@ namespace Amazon.SecurityHub.Model
         private readonly IAmazonSecurityHub _client;
         private readonly ListInvitationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SecurityHub.Model
         /// <summary>
         /// Enumerable containing all of the Invitations
         /// </summary>
-        public IPaginatedEnumerable<Invitation> Invitations => 
+        public IPaginatedEnumerable<Invitation> Invitations =>
             new PaginatedResultKeyResponse<ListInvitationsResponse, Invitation>(this, (i) => i.Invitations ?? new List<Invitation>());
 
         internal ListInvitationsPaginator(IAmazonSecurityHub client, ListInvitationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SecurityHub.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListInvitationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListInvitationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

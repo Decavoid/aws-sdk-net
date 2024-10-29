@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Inspector2.Model
@@ -36,7 +37,7 @@ namespace Amazon.Inspector2.Model
         private readonly IAmazonInspector2 _client;
         private readonly ListCisScansRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Inspector2.Model
         /// <summary>
         /// Enumerable containing all of the Scans
         /// </summary>
-        public IPaginatedEnumerable<CisScan> Scans => 
+        public IPaginatedEnumerable<CisScan> Scans =>
             new PaginatedResultKeyResponse<ListCisScansResponse, CisScan>(this, (i) => i.Scans ?? new List<CisScan>());
 
         internal ListCisScansPaginator(IAmazonInspector2 client, ListCisScansRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Inspector2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListCisScansAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCisScansAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

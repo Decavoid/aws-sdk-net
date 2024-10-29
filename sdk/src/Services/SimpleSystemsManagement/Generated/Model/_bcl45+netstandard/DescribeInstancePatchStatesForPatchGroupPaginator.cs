@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SimpleSystemsManagement.Model
@@ -36,7 +37,7 @@ namespace Amazon.SimpleSystemsManagement.Model
         private readonly IAmazonSimpleSystemsManagement _client;
         private readonly DescribeInstancePatchStatesForPatchGroupRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SimpleSystemsManagement.Model
         /// <summary>
         /// Enumerable containing all of the InstancePatchStates
         /// </summary>
-        public IPaginatedEnumerable<InstancePatchState> InstancePatchStates => 
+        public IPaginatedEnumerable<InstancePatchState> InstancePatchStates =>
             new PaginatedResultKeyResponse<DescribeInstancePatchStatesForPatchGroupResponse, InstancePatchState>(this, (i) => i.InstancePatchStates ?? new List<InstancePatchState>());
 
         internal DescribeInstancePatchStatesForPatchGroupPaginator(IAmazonSimpleSystemsManagement client, DescribeInstancePatchStatesForPatchGroupRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SimpleSystemsManagement.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeInstancePatchStatesForPatchGroupAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeInstancePatchStatesForPatchGroupAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

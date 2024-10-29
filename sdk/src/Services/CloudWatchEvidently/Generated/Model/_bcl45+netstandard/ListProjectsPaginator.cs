@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudWatchEvidently.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudWatchEvidently.Model
         private readonly IAmazonCloudWatchEvidently _client;
         private readonly ListProjectsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudWatchEvidently.Model
         /// <summary>
         /// Enumerable containing all of the Projects
         /// </summary>
-        public IPaginatedEnumerable<ProjectSummary> Projects => 
+        public IPaginatedEnumerable<ProjectSummary> Projects =>
             new PaginatedResultKeyResponse<ListProjectsResponse, ProjectSummary>(this, (i) => i.Projects ?? new List<ProjectSummary>());
 
         internal ListProjectsPaginator(IAmazonCloudWatchEvidently client, ListProjectsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudWatchEvidently.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListProjectsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListProjectsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

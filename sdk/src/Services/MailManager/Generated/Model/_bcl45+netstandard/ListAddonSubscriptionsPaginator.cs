@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MailManager.Model
@@ -36,7 +37,7 @@ namespace Amazon.MailManager.Model
         private readonly IAmazonMailManager _client;
         private readonly ListAddonSubscriptionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MailManager.Model
         /// <summary>
         /// Enumerable containing all of the AddonSubscriptions
         /// </summary>
-        public IPaginatedEnumerable<AddonSubscription> AddonSubscriptions => 
+        public IPaginatedEnumerable<AddonSubscription> AddonSubscriptions =>
             new PaginatedResultKeyResponse<ListAddonSubscriptionsResponse, AddonSubscription>(this, (i) => i.AddonSubscriptions ?? new List<AddonSubscription>());
 
         internal ListAddonSubscriptionsPaginator(IAmazonMailManager client, ListAddonSubscriptionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MailManager.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAddonSubscriptionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAddonSubscriptionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

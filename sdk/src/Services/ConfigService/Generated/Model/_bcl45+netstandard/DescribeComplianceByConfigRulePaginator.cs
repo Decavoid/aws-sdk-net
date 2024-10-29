@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ConfigService.Model
@@ -36,7 +37,7 @@ namespace Amazon.ConfigService.Model
         private readonly IAmazonConfigService _client;
         private readonly DescribeComplianceByConfigRuleRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ConfigService.Model
         /// <summary>
         /// Enumerable containing all of the ComplianceByConfigRules
         /// </summary>
-        public IPaginatedEnumerable<ComplianceByConfigRule> ComplianceByConfigRules => 
+        public IPaginatedEnumerable<ComplianceByConfigRule> ComplianceByConfigRules =>
             new PaginatedResultKeyResponse<DescribeComplianceByConfigRuleResponse, ComplianceByConfigRule>(this, (i) => i.ComplianceByConfigRules ?? new List<ComplianceByConfigRule>());
 
         internal DescribeComplianceByConfigRulePaginator(IAmazonConfigService client, DescribeComplianceByConfigRuleRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ConfigService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeComplianceByConfigRuleAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeComplianceByConfigRuleAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

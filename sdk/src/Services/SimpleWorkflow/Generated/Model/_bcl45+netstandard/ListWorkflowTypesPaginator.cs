@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SimpleWorkflow.Model
@@ -36,7 +37,7 @@ namespace Amazon.SimpleWorkflow.Model
         private readonly IAmazonSimpleWorkflow _client;
         private readonly ListWorkflowTypesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SimpleWorkflow.Model
         /// <summary>
         /// Enumerable containing all of the TypeInfos
         /// </summary>
-        public IPaginatedEnumerable<WorkflowTypeInfo> TypeInfos => 
+        public IPaginatedEnumerable<WorkflowTypeInfo> TypeInfos =>
             new PaginatedResultKeyResponse<ListWorkflowTypesResponse, WorkflowTypeInfo>(this, (i) => i.WorkflowTypeInfos.TypeInfos ?? new List<WorkflowTypeInfo>());
 
         internal ListWorkflowTypesPaginator(IAmazonSimpleWorkflow client, ListWorkflowTypesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SimpleWorkflow.Model
             do
             {
                 _request.NextPageToken = nextPageToken;
-                response = await _client.ListWorkflowTypesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWorkflowTypesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextPageToken = response.WorkflowTypeInfos.NextPageToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

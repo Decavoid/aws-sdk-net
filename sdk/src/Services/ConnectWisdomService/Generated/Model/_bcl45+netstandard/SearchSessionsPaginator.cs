@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ConnectWisdomService.Model
@@ -36,7 +37,7 @@ namespace Amazon.ConnectWisdomService.Model
         private readonly IAmazonConnectWisdomService _client;
         private readonly SearchSessionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ConnectWisdomService.Model
         /// <summary>
         /// Enumerable containing all of the SessionSummaries
         /// </summary>
-        public IPaginatedEnumerable<SessionSummary> SessionSummaries => 
+        public IPaginatedEnumerable<SessionSummary> SessionSummaries =>
             new PaginatedResultKeyResponse<SearchSessionsResponse, SessionSummary>(this, (i) => i.SessionSummaries ?? new List<SessionSummary>());
 
         internal SearchSessionsPaginator(IAmazonConnectWisdomService client, SearchSessionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ConnectWisdomService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchSessionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchSessionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

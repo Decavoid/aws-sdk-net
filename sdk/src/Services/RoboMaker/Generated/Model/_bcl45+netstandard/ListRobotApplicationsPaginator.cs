@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.RoboMaker.Model
@@ -36,7 +37,7 @@ namespace Amazon.RoboMaker.Model
         private readonly IAmazonRoboMaker _client;
         private readonly ListRobotApplicationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.RoboMaker.Model
         /// <summary>
         /// Enumerable containing all of the RobotApplicationSummaries
         /// </summary>
-        public IPaginatedEnumerable<RobotApplicationSummary> RobotApplicationSummaries => 
+        public IPaginatedEnumerable<RobotApplicationSummary> RobotApplicationSummaries =>
             new PaginatedResultKeyResponse<ListRobotApplicationsResponse, RobotApplicationSummary>(this, (i) => i.RobotApplicationSummaries ?? new List<RobotApplicationSummary>());
 
         internal ListRobotApplicationsPaginator(IAmazonRoboMaker client, ListRobotApplicationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.RoboMaker.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRobotApplicationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRobotApplicationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.LicenseManagerLinuxSubscriptions.Model
@@ -36,7 +37,7 @@ namespace Amazon.LicenseManagerLinuxSubscriptions.Model
         private readonly IAmazonLicenseManagerLinuxSubscriptions _client;
         private readonly ListRegisteredSubscriptionProvidersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.LicenseManagerLinuxSubscriptions.Model
         /// <summary>
         /// Enumerable containing all of the RegisteredSubscriptionProviders
         /// </summary>
-        public IPaginatedEnumerable<RegisteredSubscriptionProvider> RegisteredSubscriptionProviders => 
+        public IPaginatedEnumerable<RegisteredSubscriptionProvider> RegisteredSubscriptionProviders =>
             new PaginatedResultKeyResponse<ListRegisteredSubscriptionProvidersResponse, RegisteredSubscriptionProvider>(this, (i) => i.RegisteredSubscriptionProviders ?? new List<RegisteredSubscriptionProvider>());
 
         internal ListRegisteredSubscriptionProvidersPaginator(IAmazonLicenseManagerLinuxSubscriptions client, ListRegisteredSubscriptionProvidersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.LicenseManagerLinuxSubscriptions.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRegisteredSubscriptionProvidersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRegisteredSubscriptionProvidersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

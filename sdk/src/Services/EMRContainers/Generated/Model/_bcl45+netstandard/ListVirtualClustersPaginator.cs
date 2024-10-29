@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EMRContainers.Model
@@ -36,7 +37,7 @@ namespace Amazon.EMRContainers.Model
         private readonly IAmazonEMRContainers _client;
         private readonly ListVirtualClustersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EMRContainers.Model
         /// <summary>
         /// Enumerable containing all of the VirtualClusters
         /// </summary>
-        public IPaginatedEnumerable<VirtualCluster> VirtualClusters => 
+        public IPaginatedEnumerable<VirtualCluster> VirtualClusters =>
             new PaginatedResultKeyResponse<ListVirtualClustersResponse, VirtualCluster>(this, (i) => i.VirtualClusters ?? new List<VirtualCluster>());
 
         internal ListVirtualClustersPaginator(IAmazonEMRContainers client, ListVirtualClustersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EMRContainers.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListVirtualClustersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListVirtualClustersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

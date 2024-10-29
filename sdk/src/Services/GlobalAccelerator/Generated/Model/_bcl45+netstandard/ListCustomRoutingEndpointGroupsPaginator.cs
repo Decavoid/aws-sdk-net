@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GlobalAccelerator.Model
@@ -36,7 +37,7 @@ namespace Amazon.GlobalAccelerator.Model
         private readonly IAmazonGlobalAccelerator _client;
         private readonly ListCustomRoutingEndpointGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GlobalAccelerator.Model
         /// <summary>
         /// Enumerable containing all of the EndpointGroups
         /// </summary>
-        public IPaginatedEnumerable<CustomRoutingEndpointGroup> EndpointGroups => 
+        public IPaginatedEnumerable<CustomRoutingEndpointGroup> EndpointGroups =>
             new PaginatedResultKeyResponse<ListCustomRoutingEndpointGroupsResponse, CustomRoutingEndpointGroup>(this, (i) => i.EndpointGroups ?? new List<CustomRoutingEndpointGroup>());
 
         internal ListCustomRoutingEndpointGroupsPaginator(IAmazonGlobalAccelerator client, ListCustomRoutingEndpointGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GlobalAccelerator.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListCustomRoutingEndpointGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCustomRoutingEndpointGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GameLift.Model
@@ -36,7 +37,7 @@ namespace Amazon.GameLift.Model
         private readonly IAmazonGameLift _client;
         private readonly DescribeFleetUtilizationRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GameLift.Model
         /// <summary>
         /// Enumerable containing all of the FleetUtilization
         /// </summary>
-        public IPaginatedEnumerable<FleetUtilization> FleetUtilization => 
+        public IPaginatedEnumerable<FleetUtilization> FleetUtilization =>
             new PaginatedResultKeyResponse<DescribeFleetUtilizationResponse, FleetUtilization>(this, (i) => i.FleetUtilization ?? new List<FleetUtilization>());
 
         internal DescribeFleetUtilizationPaginator(IAmazonGameLift client, DescribeFleetUtilizationRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GameLift.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeFleetUtilizationAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeFleetUtilizationAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.KinesisVideo.Model
@@ -36,7 +37,7 @@ namespace Amazon.KinesisVideo.Model
         private readonly IAmazonKinesisVideo _client;
         private readonly ListEdgeAgentConfigurationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.KinesisVideo.Model
         /// <summary>
         /// Enumerable containing all of the EdgeConfigs
         /// </summary>
-        public IPaginatedEnumerable<ListEdgeAgentConfigurationsEdgeConfig> EdgeConfigs => 
+        public IPaginatedEnumerable<ListEdgeAgentConfigurationsEdgeConfig> EdgeConfigs =>
             new PaginatedResultKeyResponse<ListEdgeAgentConfigurationsResponse, ListEdgeAgentConfigurationsEdgeConfig>(this, (i) => i.EdgeConfigs ?? new List<ListEdgeAgentConfigurationsEdgeConfig>());
 
         internal ListEdgeAgentConfigurationsPaginator(IAmazonKinesisVideo client, ListEdgeAgentConfigurationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.KinesisVideo.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListEdgeAgentConfigurationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEdgeAgentConfigurationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

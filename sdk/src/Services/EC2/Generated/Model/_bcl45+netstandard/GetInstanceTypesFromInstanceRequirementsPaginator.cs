@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EC2.Model
@@ -36,7 +37,7 @@ namespace Amazon.EC2.Model
         private readonly IAmazonEC2 _client;
         private readonly GetInstanceTypesFromInstanceRequirementsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EC2.Model
         /// <summary>
         /// Enumerable containing all of the InstanceTypes
         /// </summary>
-        public IPaginatedEnumerable<InstanceTypeInfoFromInstanceRequirements> InstanceTypes => 
+        public IPaginatedEnumerable<InstanceTypeInfoFromInstanceRequirements> InstanceTypes =>
             new PaginatedResultKeyResponse<GetInstanceTypesFromInstanceRequirementsResponse, InstanceTypeInfoFromInstanceRequirements>(this, (i) => i.InstanceTypes ?? new List<InstanceTypeInfoFromInstanceRequirements>());
 
         internal GetInstanceTypesFromInstanceRequirementsPaginator(IAmazonEC2 client, GetInstanceTypesFromInstanceRequirementsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EC2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetInstanceTypesFromInstanceRequirementsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetInstanceTypesFromInstanceRequirementsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

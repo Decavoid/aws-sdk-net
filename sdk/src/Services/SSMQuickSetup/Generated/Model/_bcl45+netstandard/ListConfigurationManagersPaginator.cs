@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SSMQuickSetup.Model
@@ -36,7 +37,7 @@ namespace Amazon.SSMQuickSetup.Model
         private readonly IAmazonSSMQuickSetup _client;
         private readonly ListConfigurationManagersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SSMQuickSetup.Model
         /// <summary>
         /// Enumerable containing all of the ConfigurationManagersList
         /// </summary>
-        public IPaginatedEnumerable<ConfigurationManagerSummary> ConfigurationManagersList => 
+        public IPaginatedEnumerable<ConfigurationManagerSummary> ConfigurationManagersList =>
             new PaginatedResultKeyResponse<ListConfigurationManagersResponse, ConfigurationManagerSummary>(this, (i) => i.ConfigurationManagersList ?? new List<ConfigurationManagerSummary>());
 
         internal ListConfigurationManagersPaginator(IAmazonSSMQuickSetup client, ListConfigurationManagersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SSMQuickSetup.Model
             do
             {
                 _request.StartingToken = startingToken;
-                response = await _client.ListConfigurationManagersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListConfigurationManagersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 startingToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

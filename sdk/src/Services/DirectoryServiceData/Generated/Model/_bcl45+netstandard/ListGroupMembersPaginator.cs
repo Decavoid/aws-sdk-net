@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DirectoryServiceData.Model
@@ -36,7 +37,7 @@ namespace Amazon.DirectoryServiceData.Model
         private readonly IAmazonDirectoryServiceData _client;
         private readonly ListGroupMembersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DirectoryServiceData.Model
         /// <summary>
         /// Enumerable containing all of the Members
         /// </summary>
-        public IPaginatedEnumerable<Member> Members => 
+        public IPaginatedEnumerable<Member> Members =>
             new PaginatedResultKeyResponse<ListGroupMembersResponse, Member>(this, (i) => i.Members ?? new List<Member>());
 
         internal ListGroupMembersPaginator(IAmazonDirectoryServiceData client, ListGroupMembersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DirectoryServiceData.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListGroupMembersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListGroupMembersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

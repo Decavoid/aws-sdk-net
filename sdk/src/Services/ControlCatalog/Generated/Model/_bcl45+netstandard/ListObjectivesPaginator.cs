@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ControlCatalog.Model
@@ -36,7 +37,7 @@ namespace Amazon.ControlCatalog.Model
         private readonly IAmazonControlCatalog _client;
         private readonly ListObjectivesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ControlCatalog.Model
         /// <summary>
         /// Enumerable containing all of the Objectives
         /// </summary>
-        public IPaginatedEnumerable<ObjectiveSummary> Objectives => 
+        public IPaginatedEnumerable<ObjectiveSummary> Objectives =>
             new PaginatedResultKeyResponse<ListObjectivesResponse, ObjectiveSummary>(this, (i) => i.Objectives ?? new List<ObjectiveSummary>());
 
         internal ListObjectivesPaginator(IAmazonControlCatalog client, ListObjectivesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ControlCatalog.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListObjectivesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListObjectivesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

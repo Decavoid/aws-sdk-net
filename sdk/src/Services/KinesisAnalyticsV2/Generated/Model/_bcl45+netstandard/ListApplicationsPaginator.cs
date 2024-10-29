@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.KinesisAnalyticsV2.Model
@@ -36,7 +37,7 @@ namespace Amazon.KinesisAnalyticsV2.Model
         private readonly IAmazonKinesisAnalyticsV2 _client;
         private readonly ListApplicationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.KinesisAnalyticsV2.Model
         /// <summary>
         /// Enumerable containing all of the ApplicationSummaries
         /// </summary>
-        public IPaginatedEnumerable<ApplicationSummary> ApplicationSummaries => 
+        public IPaginatedEnumerable<ApplicationSummary> ApplicationSummaries =>
             new PaginatedResultKeyResponse<ListApplicationsResponse, ApplicationSummary>(this, (i) => i.ApplicationSummaries ?? new List<ApplicationSummary>());
 
         internal ListApplicationsPaginator(IAmazonKinesisAnalyticsV2 client, ListApplicationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.KinesisAnalyticsV2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListApplicationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListApplicationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

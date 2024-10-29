@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.NetworkMonitor.Model
@@ -36,7 +37,7 @@ namespace Amazon.NetworkMonitor.Model
         private readonly IAmazonNetworkMonitor _client;
         private readonly ListMonitorsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.NetworkMonitor.Model
         /// <summary>
         /// Enumerable containing all of the Monitors
         /// </summary>
-        public IPaginatedEnumerable<MonitorSummary> Monitors => 
+        public IPaginatedEnumerable<MonitorSummary> Monitors =>
             new PaginatedResultKeyResponse<ListMonitorsResponse, MonitorSummary>(this, (i) => i.Monitors ?? new List<MonitorSummary>());
 
         internal ListMonitorsPaginator(IAmazonNetworkMonitor client, ListMonitorsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.NetworkMonitor.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListMonitorsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListMonitorsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

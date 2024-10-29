@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Mgn.Model
@@ -36,7 +37,7 @@ namespace Amazon.Mgn.Model
         private readonly IAmazonMgn _client;
         private readonly ListExportsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Mgn.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<ExportTask> Items => 
+        public IPaginatedEnumerable<ExportTask> Items =>
             new PaginatedResultKeyResponse<ListExportsResponse, ExportTask>(this, (i) => i.Items ?? new List<ExportTask>());
 
         internal ListExportsPaginator(IAmazonMgn client, ListExportsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Mgn.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListExportsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListExportsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

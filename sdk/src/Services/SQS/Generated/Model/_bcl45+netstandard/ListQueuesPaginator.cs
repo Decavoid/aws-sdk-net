@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SQS.Model
@@ -36,7 +37,7 @@ namespace Amazon.SQS.Model
         private readonly IAmazonSQS _client;
         private readonly ListQueuesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SQS.Model
         /// <summary>
         /// Enumerable containing all of the QueueUrls
         /// </summary>
-        public IPaginatedEnumerable<string> QueueUrls => 
+        public IPaginatedEnumerable<string> QueueUrls =>
             new PaginatedResultKeyResponse<ListQueuesResponse, string>(this, (i) => i.QueueUrls ?? new List<string>());
 
         internal ListQueuesPaginator(IAmazonSQS client, ListQueuesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SQS.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListQueuesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListQueuesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

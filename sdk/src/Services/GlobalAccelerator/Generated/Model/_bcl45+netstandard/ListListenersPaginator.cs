@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GlobalAccelerator.Model
@@ -36,7 +37,7 @@ namespace Amazon.GlobalAccelerator.Model
         private readonly IAmazonGlobalAccelerator _client;
         private readonly ListListenersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GlobalAccelerator.Model
         /// <summary>
         /// Enumerable containing all of the Listeners
         /// </summary>
-        public IPaginatedEnumerable<Listener> Listeners => 
+        public IPaginatedEnumerable<Listener> Listeners =>
             new PaginatedResultKeyResponse<ListListenersResponse, Listener>(this, (i) => i.Listeners ?? new List<Listener>());
 
         internal ListListenersPaginator(IAmazonGlobalAccelerator client, ListListenersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GlobalAccelerator.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListListenersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListListenersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

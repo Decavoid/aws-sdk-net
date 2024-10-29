@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SimpleNotificationService.Model
@@ -36,7 +37,7 @@ namespace Amazon.SimpleNotificationService.Model
         private readonly IAmazonSimpleNotificationService _client;
         private readonly ListPhoneNumbersOptedOutRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SimpleNotificationService.Model
         /// <summary>
         /// Enumerable containing all of the PhoneNumbers
         /// </summary>
-        public IPaginatedEnumerable<string> PhoneNumbers => 
+        public IPaginatedEnumerable<string> PhoneNumbers =>
             new PaginatedResultKeyResponse<ListPhoneNumbersOptedOutResponse, string>(this, (i) => i.PhoneNumbers ?? new List<string>());
 
         internal ListPhoneNumbersOptedOutPaginator(IAmazonSimpleNotificationService client, ListPhoneNumbersOptedOutRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SimpleNotificationService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPhoneNumbersOptedOutAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPhoneNumbersOptedOutAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

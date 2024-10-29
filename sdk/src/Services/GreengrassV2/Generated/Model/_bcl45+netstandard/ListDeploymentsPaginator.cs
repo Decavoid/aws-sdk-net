@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GreengrassV2.Model
@@ -36,7 +37,7 @@ namespace Amazon.GreengrassV2.Model
         private readonly IAmazonGreengrassV2 _client;
         private readonly ListDeploymentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GreengrassV2.Model
         /// <summary>
         /// Enumerable containing all of the Deployments
         /// </summary>
-        public IPaginatedEnumerable<Deployment> Deployments => 
+        public IPaginatedEnumerable<Deployment> Deployments =>
             new PaginatedResultKeyResponse<ListDeploymentsResponse, Deployment>(this, (i) => i.Deployments ?? new List<Deployment>());
 
         internal ListDeploymentsPaginator(IAmazonGreengrassV2 client, ListDeploymentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GreengrassV2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDeploymentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDeploymentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

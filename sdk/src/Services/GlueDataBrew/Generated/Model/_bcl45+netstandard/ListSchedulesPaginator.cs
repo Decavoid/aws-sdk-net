@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GlueDataBrew.Model
@@ -36,7 +37,7 @@ namespace Amazon.GlueDataBrew.Model
         private readonly IAmazonGlueDataBrew _client;
         private readonly ListSchedulesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GlueDataBrew.Model
         /// <summary>
         /// Enumerable containing all of the Schedules
         /// </summary>
-        public IPaginatedEnumerable<Schedule> Schedules => 
+        public IPaginatedEnumerable<Schedule> Schedules =>
             new PaginatedResultKeyResponse<ListSchedulesResponse, Schedule>(this, (i) => i.Schedules ?? new List<Schedule>());
 
         internal ListSchedulesPaginator(IAmazonGlueDataBrew client, ListSchedulesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GlueDataBrew.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSchedulesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSchedulesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

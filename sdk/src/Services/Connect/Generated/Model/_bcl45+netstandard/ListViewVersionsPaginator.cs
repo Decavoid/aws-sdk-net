@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Connect.Model
@@ -36,7 +37,7 @@ namespace Amazon.Connect.Model
         private readonly IAmazonConnect _client;
         private readonly ListViewVersionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Connect.Model
         /// <summary>
         /// Enumerable containing all of the ViewVersionSummaryList
         /// </summary>
-        public IPaginatedEnumerable<ViewVersionSummary> ViewVersionSummaryList => 
+        public IPaginatedEnumerable<ViewVersionSummary> ViewVersionSummaryList =>
             new PaginatedResultKeyResponse<ListViewVersionsResponse, ViewVersionSummary>(this, (i) => i.ViewVersionSummaryList ?? new List<ViewVersionSummary>());
 
         internal ListViewVersionsPaginator(IAmazonConnect client, ListViewVersionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Connect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListViewVersionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListViewVersionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

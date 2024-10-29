@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SSMContacts.Model
@@ -36,7 +37,7 @@ namespace Amazon.SSMContacts.Model
         private readonly IAmazonSSMContacts _client;
         private readonly ListPageReceiptsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SSMContacts.Model
         /// <summary>
         /// Enumerable containing all of the Receipts
         /// </summary>
-        public IPaginatedEnumerable<Receipt> Receipts => 
+        public IPaginatedEnumerable<Receipt> Receipts =>
             new PaginatedResultKeyResponse<ListPageReceiptsResponse, Receipt>(this, (i) => i.Receipts ?? new List<Receipt>());
 
         internal ListPageReceiptsPaginator(IAmazonSSMContacts client, ListPageReceiptsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SSMContacts.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPageReceiptsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPageReceiptsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

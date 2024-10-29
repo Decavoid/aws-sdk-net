@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodeCommit.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodeCommit.Model
         private readonly IAmazonCodeCommit _client;
         private readonly ListBranchesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodeCommit.Model
         /// <summary>
         /// Enumerable containing all of the Branches
         /// </summary>
-        public IPaginatedEnumerable<string> Branches => 
+        public IPaginatedEnumerable<string> Branches =>
             new PaginatedResultKeyResponse<ListBranchesResponse, string>(this, (i) => i.Branches ?? new List<string>());
 
         internal ListBranchesPaginator(IAmazonCodeCommit client, ListBranchesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodeCommit.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListBranchesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListBranchesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MigrationHubStrategyRecommendations.Model
@@ -36,7 +37,7 @@ namespace Amazon.MigrationHubStrategyRecommendations.Model
         private readonly IAmazonMigrationHubStrategyRecommendations _client;
         private readonly ListApplicationComponentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MigrationHubStrategyRecommendations.Model
         /// <summary>
         /// Enumerable containing all of the ApplicationComponentInfos
         /// </summary>
-        public IPaginatedEnumerable<ApplicationComponentDetail> ApplicationComponentInfos => 
+        public IPaginatedEnumerable<ApplicationComponentDetail> ApplicationComponentInfos =>
             new PaginatedResultKeyResponse<ListApplicationComponentsResponse, ApplicationComponentDetail>(this, (i) => i.ApplicationComponentInfos ?? new List<ApplicationComponentDetail>());
 
         internal ListApplicationComponentsPaginator(IAmazonMigrationHubStrategyRecommendations client, ListApplicationComponentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MigrationHubStrategyRecommendations.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListApplicationComponentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListApplicationComponentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

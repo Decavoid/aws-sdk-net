@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Redshift.Model
@@ -36,7 +37,7 @@ namespace Amazon.Redshift.Model
         private readonly IAmazonRedshift _client;
         private readonly DescribeHsmClientCertificatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Redshift.Model
         /// <summary>
         /// Enumerable containing all of the HsmClientCertificates
         /// </summary>
-        public IPaginatedEnumerable<HsmClientCertificate> HsmClientCertificates => 
+        public IPaginatedEnumerable<HsmClientCertificate> HsmClientCertificates =>
             new PaginatedResultKeyResponse<DescribeHsmClientCertificatesResponse, HsmClientCertificate>(this, (i) => i.HsmClientCertificates ?? new List<HsmClientCertificate>());
 
         internal DescribeHsmClientCertificatesPaginator(IAmazonRedshift client, DescribeHsmClientCertificatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Redshift.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeHsmClientCertificatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeHsmClientCertificatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodePipeline.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodePipeline.Model
         private readonly IAmazonCodePipeline _client;
         private readonly ListActionExecutionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodePipeline.Model
         /// <summary>
         /// Enumerable containing all of the ActionExecutionDetails
         /// </summary>
-        public IPaginatedEnumerable<ActionExecutionDetail> ActionExecutionDetails => 
+        public IPaginatedEnumerable<ActionExecutionDetail> ActionExecutionDetails =>
             new PaginatedResultKeyResponse<ListActionExecutionsResponse, ActionExecutionDetail>(this, (i) => i.ActionExecutionDetails ?? new List<ActionExecutionDetail>());
 
         internal ListActionExecutionsPaginator(IAmazonCodePipeline client, ListActionExecutionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodePipeline.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListActionExecutionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListActionExecutionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

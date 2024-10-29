@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DocDB.Model
@@ -36,7 +37,7 @@ namespace Amazon.DocDB.Model
         private readonly IAmazonDocDB _client;
         private readonly DescribeCertificatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DocDB.Model
         /// <summary>
         /// Enumerable containing all of the Certificates
         /// </summary>
-        public IPaginatedEnumerable<Certificate> Certificates => 
+        public IPaginatedEnumerable<Certificate> Certificates =>
             new PaginatedResultKeyResponse<DescribeCertificatesResponse, Certificate>(this, (i) => i.Certificates ?? new List<Certificate>());
 
         internal DescribeCertificatesPaginator(IAmazonDocDB client, DescribeCertificatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DocDB.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeCertificatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeCertificatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

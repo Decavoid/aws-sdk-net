@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ManagedBlockchainQuery.Model
@@ -36,7 +37,7 @@ namespace Amazon.ManagedBlockchainQuery.Model
         private readonly IAmazonManagedBlockchainQuery _client;
         private readonly ListAssetContractsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ManagedBlockchainQuery.Model
         /// <summary>
         /// Enumerable containing all of the Contracts
         /// </summary>
-        public IPaginatedEnumerable<AssetContract> Contracts => 
+        public IPaginatedEnumerable<AssetContract> Contracts =>
             new PaginatedResultKeyResponse<ListAssetContractsResponse, AssetContract>(this, (i) => i.Contracts ?? new List<AssetContract>());
 
         internal ListAssetContractsPaginator(IAmazonManagedBlockchainQuery client, ListAssetContractsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ManagedBlockchainQuery.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAssetContractsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAssetContractsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

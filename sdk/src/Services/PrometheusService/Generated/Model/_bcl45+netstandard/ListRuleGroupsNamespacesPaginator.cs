@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.PrometheusService.Model
@@ -36,7 +37,7 @@ namespace Amazon.PrometheusService.Model
         private readonly IAmazonPrometheusService _client;
         private readonly ListRuleGroupsNamespacesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.PrometheusService.Model
         /// <summary>
         /// Enumerable containing all of the RuleGroupsNamespaces
         /// </summary>
-        public IPaginatedEnumerable<RuleGroupsNamespaceSummary> RuleGroupsNamespaces => 
+        public IPaginatedEnumerable<RuleGroupsNamespaceSummary> RuleGroupsNamespaces =>
             new PaginatedResultKeyResponse<ListRuleGroupsNamespacesResponse, RuleGroupsNamespaceSummary>(this, (i) => i.RuleGroupsNamespaces ?? new List<RuleGroupsNamespaceSummary>());
 
         internal ListRuleGroupsNamespacesPaginator(IAmazonPrometheusService client, ListRuleGroupsNamespacesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.PrometheusService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRuleGroupsNamespacesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRuleGroupsNamespacesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

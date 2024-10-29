@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ServiceQuotas.Model
@@ -36,7 +37,7 @@ namespace Amazon.ServiceQuotas.Model
         private readonly IAmazonServiceQuotas _client;
         private readonly ListServiceQuotasRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ServiceQuotas.Model
         /// <summary>
         /// Enumerable containing all of the Quotas
         /// </summary>
-        public IPaginatedEnumerable<ServiceQuota> Quotas => 
+        public IPaginatedEnumerable<ServiceQuota> Quotas =>
             new PaginatedResultKeyResponse<ListServiceQuotasResponse, ServiceQuota>(this, (i) => i.Quotas ?? new List<ServiceQuota>());
 
         internal ListServiceQuotasPaginator(IAmazonServiceQuotas client, ListServiceQuotasRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ServiceQuotas.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListServiceQuotasAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListServiceQuotasAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

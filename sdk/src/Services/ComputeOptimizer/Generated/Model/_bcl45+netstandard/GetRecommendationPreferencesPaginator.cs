@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ComputeOptimizer.Model
@@ -36,7 +37,7 @@ namespace Amazon.ComputeOptimizer.Model
         private readonly IAmazonComputeOptimizer _client;
         private readonly GetRecommendationPreferencesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ComputeOptimizer.Model
         /// <summary>
         /// Enumerable containing all of the RecommendationPreferencesDetails
         /// </summary>
-        public IPaginatedEnumerable<RecommendationPreferencesDetail> RecommendationPreferencesDetails => 
+        public IPaginatedEnumerable<RecommendationPreferencesDetail> RecommendationPreferencesDetails =>
             new PaginatedResultKeyResponse<GetRecommendationPreferencesResponse, RecommendationPreferencesDetail>(this, (i) => i.RecommendationPreferencesDetails ?? new List<RecommendationPreferencesDetail>());
 
         internal GetRecommendationPreferencesPaginator(IAmazonComputeOptimizer client, GetRecommendationPreferencesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ComputeOptimizer.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetRecommendationPreferencesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetRecommendationPreferencesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

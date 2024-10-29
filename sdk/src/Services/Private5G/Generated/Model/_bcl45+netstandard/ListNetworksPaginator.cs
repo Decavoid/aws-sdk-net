@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Private5G.Model
@@ -36,7 +37,7 @@ namespace Amazon.Private5G.Model
         private readonly IAmazonPrivate5G _client;
         private readonly ListNetworksRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Private5G.Model
         /// <summary>
         /// Enumerable containing all of the Networks
         /// </summary>
-        public IPaginatedEnumerable<Network> Networks => 
+        public IPaginatedEnumerable<Network> Networks =>
             new PaginatedResultKeyResponse<ListNetworksResponse, Network>(this, (i) => i.Networks ?? new List<Network>());
 
         internal ListNetworksPaginator(IAmazonPrivate5G client, ListNetworksRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Private5G.Model
             do
             {
                 _request.StartToken = startToken;
-                response = await _client.ListNetworksAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListNetworksAsync(_request, cancellationToken).ConfigureAwaitEx();
                 startToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

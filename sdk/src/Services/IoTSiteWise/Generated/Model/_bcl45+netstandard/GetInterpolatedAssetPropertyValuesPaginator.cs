@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoTSiteWise.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoTSiteWise.Model
         private readonly IAmazonIoTSiteWise _client;
         private readonly GetInterpolatedAssetPropertyValuesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoTSiteWise.Model
         /// <summary>
         /// Enumerable containing all of the InterpolatedAssetPropertyValues
         /// </summary>
-        public IPaginatedEnumerable<InterpolatedAssetPropertyValue> InterpolatedAssetPropertyValues => 
+        public IPaginatedEnumerable<InterpolatedAssetPropertyValue> InterpolatedAssetPropertyValues =>
             new PaginatedResultKeyResponse<GetInterpolatedAssetPropertyValuesResponse, InterpolatedAssetPropertyValue>(this, (i) => i.InterpolatedAssetPropertyValues ?? new List<InterpolatedAssetPropertyValue>());
 
         internal GetInterpolatedAssetPropertyValuesPaginator(IAmazonIoTSiteWise client, GetInterpolatedAssetPropertyValuesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoTSiteWise.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetInterpolatedAssetPropertyValuesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetInterpolatedAssetPropertyValuesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

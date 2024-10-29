@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AppIntegrationsService.Model
@@ -36,7 +37,7 @@ namespace Amazon.AppIntegrationsService.Model
         private readonly IAmazonAppIntegrationsService _client;
         private readonly ListDataIntegrationAssociationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AppIntegrationsService.Model
         /// <summary>
         /// Enumerable containing all of the DataIntegrationAssociations
         /// </summary>
-        public IPaginatedEnumerable<DataIntegrationAssociationSummary> DataIntegrationAssociations => 
+        public IPaginatedEnumerable<DataIntegrationAssociationSummary> DataIntegrationAssociations =>
             new PaginatedResultKeyResponse<ListDataIntegrationAssociationsResponse, DataIntegrationAssociationSummary>(this, (i) => i.DataIntegrationAssociations ?? new List<DataIntegrationAssociationSummary>());
 
         internal ListDataIntegrationAssociationsPaginator(IAmazonAppIntegrationsService client, ListDataIntegrationAssociationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AppIntegrationsService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDataIntegrationAssociationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDataIntegrationAssociationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

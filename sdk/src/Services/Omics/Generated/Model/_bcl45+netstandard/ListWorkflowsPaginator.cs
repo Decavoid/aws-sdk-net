@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Omics.Model
@@ -36,7 +37,7 @@ namespace Amazon.Omics.Model
         private readonly IAmazonOmics _client;
         private readonly ListWorkflowsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Omics.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<WorkflowListItem> Items => 
+        public IPaginatedEnumerable<WorkflowListItem> Items =>
             new PaginatedResultKeyResponse<ListWorkflowsResponse, WorkflowListItem>(this, (i) => i.Items ?? new List<WorkflowListItem>());
 
         internal ListWorkflowsPaginator(IAmazonOmics client, ListWorkflowsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Omics.Model
             do
             {
                 _request.StartingToken = startingToken;
-                response = await _client.ListWorkflowsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWorkflowsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 startingToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudFormation.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudFormation.Model
         private readonly IAmazonCloudFormation _client;
         private readonly DescribeAccountLimitsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudFormation.Model
         /// <summary>
         /// Enumerable containing all of the AccountLimits
         /// </summary>
-        public IPaginatedEnumerable<AccountLimit> AccountLimits => 
+        public IPaginatedEnumerable<AccountLimit> AccountLimits =>
             new PaginatedResultKeyResponse<DescribeAccountLimitsResponse, AccountLimit>(this, (i) => i.AccountLimits ?? new List<AccountLimit>());
 
         internal DescribeAccountLimitsPaginator(IAmazonCloudFormation client, DescribeAccountLimitsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudFormation.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeAccountLimitsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeAccountLimitsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

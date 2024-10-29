@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.NimbleStudio.Model
@@ -36,7 +37,7 @@ namespace Amazon.NimbleStudio.Model
         private readonly IAmazonNimbleStudio _client;
         private readonly ListStreamingImagesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.NimbleStudio.Model
         /// <summary>
         /// Enumerable containing all of the StreamingImages
         /// </summary>
-        public IPaginatedEnumerable<StreamingImage> StreamingImages => 
+        public IPaginatedEnumerable<StreamingImage> StreamingImages =>
             new PaginatedResultKeyResponse<ListStreamingImagesResponse, StreamingImage>(this, (i) => i.StreamingImages ?? new List<StreamingImage>());
 
         internal ListStreamingImagesPaginator(IAmazonNimbleStudio client, ListStreamingImagesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.NimbleStudio.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListStreamingImagesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListStreamingImagesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

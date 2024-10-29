@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ConfigService.Model
@@ -36,7 +37,7 @@ namespace Amazon.ConfigService.Model
         private readonly IAmazonConfigService _client;
         private readonly GetOrganizationConfigRuleDetailedStatusRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ConfigService.Model
         /// <summary>
         /// Enumerable containing all of the OrganizationConfigRuleDetailedStatus
         /// </summary>
-        public IPaginatedEnumerable<MemberAccountStatus> OrganizationConfigRuleDetailedStatus => 
+        public IPaginatedEnumerable<MemberAccountStatus> OrganizationConfigRuleDetailedStatus =>
             new PaginatedResultKeyResponse<GetOrganizationConfigRuleDetailedStatusResponse, MemberAccountStatus>(this, (i) => i.OrganizationConfigRuleDetailedStatus ?? new List<MemberAccountStatus>());
 
         internal GetOrganizationConfigRuleDetailedStatusPaginator(IAmazonConfigService client, GetOrganizationConfigRuleDetailedStatusRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ConfigService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetOrganizationConfigRuleDetailedStatusAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetOrganizationConfigRuleDetailedStatusAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

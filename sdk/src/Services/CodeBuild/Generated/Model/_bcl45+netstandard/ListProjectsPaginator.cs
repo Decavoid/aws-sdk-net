@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodeBuild.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodeBuild.Model
         private readonly IAmazonCodeBuild _client;
         private readonly ListProjectsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodeBuild.Model
         /// <summary>
         /// Enumerable containing all of the Projects
         /// </summary>
-        public IPaginatedEnumerable<string> Projects => 
+        public IPaginatedEnumerable<string> Projects =>
             new PaginatedResultKeyResponse<ListProjectsResponse, string>(this, (i) => i.Projects ?? new List<string>());
 
         internal ListProjectsPaginator(IAmazonCodeBuild client, ListProjectsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodeBuild.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListProjectsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListProjectsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

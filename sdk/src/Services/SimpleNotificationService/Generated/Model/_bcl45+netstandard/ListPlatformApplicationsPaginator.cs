@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SimpleNotificationService.Model
@@ -36,7 +37,7 @@ namespace Amazon.SimpleNotificationService.Model
         private readonly IAmazonSimpleNotificationService _client;
         private readonly ListPlatformApplicationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SimpleNotificationService.Model
         /// <summary>
         /// Enumerable containing all of the PlatformApplications
         /// </summary>
-        public IPaginatedEnumerable<PlatformApplication> PlatformApplications => 
+        public IPaginatedEnumerable<PlatformApplication> PlatformApplications =>
             new PaginatedResultKeyResponse<ListPlatformApplicationsResponse, PlatformApplication>(this, (i) => i.PlatformApplications ?? new List<PlatformApplication>());
 
         internal ListPlatformApplicationsPaginator(IAmazonSimpleNotificationService client, ListPlatformApplicationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SimpleNotificationService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPlatformApplicationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPlatformApplicationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

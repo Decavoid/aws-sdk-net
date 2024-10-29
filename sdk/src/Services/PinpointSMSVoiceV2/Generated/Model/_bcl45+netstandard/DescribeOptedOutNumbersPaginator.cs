@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.PinpointSMSVoiceV2.Model
@@ -36,7 +37,7 @@ namespace Amazon.PinpointSMSVoiceV2.Model
         private readonly IAmazonPinpointSMSVoiceV2 _client;
         private readonly DescribeOptedOutNumbersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.PinpointSMSVoiceV2.Model
         /// <summary>
         /// Enumerable containing all of the OptedOutNumbers
         /// </summary>
-        public IPaginatedEnumerable<OptedOutNumberInformation> OptedOutNumbers => 
+        public IPaginatedEnumerable<OptedOutNumberInformation> OptedOutNumbers =>
             new PaginatedResultKeyResponse<DescribeOptedOutNumbersResponse, OptedOutNumberInformation>(this, (i) => i.OptedOutNumbers ?? new List<OptedOutNumberInformation>());
 
         internal DescribeOptedOutNumbersPaginator(IAmazonPinpointSMSVoiceV2 client, DescribeOptedOutNumbersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.PinpointSMSVoiceV2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeOptedOutNumbersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeOptedOutNumbersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

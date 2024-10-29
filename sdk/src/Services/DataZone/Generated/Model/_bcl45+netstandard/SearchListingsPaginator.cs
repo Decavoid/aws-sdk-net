@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DataZone.Model
@@ -36,7 +37,7 @@ namespace Amazon.DataZone.Model
         private readonly IAmazonDataZone _client;
         private readonly SearchListingsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DataZone.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<SearchResultItem> Items => 
+        public IPaginatedEnumerable<SearchResultItem> Items =>
             new PaginatedResultKeyResponse<SearchListingsResponse, SearchResultItem>(this, (i) => i.Items ?? new List<SearchResultItem>());
 
         internal SearchListingsPaginator(IAmazonDataZone client, SearchListingsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DataZone.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchListingsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchListingsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

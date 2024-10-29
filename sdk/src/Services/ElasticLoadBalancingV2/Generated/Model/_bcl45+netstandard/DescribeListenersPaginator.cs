@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElasticLoadBalancingV2.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElasticLoadBalancingV2.Model
         private readonly IAmazonElasticLoadBalancingV2 _client;
         private readonly DescribeListenersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElasticLoadBalancingV2.Model
         /// <summary>
         /// Enumerable containing all of the Listeners
         /// </summary>
-        public IPaginatedEnumerable<Listener> Listeners => 
+        public IPaginatedEnumerable<Listener> Listeners =>
             new PaginatedResultKeyResponse<DescribeListenersResponse, Listener>(this, (i) => i.Listeners ?? new List<Listener>());
 
         internal DescribeListenersPaginator(IAmazonElasticLoadBalancingV2 client, DescribeListenersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElasticLoadBalancingV2.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeListenersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeListenersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

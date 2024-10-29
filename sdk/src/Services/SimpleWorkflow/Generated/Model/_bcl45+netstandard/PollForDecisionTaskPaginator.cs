@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SimpleWorkflow.Model
@@ -36,7 +37,7 @@ namespace Amazon.SimpleWorkflow.Model
         private readonly IAmazonSimpleWorkflow _client;
         private readonly PollForDecisionTaskRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SimpleWorkflow.Model
         /// <summary>
         /// Enumerable containing all of the Events
         /// </summary>
-        public IPaginatedEnumerable<HistoryEvent> Events => 
+        public IPaginatedEnumerable<HistoryEvent> Events =>
             new PaginatedResultKeyResponse<PollForDecisionTaskResponse, HistoryEvent>(this, (i) => i.DecisionTask.Events ?? new List<HistoryEvent>());
 
         internal PollForDecisionTaskPaginator(IAmazonSimpleWorkflow client, PollForDecisionTaskRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SimpleWorkflow.Model
             do
             {
                 _request.NextPageToken = nextPageToken;
-                response = await _client.PollForDecisionTaskAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.PollForDecisionTaskAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextPageToken = response.DecisionTask.NextPageToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

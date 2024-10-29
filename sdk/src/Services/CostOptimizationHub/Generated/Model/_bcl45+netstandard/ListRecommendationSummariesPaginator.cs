@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CostOptimizationHub.Model
@@ -36,7 +37,7 @@ namespace Amazon.CostOptimizationHub.Model
         private readonly IAmazonCostOptimizationHub _client;
         private readonly ListRecommendationSummariesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CostOptimizationHub.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<RecommendationSummary> Items => 
+        public IPaginatedEnumerable<RecommendationSummary> Items =>
             new PaginatedResultKeyResponse<ListRecommendationSummariesResponse, RecommendationSummary>(this, (i) => i.Items ?? new List<RecommendationSummary>());
 
         internal ListRecommendationSummariesPaginator(IAmazonCostOptimizationHub client, ListRecommendationSummariesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CostOptimizationHub.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRecommendationSummariesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRecommendationSummariesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Tnb.Model
@@ -36,7 +37,7 @@ namespace Amazon.Tnb.Model
         private readonly IAmazonTnb _client;
         private readonly ListSolNetworkPackagesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Tnb.Model
         /// <summary>
         /// Enumerable containing all of the NetworkPackages
         /// </summary>
-        public IPaginatedEnumerable<ListSolNetworkPackageInfo> NetworkPackages => 
+        public IPaginatedEnumerable<ListSolNetworkPackageInfo> NetworkPackages =>
             new PaginatedResultKeyResponse<ListSolNetworkPackagesResponse, ListSolNetworkPackageInfo>(this, (i) => i.NetworkPackages ?? new List<ListSolNetworkPackageInfo>());
 
         internal ListSolNetworkPackagesPaginator(IAmazonTnb client, ListSolNetworkPackagesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Tnb.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSolNetworkPackagesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSolNetworkPackagesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

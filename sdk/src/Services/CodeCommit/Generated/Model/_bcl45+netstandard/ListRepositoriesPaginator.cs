@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodeCommit.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodeCommit.Model
         private readonly IAmazonCodeCommit _client;
         private readonly ListRepositoriesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodeCommit.Model
         /// <summary>
         /// Enumerable containing all of the Repositories
         /// </summary>
-        public IPaginatedEnumerable<RepositoryNameIdPair> Repositories => 
+        public IPaginatedEnumerable<RepositoryNameIdPair> Repositories =>
             new PaginatedResultKeyResponse<ListRepositoriesResponse, RepositoryNameIdPair>(this, (i) => i.Repositories ?? new List<RepositoryNameIdPair>());
 
         internal ListRepositoriesPaginator(IAmazonCodeCommit client, ListRepositoriesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodeCommit.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRepositoriesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRepositoriesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

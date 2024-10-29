@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DevOpsGuru.Model
@@ -36,7 +37,7 @@ namespace Amazon.DevOpsGuru.Model
         private readonly IAmazonDevOpsGuru _client;
         private readonly ListNotificationChannelsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DevOpsGuru.Model
         /// <summary>
         /// Enumerable containing all of the Channels
         /// </summary>
-        public IPaginatedEnumerable<NotificationChannel> Channels => 
+        public IPaginatedEnumerable<NotificationChannel> Channels =>
             new PaginatedResultKeyResponse<ListNotificationChannelsResponse, NotificationChannel>(this, (i) => i.Channels ?? new List<NotificationChannel>());
 
         internal ListNotificationChannelsPaginator(IAmazonDevOpsGuru client, ListNotificationChannelsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DevOpsGuru.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListNotificationChannelsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListNotificationChannelsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

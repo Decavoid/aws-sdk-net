@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.TrustedAdvisor.Model
@@ -36,7 +37,7 @@ namespace Amazon.TrustedAdvisor.Model
         private readonly IAmazonTrustedAdvisor _client;
         private readonly ListChecksRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.TrustedAdvisor.Model
         /// <summary>
         /// Enumerable containing all of the CheckSummaries
         /// </summary>
-        public IPaginatedEnumerable<CheckSummary> CheckSummaries => 
+        public IPaginatedEnumerable<CheckSummary> CheckSummaries =>
             new PaginatedResultKeyResponse<ListChecksResponse, CheckSummary>(this, (i) => i.CheckSummaries ?? new List<CheckSummary>());
 
         internal ListChecksPaginator(IAmazonTrustedAdvisor client, ListChecksRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.TrustedAdvisor.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListChecksAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListChecksAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

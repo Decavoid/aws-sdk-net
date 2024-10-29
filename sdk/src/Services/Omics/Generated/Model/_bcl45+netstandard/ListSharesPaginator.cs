@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Omics.Model
@@ -36,7 +37,7 @@ namespace Amazon.Omics.Model
         private readonly IAmazonOmics _client;
         private readonly ListSharesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Omics.Model
         /// <summary>
         /// Enumerable containing all of the Shares
         /// </summary>
-        public IPaginatedEnumerable<ShareDetails> Shares => 
+        public IPaginatedEnumerable<ShareDetails> Shares =>
             new PaginatedResultKeyResponse<ListSharesResponse, ShareDetails>(this, (i) => i.Shares ?? new List<ShareDetails>());
 
         internal ListSharesPaginator(IAmazonOmics client, ListSharesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Omics.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSharesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSharesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.QBusiness.Model
@@ -36,7 +37,7 @@ namespace Amazon.QBusiness.Model
         private readonly IAmazonQBusiness _client;
         private readonly ListDataSourcesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.QBusiness.Model
         /// <summary>
         /// Enumerable containing all of the DataSources
         /// </summary>
-        public IPaginatedEnumerable<DataSource> DataSources => 
+        public IPaginatedEnumerable<DataSource> DataSources =>
             new PaginatedResultKeyResponse<ListDataSourcesResponse, DataSource>(this, (i) => i.DataSources ?? new List<DataSource>());
 
         internal ListDataSourcesPaginator(IAmazonQBusiness client, ListDataSourcesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.QBusiness.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDataSourcesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDataSourcesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

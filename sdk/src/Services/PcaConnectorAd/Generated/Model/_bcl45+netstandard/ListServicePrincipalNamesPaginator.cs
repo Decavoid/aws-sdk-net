@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.PcaConnectorAd.Model
@@ -36,7 +37,7 @@ namespace Amazon.PcaConnectorAd.Model
         private readonly IAmazonPcaConnectorAd _client;
         private readonly ListServicePrincipalNamesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.PcaConnectorAd.Model
         /// <summary>
         /// Enumerable containing all of the ServicePrincipalNames
         /// </summary>
-        public IPaginatedEnumerable<ServicePrincipalNameSummary> ServicePrincipalNames => 
+        public IPaginatedEnumerable<ServicePrincipalNameSummary> ServicePrincipalNames =>
             new PaginatedResultKeyResponse<ListServicePrincipalNamesResponse, ServicePrincipalNameSummary>(this, (i) => i.ServicePrincipalNames ?? new List<ServicePrincipalNameSummary>());
 
         internal ListServicePrincipalNamesPaginator(IAmazonPcaConnectorAd client, ListServicePrincipalNamesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.PcaConnectorAd.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListServicePrincipalNamesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListServicePrincipalNamesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

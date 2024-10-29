@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Drs.Model
@@ -36,7 +37,7 @@ namespace Amazon.Drs.Model
         private readonly IAmazonDrs _client;
         private readonly DescribeSourceNetworksRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Drs.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<SourceNetwork> Items => 
+        public IPaginatedEnumerable<SourceNetwork> Items =>
             new PaginatedResultKeyResponse<DescribeSourceNetworksResponse, SourceNetwork>(this, (i) => i.Items ?? new List<SourceNetwork>());
 
         internal DescribeSourceNetworksPaginator(IAmazonDrs client, DescribeSourceNetworksRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Drs.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeSourceNetworksAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeSourceNetworksAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

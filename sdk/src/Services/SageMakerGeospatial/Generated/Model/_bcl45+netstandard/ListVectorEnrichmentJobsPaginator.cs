@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SageMakerGeospatial.Model
@@ -36,7 +37,7 @@ namespace Amazon.SageMakerGeospatial.Model
         private readonly IAmazonSageMakerGeospatial _client;
         private readonly ListVectorEnrichmentJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SageMakerGeospatial.Model
         /// <summary>
         /// Enumerable containing all of the VectorEnrichmentJobSummaries
         /// </summary>
-        public IPaginatedEnumerable<ListVectorEnrichmentJobOutputConfig> VectorEnrichmentJobSummaries => 
+        public IPaginatedEnumerable<ListVectorEnrichmentJobOutputConfig> VectorEnrichmentJobSummaries =>
             new PaginatedResultKeyResponse<ListVectorEnrichmentJobsResponse, ListVectorEnrichmentJobOutputConfig>(this, (i) => i.VectorEnrichmentJobSummaries ?? new List<ListVectorEnrichmentJobOutputConfig>());
 
         internal ListVectorEnrichmentJobsPaginator(IAmazonSageMakerGeospatial client, ListVectorEnrichmentJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SageMakerGeospatial.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListVectorEnrichmentJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListVectorEnrichmentJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MigrationHubConfig.Model
@@ -36,7 +37,7 @@ namespace Amazon.MigrationHubConfig.Model
         private readonly IAmazonMigrationHubConfig _client;
         private readonly DescribeHomeRegionControlsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -80,7 +81,7 @@ namespace Amazon.MigrationHubConfig.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeHomeRegionControlsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeHomeRegionControlsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

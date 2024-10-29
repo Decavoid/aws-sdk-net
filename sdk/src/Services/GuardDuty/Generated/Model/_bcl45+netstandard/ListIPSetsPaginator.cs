@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GuardDuty.Model
@@ -36,7 +37,7 @@ namespace Amazon.GuardDuty.Model
         private readonly IAmazonGuardDuty _client;
         private readonly ListIPSetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GuardDuty.Model
         /// <summary>
         /// Enumerable containing all of the IpSetIds
         /// </summary>
-        public IPaginatedEnumerable<string> IpSetIds => 
+        public IPaginatedEnumerable<string> IpSetIds =>
             new PaginatedResultKeyResponse<ListIPSetsResponse, string>(this, (i) => i.IpSetIds ?? new List<string>());
 
         internal ListIPSetsPaginator(IAmazonGuardDuty client, ListIPSetsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GuardDuty.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListIPSetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListIPSetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

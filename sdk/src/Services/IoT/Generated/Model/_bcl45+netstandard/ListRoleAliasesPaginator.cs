@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoT.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoT.Model
         private readonly IAmazonIoT _client;
         private readonly ListRoleAliasesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoT.Model
         /// <summary>
         /// Enumerable containing all of the RoleAliases
         /// </summary>
-        public IPaginatedEnumerable<string> RoleAliases => 
+        public IPaginatedEnumerable<string> RoleAliases =>
             new PaginatedResultKeyResponse<ListRoleAliasesResponse, string>(this, (i) => i.RoleAliases ?? new List<string>());
 
         internal ListRoleAliasesPaginator(IAmazonIoT client, ListRoleAliasesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoT.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListRoleAliasesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRoleAliasesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

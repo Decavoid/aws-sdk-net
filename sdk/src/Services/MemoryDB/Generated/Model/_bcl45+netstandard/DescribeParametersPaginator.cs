@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MemoryDB.Model
@@ -36,7 +37,7 @@ namespace Amazon.MemoryDB.Model
         private readonly IAmazonMemoryDB _client;
         private readonly DescribeParametersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MemoryDB.Model
         /// <summary>
         /// Enumerable containing all of the Parameters
         /// </summary>
-        public IPaginatedEnumerable<Parameter> Parameters => 
+        public IPaginatedEnumerable<Parameter> Parameters =>
             new PaginatedResultKeyResponse<DescribeParametersResponse, Parameter>(this, (i) => i.Parameters ?? new List<Parameter>());
 
         internal DescribeParametersPaginator(IAmazonMemoryDB client, DescribeParametersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MemoryDB.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeParametersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeParametersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

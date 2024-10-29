@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoT.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoT.Model
         private readonly IAmazonIoT _client;
         private readonly ListOutgoingCertificatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoT.Model
         /// <summary>
         /// Enumerable containing all of the OutgoingCertificates
         /// </summary>
-        public IPaginatedEnumerable<OutgoingCertificate> OutgoingCertificates => 
+        public IPaginatedEnumerable<OutgoingCertificate> OutgoingCertificates =>
             new PaginatedResultKeyResponse<ListOutgoingCertificatesResponse, OutgoingCertificate>(this, (i) => i.OutgoingCertificates ?? new List<OutgoingCertificate>());
 
         internal ListOutgoingCertificatesPaginator(IAmazonIoT client, ListOutgoingCertificatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoT.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListOutgoingCertificatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListOutgoingCertificatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

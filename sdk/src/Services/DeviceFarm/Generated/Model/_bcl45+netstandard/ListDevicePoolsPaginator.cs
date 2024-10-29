@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DeviceFarm.Model
@@ -36,7 +37,7 @@ namespace Amazon.DeviceFarm.Model
         private readonly IAmazonDeviceFarm _client;
         private readonly ListDevicePoolsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DeviceFarm.Model
         /// <summary>
         /// Enumerable containing all of the DevicePools
         /// </summary>
-        public IPaginatedEnumerable<DevicePool> DevicePools => 
+        public IPaginatedEnumerable<DevicePool> DevicePools =>
             new PaginatedResultKeyResponse<ListDevicePoolsResponse, DevicePool>(this, (i) => i.DevicePools ?? new List<DevicePool>());
 
         internal ListDevicePoolsPaginator(IAmazonDeviceFarm client, ListDevicePoolsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DeviceFarm.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDevicePoolsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDevicePoolsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

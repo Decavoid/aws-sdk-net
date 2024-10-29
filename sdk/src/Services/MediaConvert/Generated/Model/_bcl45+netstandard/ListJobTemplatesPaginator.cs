@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MediaConvert.Model
@@ -36,7 +37,7 @@ namespace Amazon.MediaConvert.Model
         private readonly IAmazonMediaConvert _client;
         private readonly ListJobTemplatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MediaConvert.Model
         /// <summary>
         /// Enumerable containing all of the JobTemplates
         /// </summary>
-        public IPaginatedEnumerable<JobTemplate> JobTemplates => 
+        public IPaginatedEnumerable<JobTemplate> JobTemplates =>
             new PaginatedResultKeyResponse<ListJobTemplatesResponse, JobTemplate>(this, (i) => i.JobTemplates ?? new List<JobTemplate>());
 
         internal ListJobTemplatesPaginator(IAmazonMediaConvert client, ListJobTemplatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MediaConvert.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListJobTemplatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListJobTemplatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Neptune.Model
@@ -36,7 +37,7 @@ namespace Amazon.Neptune.Model
         private readonly IAmazonNeptune _client;
         private readonly DescribeDBParameterGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Neptune.Model
         /// <summary>
         /// Enumerable containing all of the DBParameterGroups
         /// </summary>
-        public IPaginatedEnumerable<DBParameterGroup> DBParameterGroups => 
+        public IPaginatedEnumerable<DBParameterGroup> DBParameterGroups =>
             new PaginatedResultKeyResponse<DescribeDBParameterGroupsResponse, DBParameterGroup>(this, (i) => i.DBParameterGroups ?? new List<DBParameterGroup>());
 
         internal DescribeDBParameterGroupsPaginator(IAmazonNeptune client, DescribeDBParameterGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Neptune.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeDBParameterGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeDBParameterGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

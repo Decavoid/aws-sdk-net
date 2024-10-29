@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IdentityManagement.Model
@@ -36,7 +37,7 @@ namespace Amazon.IdentityManagement.Model
         private readonly IAmazonIdentityManagementService _client;
         private readonly ListAttachedGroupPoliciesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IdentityManagement.Model
         /// <summary>
         /// Enumerable containing all of the AttachedPolicies
         /// </summary>
-        public IPaginatedEnumerable<AttachedPolicyType> AttachedPolicies => 
+        public IPaginatedEnumerable<AttachedPolicyType> AttachedPolicies =>
             new PaginatedResultKeyResponse<ListAttachedGroupPoliciesResponse, AttachedPolicyType>(this, (i) => i.AttachedPolicies ?? new List<AttachedPolicyType>());
 
         internal ListAttachedGroupPoliciesPaginator(IAmazonIdentityManagementService client, ListAttachedGroupPoliciesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IdentityManagement.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListAttachedGroupPoliciesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAttachedGroupPoliciesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

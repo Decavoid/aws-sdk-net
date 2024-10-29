@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.NetworkManager.Model
@@ -36,7 +37,7 @@ namespace Amazon.NetworkManager.Model
         private readonly IAmazonNetworkManager _client;
         private readonly ListConnectPeersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.NetworkManager.Model
         /// <summary>
         /// Enumerable containing all of the ConnectPeers
         /// </summary>
-        public IPaginatedEnumerable<ConnectPeerSummary> ConnectPeers => 
+        public IPaginatedEnumerable<ConnectPeerSummary> ConnectPeers =>
             new PaginatedResultKeyResponse<ListConnectPeersResponse, ConnectPeerSummary>(this, (i) => i.ConnectPeers ?? new List<ConnectPeerSummary>());
 
         internal ListConnectPeersPaginator(IAmazonNetworkManager client, ListConnectPeersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.NetworkManager.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListConnectPeersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListConnectPeersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

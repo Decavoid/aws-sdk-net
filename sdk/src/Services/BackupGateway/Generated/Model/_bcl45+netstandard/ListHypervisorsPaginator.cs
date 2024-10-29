@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.BackupGateway.Model
@@ -36,7 +37,7 @@ namespace Amazon.BackupGateway.Model
         private readonly IAmazonBackupGateway _client;
         private readonly ListHypervisorsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.BackupGateway.Model
         /// <summary>
         /// Enumerable containing all of the Hypervisors
         /// </summary>
-        public IPaginatedEnumerable<Hypervisor> Hypervisors => 
+        public IPaginatedEnumerable<Hypervisor> Hypervisors =>
             new PaginatedResultKeyResponse<ListHypervisorsResponse, Hypervisor>(this, (i) => i.Hypervisors ?? new List<Hypervisor>());
 
         internal ListHypervisorsPaginator(IAmazonBackupGateway client, ListHypervisorsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.BackupGateway.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListHypervisorsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListHypervisorsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

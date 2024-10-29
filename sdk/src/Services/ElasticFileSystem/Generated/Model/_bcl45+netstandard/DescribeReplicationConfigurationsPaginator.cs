@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElasticFileSystem.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElasticFileSystem.Model
         private readonly IAmazonElasticFileSystem _client;
         private readonly DescribeReplicationConfigurationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElasticFileSystem.Model
         /// <summary>
         /// Enumerable containing all of the Replications
         /// </summary>
-        public IPaginatedEnumerable<ReplicationConfigurationDescription> Replications => 
+        public IPaginatedEnumerable<ReplicationConfigurationDescription> Replications =>
             new PaginatedResultKeyResponse<DescribeReplicationConfigurationsResponse, ReplicationConfigurationDescription>(this, (i) => i.Replications ?? new List<ReplicationConfigurationDescription>());
 
         internal DescribeReplicationConfigurationsPaginator(IAmazonElasticFileSystem client, DescribeReplicationConfigurationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElasticFileSystem.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeReplicationConfigurationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeReplicationConfigurationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

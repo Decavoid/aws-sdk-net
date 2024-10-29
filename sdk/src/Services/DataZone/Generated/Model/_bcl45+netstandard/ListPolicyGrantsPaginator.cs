@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DataZone.Model
@@ -36,7 +37,7 @@ namespace Amazon.DataZone.Model
         private readonly IAmazonDataZone _client;
         private readonly ListPolicyGrantsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DataZone.Model
         /// <summary>
         /// Enumerable containing all of the GrantList
         /// </summary>
-        public IPaginatedEnumerable<PolicyGrantMember> GrantList => 
+        public IPaginatedEnumerable<PolicyGrantMember> GrantList =>
             new PaginatedResultKeyResponse<ListPolicyGrantsResponse, PolicyGrantMember>(this, (i) => i.GrantList ?? new List<PolicyGrantMember>());
 
         internal ListPolicyGrantsPaginator(IAmazonDataZone client, ListPolicyGrantsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DataZone.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPolicyGrantsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPolicyGrantsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

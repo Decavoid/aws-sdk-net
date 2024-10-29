@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.QuickSight.Model
@@ -36,7 +37,7 @@ namespace Amazon.QuickSight.Model
         private readonly IAmazonQuickSight _client;
         private readonly ListIAMPolicyAssignmentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.QuickSight.Model
         /// <summary>
         /// Enumerable containing all of the IAMPolicyAssignments
         /// </summary>
-        public IPaginatedEnumerable<IAMPolicyAssignmentSummary> IAMPolicyAssignments => 
+        public IPaginatedEnumerable<IAMPolicyAssignmentSummary> IAMPolicyAssignments =>
             new PaginatedResultKeyResponse<ListIAMPolicyAssignmentsResponse, IAMPolicyAssignmentSummary>(this, (i) => i.IAMPolicyAssignments ?? new List<IAMPolicyAssignmentSummary>());
 
         internal ListIAMPolicyAssignmentsPaginator(IAmazonQuickSight client, ListIAMPolicyAssignmentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.QuickSight.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListIAMPolicyAssignmentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListIAMPolicyAssignmentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

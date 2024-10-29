@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SimpleWorkflow.Model
@@ -36,7 +37,7 @@ namespace Amazon.SimpleWorkflow.Model
         private readonly IAmazonSimpleWorkflow _client;
         private readonly ListDomainsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SimpleWorkflow.Model
         /// <summary>
         /// Enumerable containing all of the Infos
         /// </summary>
-        public IPaginatedEnumerable<DomainInfo> Infos => 
+        public IPaginatedEnumerable<DomainInfo> Infos =>
             new PaginatedResultKeyResponse<ListDomainsResponse, DomainInfo>(this, (i) => i.DomainInfos.Infos ?? new List<DomainInfo>());
 
         internal ListDomainsPaginator(IAmazonSimpleWorkflow client, ListDomainsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SimpleWorkflow.Model
             do
             {
                 _request.NextPageToken = nextPageToken;
-                response = await _client.ListDomainsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDomainsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextPageToken = response.DomainInfos.NextPageToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

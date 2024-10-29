@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DevOpsGuru.Model
@@ -36,7 +37,7 @@ namespace Amazon.DevOpsGuru.Model
         private readonly IAmazonDevOpsGuru _client;
         private readonly DescribeOrganizationResourceCollectionHealthRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,25 +46,25 @@ namespace Amazon.DevOpsGuru.Model
         /// <summary>
         /// Enumerable containing all of the CloudFormation
         /// </summary>
-        public IPaginatedEnumerable<CloudFormationHealth> CloudFormation => 
+        public IPaginatedEnumerable<CloudFormationHealth> CloudFormation =>
             new PaginatedResultKeyResponse<DescribeOrganizationResourceCollectionHealthResponse, CloudFormationHealth>(this, (i) => i.CloudFormation ?? new List<CloudFormationHealth>());
 
         /// <summary>
         /// Enumerable containing all of the Account
         /// </summary>
-        public IPaginatedEnumerable<AccountHealth> Account => 
+        public IPaginatedEnumerable<AccountHealth> Account =>
             new PaginatedResultKeyResponse<DescribeOrganizationResourceCollectionHealthResponse, AccountHealth>(this, (i) => i.Account ?? new List<AccountHealth>());
 
         /// <summary>
         /// Enumerable containing all of the Service
         /// </summary>
-        public IPaginatedEnumerable<ServiceHealth> Service => 
+        public IPaginatedEnumerable<ServiceHealth> Service =>
             new PaginatedResultKeyResponse<DescribeOrganizationResourceCollectionHealthResponse, ServiceHealth>(this, (i) => i.Service ?? new List<ServiceHealth>());
 
         /// <summary>
         /// Enumerable containing all of the Tags
         /// </summary>
-        public IPaginatedEnumerable<TagHealth> Tags => 
+        public IPaginatedEnumerable<TagHealth> Tags =>
             new PaginatedResultKeyResponse<DescribeOrganizationResourceCollectionHealthResponse, TagHealth>(this, (i) => i.Tags ?? new List<TagHealth>());
 
         internal DescribeOrganizationResourceCollectionHealthPaginator(IAmazonDevOpsGuru client, DescribeOrganizationResourceCollectionHealthRequest request)
@@ -104,7 +105,7 @@ namespace Amazon.DevOpsGuru.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeOrganizationResourceCollectionHealthAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeOrganizationResourceCollectionHealthAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

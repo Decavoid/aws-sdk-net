@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Personalize.Model
@@ -36,7 +37,7 @@ namespace Amazon.Personalize.Model
         private readonly IAmazonPersonalize _client;
         private readonly ListSolutionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Personalize.Model
         /// <summary>
         /// Enumerable containing all of the Solutions
         /// </summary>
-        public IPaginatedEnumerable<SolutionSummary> Solutions => 
+        public IPaginatedEnumerable<SolutionSummary> Solutions =>
             new PaginatedResultKeyResponse<ListSolutionsResponse, SolutionSummary>(this, (i) => i.Solutions ?? new List<SolutionSummary>());
 
         internal ListSolutionsPaginator(IAmazonPersonalize client, ListSolutionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Personalize.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSolutionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSolutionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

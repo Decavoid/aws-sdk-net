@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.VerifiedPermissions.Model
@@ -36,7 +37,7 @@ namespace Amazon.VerifiedPermissions.Model
         private readonly IAmazonVerifiedPermissions _client;
         private readonly ListIdentitySourcesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.VerifiedPermissions.Model
         /// <summary>
         /// Enumerable containing all of the IdentitySources
         /// </summary>
-        public IPaginatedEnumerable<IdentitySourceItem> IdentitySources => 
+        public IPaginatedEnumerable<IdentitySourceItem> IdentitySources =>
             new PaginatedResultKeyResponse<ListIdentitySourcesResponse, IdentitySourceItem>(this, (i) => i.IdentitySources ?? new List<IdentitySourceItem>());
 
         internal ListIdentitySourcesPaginator(IAmazonVerifiedPermissions client, ListIdentitySourcesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.VerifiedPermissions.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListIdentitySourcesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListIdentitySourcesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

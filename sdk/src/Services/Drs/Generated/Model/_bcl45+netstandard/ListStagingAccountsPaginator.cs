@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Drs.Model
@@ -36,7 +37,7 @@ namespace Amazon.Drs.Model
         private readonly IAmazonDrs _client;
         private readonly ListStagingAccountsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Drs.Model
         /// <summary>
         /// Enumerable containing all of the Accounts
         /// </summary>
-        public IPaginatedEnumerable<Account> Accounts => 
+        public IPaginatedEnumerable<Account> Accounts =>
             new PaginatedResultKeyResponse<ListStagingAccountsResponse, Account>(this, (i) => i.Accounts ?? new List<Account>());
 
         internal ListStagingAccountsPaginator(IAmazonDrs client, ListStagingAccountsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Drs.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListStagingAccountsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListStagingAccountsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

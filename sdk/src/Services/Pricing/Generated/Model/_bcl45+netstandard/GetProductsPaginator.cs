@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Pricing.Model
@@ -36,7 +37,7 @@ namespace Amazon.Pricing.Model
         private readonly IAmazonPricing _client;
         private readonly GetProductsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Pricing.Model
         /// <summary>
         /// Enumerable containing all of the PriceList
         /// </summary>
-        public IPaginatedEnumerable<string> PriceList => 
+        public IPaginatedEnumerable<string> PriceList =>
             new PaginatedResultKeyResponse<GetProductsResponse, string>(this, (i) => i.PriceList ?? new List<string>());
 
         internal GetProductsPaginator(IAmazonPricing client, GetProductsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Pricing.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetProductsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetProductsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

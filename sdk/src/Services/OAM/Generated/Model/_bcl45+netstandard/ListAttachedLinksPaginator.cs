@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.OAM.Model
@@ -36,7 +37,7 @@ namespace Amazon.OAM.Model
         private readonly IAmazonOAM _client;
         private readonly ListAttachedLinksRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.OAM.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<ListAttachedLinksItem> Items => 
+        public IPaginatedEnumerable<ListAttachedLinksItem> Items =>
             new PaginatedResultKeyResponse<ListAttachedLinksResponse, ListAttachedLinksItem>(this, (i) => i.Items ?? new List<ListAttachedLinksItem>());
 
         internal ListAttachedLinksPaginator(IAmazonOAM client, ListAttachedLinksRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.OAM.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAttachedLinksAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAttachedLinksAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

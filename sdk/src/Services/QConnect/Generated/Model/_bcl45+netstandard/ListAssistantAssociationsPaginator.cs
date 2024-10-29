@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.QConnect.Model
@@ -36,7 +37,7 @@ namespace Amazon.QConnect.Model
         private readonly IAmazonQConnect _client;
         private readonly ListAssistantAssociationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.QConnect.Model
         /// <summary>
         /// Enumerable containing all of the AssistantAssociationSummaries
         /// </summary>
-        public IPaginatedEnumerable<AssistantAssociationSummary> AssistantAssociationSummaries => 
+        public IPaginatedEnumerable<AssistantAssociationSummary> AssistantAssociationSummaries =>
             new PaginatedResultKeyResponse<ListAssistantAssociationsResponse, AssistantAssociationSummary>(this, (i) => i.AssistantAssociationSummaries ?? new List<AssistantAssociationSummary>());
 
         internal ListAssistantAssociationsPaginator(IAmazonQConnect client, ListAssistantAssociationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.QConnect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAssistantAssociationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAssistantAssociationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

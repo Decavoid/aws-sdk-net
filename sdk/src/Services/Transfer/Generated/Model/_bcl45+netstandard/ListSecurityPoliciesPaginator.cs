@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Transfer.Model
@@ -36,7 +37,7 @@ namespace Amazon.Transfer.Model
         private readonly IAmazonTransfer _client;
         private readonly ListSecurityPoliciesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Transfer.Model
         /// <summary>
         /// Enumerable containing all of the SecurityPolicyNames
         /// </summary>
-        public IPaginatedEnumerable<string> SecurityPolicyNames => 
+        public IPaginatedEnumerable<string> SecurityPolicyNames =>
             new PaginatedResultKeyResponse<ListSecurityPoliciesResponse, string>(this, (i) => i.SecurityPolicyNames ?? new List<string>());
 
         internal ListSecurityPoliciesPaginator(IAmazonTransfer client, ListSecurityPoliciesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Transfer.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSecurityPoliciesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSecurityPoliciesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

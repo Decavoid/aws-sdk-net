@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.RecycleBin.Model
@@ -36,7 +37,7 @@ namespace Amazon.RecycleBin.Model
         private readonly IAmazonRecycleBin _client;
         private readonly ListRulesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.RecycleBin.Model
         /// <summary>
         /// Enumerable containing all of the Rules
         /// </summary>
-        public IPaginatedEnumerable<RuleSummary> Rules => 
+        public IPaginatedEnumerable<RuleSummary> Rules =>
             new PaginatedResultKeyResponse<ListRulesResponse, RuleSummary>(this, (i) => i.Rules ?? new List<RuleSummary>());
 
         internal ListRulesPaginator(IAmazonRecycleBin client, ListRulesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.RecycleBin.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRulesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRulesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

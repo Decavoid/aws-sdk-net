@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoTFleetWise.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoTFleetWise.Model
         private readonly IAmazonIoTFleetWise _client;
         private readonly ListFleetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoTFleetWise.Model
         /// <summary>
         /// Enumerable containing all of the FleetSummaries
         /// </summary>
-        public IPaginatedEnumerable<FleetSummary> FleetSummaries => 
+        public IPaginatedEnumerable<FleetSummary> FleetSummaries =>
             new PaginatedResultKeyResponse<ListFleetsResponse, FleetSummary>(this, (i) => i.FleetSummaries ?? new List<FleetSummary>());
 
         internal ListFleetsPaginator(IAmazonIoTFleetWise client, ListFleetsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoTFleetWise.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListFleetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListFleetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

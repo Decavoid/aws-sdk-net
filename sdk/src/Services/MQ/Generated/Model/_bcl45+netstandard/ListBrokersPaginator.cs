@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MQ.Model
@@ -36,7 +37,7 @@ namespace Amazon.MQ.Model
         private readonly IAmazonMQ _client;
         private readonly ListBrokersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MQ.Model
         /// <summary>
         /// Enumerable containing all of the BrokerSummaries
         /// </summary>
-        public IPaginatedEnumerable<BrokerSummary> BrokerSummaries => 
+        public IPaginatedEnumerable<BrokerSummary> BrokerSummaries =>
             new PaginatedResultKeyResponse<ListBrokersResponse, BrokerSummary>(this, (i) => i.BrokerSummaries ?? new List<BrokerSummary>());
 
         internal ListBrokersPaginator(IAmazonMQ client, ListBrokersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MQ.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListBrokersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListBrokersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

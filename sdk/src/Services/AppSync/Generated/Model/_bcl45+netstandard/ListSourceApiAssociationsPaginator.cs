@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AppSync.Model
@@ -36,7 +37,7 @@ namespace Amazon.AppSync.Model
         private readonly IAmazonAppSync _client;
         private readonly ListSourceApiAssociationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AppSync.Model
         /// <summary>
         /// Enumerable containing all of the SourceApiAssociationSummaries
         /// </summary>
-        public IPaginatedEnumerable<SourceApiAssociationSummary> SourceApiAssociationSummaries => 
+        public IPaginatedEnumerable<SourceApiAssociationSummary> SourceApiAssociationSummaries =>
             new PaginatedResultKeyResponse<ListSourceApiAssociationsResponse, SourceApiAssociationSummary>(this, (i) => i.SourceApiAssociationSummaries ?? new List<SourceApiAssociationSummary>());
 
         internal ListSourceApiAssociationsPaginator(IAmazonAppSync client, ListSourceApiAssociationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AppSync.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSourceApiAssociationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSourceApiAssociationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

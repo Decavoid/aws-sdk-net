@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.FSx.Model
@@ -36,7 +37,7 @@ namespace Amazon.FSx.Model
         private readonly IAmazonFSx _client;
         private readonly DescribeStorageVirtualMachinesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.FSx.Model
         /// <summary>
         /// Enumerable containing all of the StorageVirtualMachines
         /// </summary>
-        public IPaginatedEnumerable<StorageVirtualMachine> StorageVirtualMachines => 
+        public IPaginatedEnumerable<StorageVirtualMachine> StorageVirtualMachines =>
             new PaginatedResultKeyResponse<DescribeStorageVirtualMachinesResponse, StorageVirtualMachine>(this, (i) => i.StorageVirtualMachines ?? new List<StorageVirtualMachine>());
 
         internal DescribeStorageVirtualMachinesPaginator(IAmazonFSx client, DescribeStorageVirtualMachinesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.FSx.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeStorageVirtualMachinesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeStorageVirtualMachinesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

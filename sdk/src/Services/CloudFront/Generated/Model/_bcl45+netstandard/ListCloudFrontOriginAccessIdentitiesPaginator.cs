@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudFront.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudFront.Model
         private readonly IAmazonCloudFront _client;
         private readonly ListCloudFrontOriginAccessIdentitiesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudFront.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<CloudFrontOriginAccessIdentitySummary> Items => 
+        public IPaginatedEnumerable<CloudFrontOriginAccessIdentitySummary> Items =>
             new PaginatedResultKeyResponse<ListCloudFrontOriginAccessIdentitiesResponse, CloudFrontOriginAccessIdentitySummary>(this, (i) => i.CloudFrontOriginAccessIdentityList.Items ?? new List<CloudFrontOriginAccessIdentitySummary>());
 
         internal ListCloudFrontOriginAccessIdentitiesPaginator(IAmazonCloudFront client, ListCloudFrontOriginAccessIdentitiesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudFront.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListCloudFrontOriginAccessIdentitiesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCloudFrontOriginAccessIdentitiesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.CloudFrontOriginAccessIdentityList.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DevOpsGuru.Model
@@ -36,7 +37,7 @@ namespace Amazon.DevOpsGuru.Model
         private readonly IAmazonDevOpsGuru _client;
         private readonly ListAnomaliesForInsightRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.DevOpsGuru.Model
         /// <summary>
         /// Enumerable containing all of the ReactiveAnomalies
         /// </summary>
-        public IPaginatedEnumerable<ReactiveAnomalySummary> ReactiveAnomalies => 
+        public IPaginatedEnumerable<ReactiveAnomalySummary> ReactiveAnomalies =>
             new PaginatedResultKeyResponse<ListAnomaliesForInsightResponse, ReactiveAnomalySummary>(this, (i) => i.ReactiveAnomalies ?? new List<ReactiveAnomalySummary>());
 
         /// <summary>
         /// Enumerable containing all of the ProactiveAnomalies
         /// </summary>
-        public IPaginatedEnumerable<ProactiveAnomalySummary> ProactiveAnomalies => 
+        public IPaginatedEnumerable<ProactiveAnomalySummary> ProactiveAnomalies =>
             new PaginatedResultKeyResponse<ListAnomaliesForInsightResponse, ProactiveAnomalySummary>(this, (i) => i.ProactiveAnomalies ?? new List<ProactiveAnomalySummary>());
 
         internal ListAnomaliesForInsightPaginator(IAmazonDevOpsGuru client, ListAnomaliesForInsightRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.DevOpsGuru.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAnomaliesForInsightAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAnomaliesForInsightAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

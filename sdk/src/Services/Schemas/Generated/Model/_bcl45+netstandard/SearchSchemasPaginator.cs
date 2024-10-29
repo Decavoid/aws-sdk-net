@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Schemas.Model
@@ -36,7 +37,7 @@ namespace Amazon.Schemas.Model
         private readonly IAmazonSchemas _client;
         private readonly SearchSchemasRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Schemas.Model
         /// <summary>
         /// Enumerable containing all of the Schemas
         /// </summary>
-        public IPaginatedEnumerable<SearchSchemaSummary> Schemas => 
+        public IPaginatedEnumerable<SearchSchemaSummary> Schemas =>
             new PaginatedResultKeyResponse<SearchSchemasResponse, SearchSchemaSummary>(this, (i) => i.Schemas ?? new List<SearchSchemaSummary>());
 
         internal SearchSchemasPaginator(IAmazonSchemas client, SearchSchemasRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Schemas.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchSchemasAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchSchemasAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

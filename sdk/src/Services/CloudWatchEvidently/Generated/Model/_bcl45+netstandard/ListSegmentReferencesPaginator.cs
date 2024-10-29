@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudWatchEvidently.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudWatchEvidently.Model
         private readonly IAmazonCloudWatchEvidently _client;
         private readonly ListSegmentReferencesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudWatchEvidently.Model
         /// <summary>
         /// Enumerable containing all of the ReferencedBy
         /// </summary>
-        public IPaginatedEnumerable<RefResource> ReferencedBy => 
+        public IPaginatedEnumerable<RefResource> ReferencedBy =>
             new PaginatedResultKeyResponse<ListSegmentReferencesResponse, RefResource>(this, (i) => i.ReferencedBy ?? new List<RefResource>());
 
         internal ListSegmentReferencesPaginator(IAmazonCloudWatchEvidently client, ListSegmentReferencesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudWatchEvidently.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSegmentReferencesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSegmentReferencesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

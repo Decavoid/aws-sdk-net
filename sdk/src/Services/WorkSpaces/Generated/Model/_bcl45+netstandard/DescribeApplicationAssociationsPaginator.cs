@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.WorkSpaces.Model
@@ -36,7 +37,7 @@ namespace Amazon.WorkSpaces.Model
         private readonly IAmazonWorkSpaces _client;
         private readonly DescribeApplicationAssociationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -80,7 +81,7 @@ namespace Amazon.WorkSpaces.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeApplicationAssociationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeApplicationAssociationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

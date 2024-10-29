@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ResourceGroups.Model
@@ -36,7 +37,7 @@ namespace Amazon.ResourceGroups.Model
         private readonly IAmazonResourceGroups _client;
         private readonly ListGroupResourcesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.ResourceGroups.Model
         /// <summary>
         /// Enumerable containing all of the ResourceIdentifiers
         /// </summary>
-        public IPaginatedEnumerable<ResourceIdentifier> ResourceIdentifiers => 
+        public IPaginatedEnumerable<ResourceIdentifier> ResourceIdentifiers =>
             new PaginatedResultKeyResponse<ListGroupResourcesResponse, ResourceIdentifier>(this, (i) => i.ResourceIdentifiers ?? new List<ResourceIdentifier>());
 
         /// <summary>
         /// Enumerable containing all of the Resources
         /// </summary>
-        public IPaginatedEnumerable<ListGroupResourcesItem> Resources => 
+        public IPaginatedEnumerable<ListGroupResourcesItem> Resources =>
             new PaginatedResultKeyResponse<ListGroupResourcesResponse, ListGroupResourcesItem>(this, (i) => i.Resources ?? new List<ListGroupResourcesItem>());
 
         internal ListGroupResourcesPaginator(IAmazonResourceGroups client, ListGroupResourcesRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.ResourceGroups.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListGroupResourcesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListGroupResourcesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodeGuruProfiler.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodeGuruProfiler.Model
         private readonly IAmazonCodeGuruProfiler _client;
         private readonly ListProfileTimesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodeGuruProfiler.Model
         /// <summary>
         /// Enumerable containing all of the ProfileTimes
         /// </summary>
-        public IPaginatedEnumerable<ProfileTime> ProfileTimes => 
+        public IPaginatedEnumerable<ProfileTime> ProfileTimes =>
             new PaginatedResultKeyResponse<ListProfileTimesResponse, ProfileTime>(this, (i) => i.ProfileTimes ?? new List<ProfileTime>());
 
         internal ListProfileTimesPaginator(IAmazonCodeGuruProfiler client, ListProfileTimesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodeGuruProfiler.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListProfileTimesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListProfileTimesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudWatchLogs.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudWatchLogs.Model
         private readonly IAmazonCloudWatchLogs _client;
         private readonly GetLogEventsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudWatchLogs.Model
         /// <summary>
         /// Enumerable containing all of the Events
         /// </summary>
-        public IPaginatedEnumerable<OutputLogEvent> Events => 
+        public IPaginatedEnumerable<OutputLogEvent> Events =>
             new PaginatedResultKeyResponse<GetLogEventsResponse, OutputLogEvent>(this, (i) => i.Events ?? new List<OutputLogEvent>());
 
         internal GetLogEventsPaginator(IAmazonCloudWatchLogs client, GetLogEventsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudWatchLogs.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetLogEventsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetLogEventsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextForwardToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

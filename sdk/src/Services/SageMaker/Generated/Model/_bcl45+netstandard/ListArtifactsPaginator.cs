@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SageMaker.Model
@@ -36,7 +37,7 @@ namespace Amazon.SageMaker.Model
         private readonly IAmazonSageMaker _client;
         private readonly ListArtifactsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SageMaker.Model
         /// <summary>
         /// Enumerable containing all of the ArtifactSummaries
         /// </summary>
-        public IPaginatedEnumerable<ArtifactSummary> ArtifactSummaries => 
+        public IPaginatedEnumerable<ArtifactSummary> ArtifactSummaries =>
             new PaginatedResultKeyResponse<ListArtifactsResponse, ArtifactSummary>(this, (i) => i.ArtifactSummaries ?? new List<ArtifactSummary>());
 
         internal ListArtifactsPaginator(IAmazonSageMaker client, ListArtifactsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SageMaker.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListArtifactsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListArtifactsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Pipes.Model
@@ -36,7 +37,7 @@ namespace Amazon.Pipes.Model
         private readonly IAmazonPipes _client;
         private readonly ListPipesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Pipes.Model
         /// <summary>
         /// Enumerable containing all of the Pipes
         /// </summary>
-        public IPaginatedEnumerable<Pipe> Pipes => 
+        public IPaginatedEnumerable<Pipe> Pipes =>
             new PaginatedResultKeyResponse<ListPipesResponse, Pipe>(this, (i) => i.Pipes ?? new List<Pipe>());
 
         internal ListPipesPaginator(IAmazonPipes client, ListPipesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Pipes.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPipesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPipesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

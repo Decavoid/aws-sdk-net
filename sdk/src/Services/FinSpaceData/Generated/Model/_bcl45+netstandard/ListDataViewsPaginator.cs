@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.FinSpaceData.Model
@@ -36,7 +37,7 @@ namespace Amazon.FinSpaceData.Model
         private readonly IAmazonFinSpaceData _client;
         private readonly ListDataViewsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.FinSpaceData.Model
         /// <summary>
         /// Enumerable containing all of the DataViews
         /// </summary>
-        public IPaginatedEnumerable<DataViewSummary> DataViews => 
+        public IPaginatedEnumerable<DataViewSummary> DataViews =>
             new PaginatedResultKeyResponse<ListDataViewsResponse, DataViewSummary>(this, (i) => i.DataViews ?? new List<DataViewSummary>());
 
         internal ListDataViewsPaginator(IAmazonFinSpaceData client, ListDataViewsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.FinSpaceData.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDataViewsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDataViewsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

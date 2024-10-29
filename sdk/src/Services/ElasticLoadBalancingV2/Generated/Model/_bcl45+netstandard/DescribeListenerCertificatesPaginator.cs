@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElasticLoadBalancingV2.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElasticLoadBalancingV2.Model
         private readonly IAmazonElasticLoadBalancingV2 _client;
         private readonly DescribeListenerCertificatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElasticLoadBalancingV2.Model
         /// <summary>
         /// Enumerable containing all of the Certificates
         /// </summary>
-        public IPaginatedEnumerable<Certificate> Certificates => 
+        public IPaginatedEnumerable<Certificate> Certificates =>
             new PaginatedResultKeyResponse<DescribeListenerCertificatesResponse, Certificate>(this, (i) => i.Certificates ?? new List<Certificate>());
 
         internal DescribeListenerCertificatesPaginator(IAmazonElasticLoadBalancingV2 client, DescribeListenerCertificatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElasticLoadBalancingV2.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeListenerCertificatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeListenerCertificatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

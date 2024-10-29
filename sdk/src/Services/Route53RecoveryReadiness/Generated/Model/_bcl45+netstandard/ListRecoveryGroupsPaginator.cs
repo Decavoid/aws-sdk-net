@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53RecoveryReadiness.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53RecoveryReadiness.Model
         private readonly IAmazonRoute53RecoveryReadiness _client;
         private readonly ListRecoveryGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53RecoveryReadiness.Model
         /// <summary>
         /// Enumerable containing all of the RecoveryGroups
         /// </summary>
-        public IPaginatedEnumerable<RecoveryGroupOutput> RecoveryGroups => 
+        public IPaginatedEnumerable<RecoveryGroupOutput> RecoveryGroups =>
             new PaginatedResultKeyResponse<ListRecoveryGroupsResponse, RecoveryGroupOutput>(this, (i) => i.RecoveryGroups ?? new List<RecoveryGroupOutput>());
 
         internal ListRecoveryGroupsPaginator(IAmazonRoute53RecoveryReadiness client, ListRecoveryGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Route53RecoveryReadiness.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRecoveryGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRecoveryGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

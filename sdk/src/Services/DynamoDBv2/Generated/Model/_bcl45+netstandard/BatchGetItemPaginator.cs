@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DynamoDBv2.Model
@@ -36,7 +37,7 @@ namespace Amazon.DynamoDBv2.Model
         private readonly IAmazonDynamoDB _client;
         private readonly BatchGetItemRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -80,7 +81,7 @@ namespace Amazon.DynamoDBv2.Model
             do
             {
                 _request.RequestItems = requestItems;
-                response = await _client.BatchGetItemAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.BatchGetItemAsync(_request, cancellationToken).ConfigureAwaitEx();
                 requestItems = response.UnprocessedKeys;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.WorkSpaces.Model
@@ -36,7 +37,7 @@ namespace Amazon.WorkSpaces.Model
         private readonly IAmazonWorkSpaces _client;
         private readonly DescribeWorkspacesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.WorkSpaces.Model
         /// <summary>
         /// Enumerable containing all of the Workspaces
         /// </summary>
-        public IPaginatedEnumerable<Workspace> Workspaces => 
+        public IPaginatedEnumerable<Workspace> Workspaces =>
             new PaginatedResultKeyResponse<DescribeWorkspacesResponse, Workspace>(this, (i) => i.Workspaces ?? new List<Workspace>());
 
         internal DescribeWorkspacesPaginator(IAmazonWorkSpaces client, DescribeWorkspacesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.WorkSpaces.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeWorkspacesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeWorkspacesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

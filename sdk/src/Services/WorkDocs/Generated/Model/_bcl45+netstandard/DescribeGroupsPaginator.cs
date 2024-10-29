@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.WorkDocs.Model
@@ -36,7 +37,7 @@ namespace Amazon.WorkDocs.Model
         private readonly IAmazonWorkDocs _client;
         private readonly DescribeGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.WorkDocs.Model
         /// <summary>
         /// Enumerable containing all of the Groups
         /// </summary>
-        public IPaginatedEnumerable<GroupMetadata> Groups => 
+        public IPaginatedEnumerable<GroupMetadata> Groups =>
             new PaginatedResultKeyResponse<DescribeGroupsResponse, GroupMetadata>(this, (i) => i.Groups ?? new List<GroupMetadata>());
 
         internal DescribeGroupsPaginator(IAmazonWorkDocs client, DescribeGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.WorkDocs.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

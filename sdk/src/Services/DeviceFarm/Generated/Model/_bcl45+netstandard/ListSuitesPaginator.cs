@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DeviceFarm.Model
@@ -36,7 +37,7 @@ namespace Amazon.DeviceFarm.Model
         private readonly IAmazonDeviceFarm _client;
         private readonly ListSuitesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DeviceFarm.Model
         /// <summary>
         /// Enumerable containing all of the Suites
         /// </summary>
-        public IPaginatedEnumerable<Suite> Suites => 
+        public IPaginatedEnumerable<Suite> Suites =>
             new PaginatedResultKeyResponse<ListSuitesResponse, Suite>(this, (i) => i.Suites ?? new List<Suite>());
 
         internal ListSuitesPaginator(IAmazonDeviceFarm client, ListSuitesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DeviceFarm.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSuitesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSuitesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

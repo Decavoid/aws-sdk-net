@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.AWSSupport.Model
@@ -36,7 +37,7 @@ namespace Amazon.AWSSupport.Model
         private readonly IAmazonAWSSupport _client;
         private readonly DescribeCasesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.AWSSupport.Model
         /// <summary>
         /// Enumerable containing all of the Cases
         /// </summary>
-        public IPaginatedEnumerable<CaseDetails> Cases => 
+        public IPaginatedEnumerable<CaseDetails> Cases =>
             new PaginatedResultKeyResponse<DescribeCasesResponse, CaseDetails>(this, (i) => i.Cases ?? new List<CaseDetails>());
 
         internal DescribeCasesPaginator(IAmazonAWSSupport client, DescribeCasesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.AWSSupport.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeCasesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeCasesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

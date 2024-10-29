@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ConnectCases.Model
@@ -36,7 +37,7 @@ namespace Amazon.ConnectCases.Model
         private readonly IAmazonConnectCases _client;
         private readonly SearchCasesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ConnectCases.Model
         /// <summary>
         /// Enumerable containing all of the Cases
         /// </summary>
-        public IPaginatedEnumerable<SearchCasesResponseItem> Cases => 
+        public IPaginatedEnumerable<SearchCasesResponseItem> Cases =>
             new PaginatedResultKeyResponse<SearchCasesResponse, SearchCasesResponseItem>(this, (i) => i.Cases ?? new List<SearchCasesResponseItem>());
 
         internal SearchCasesPaginator(IAmazonConnectCases client, SearchCasesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ConnectCases.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchCasesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchCasesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Imagebuilder.Model
@@ -36,7 +37,7 @@ namespace Amazon.Imagebuilder.Model
         private readonly IAmazonImagebuilder _client;
         private readonly ListImagePipelinesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Imagebuilder.Model
         /// <summary>
         /// Enumerable containing all of the ImagePipelineList
         /// </summary>
-        public IPaginatedEnumerable<ImagePipeline> ImagePipelineList => 
+        public IPaginatedEnumerable<ImagePipeline> ImagePipelineList =>
             new PaginatedResultKeyResponse<ListImagePipelinesResponse, ImagePipeline>(this, (i) => i.ImagePipelineList ?? new List<ImagePipeline>());
 
         internal ListImagePipelinesPaginator(IAmazonImagebuilder client, ListImagePipelinesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Imagebuilder.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListImagePipelinesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListImagePipelinesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

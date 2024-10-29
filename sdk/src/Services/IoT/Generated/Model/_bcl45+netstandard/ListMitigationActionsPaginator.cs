@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoT.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoT.Model
         private readonly IAmazonIoT _client;
         private readonly ListMitigationActionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoT.Model
         /// <summary>
         /// Enumerable containing all of the ActionIdentifiers
         /// </summary>
-        public IPaginatedEnumerable<MitigationActionIdentifier> ActionIdentifiers => 
+        public IPaginatedEnumerable<MitigationActionIdentifier> ActionIdentifiers =>
             new PaginatedResultKeyResponse<ListMitigationActionsResponse, MitigationActionIdentifier>(this, (i) => i.ActionIdentifiers ?? new List<MitigationActionIdentifier>());
 
         internal ListMitigationActionsPaginator(IAmazonIoT client, ListMitigationActionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoT.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListMitigationActionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListMitigationActionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

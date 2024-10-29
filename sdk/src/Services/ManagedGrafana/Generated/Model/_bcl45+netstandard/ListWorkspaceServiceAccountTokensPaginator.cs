@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ManagedGrafana.Model
@@ -36,7 +37,7 @@ namespace Amazon.ManagedGrafana.Model
         private readonly IAmazonManagedGrafana _client;
         private readonly ListWorkspaceServiceAccountTokensRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ManagedGrafana.Model
         /// <summary>
         /// Enumerable containing all of the ServiceAccountTokens
         /// </summary>
-        public IPaginatedEnumerable<ServiceAccountTokenSummary> ServiceAccountTokens => 
+        public IPaginatedEnumerable<ServiceAccountTokenSummary> ServiceAccountTokens =>
             new PaginatedResultKeyResponse<ListWorkspaceServiceAccountTokensResponse, ServiceAccountTokenSummary>(this, (i) => i.ServiceAccountTokens ?? new List<ServiceAccountTokenSummary>());
 
         internal ListWorkspaceServiceAccountTokensPaginator(IAmazonManagedGrafana client, ListWorkspaceServiceAccountTokensRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ManagedGrafana.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListWorkspaceServiceAccountTokensAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWorkspaceServiceAccountTokensAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

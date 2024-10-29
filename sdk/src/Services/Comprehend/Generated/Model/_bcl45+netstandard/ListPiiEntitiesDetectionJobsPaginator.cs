@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Comprehend.Model
@@ -36,7 +37,7 @@ namespace Amazon.Comprehend.Model
         private readonly IAmazonComprehend _client;
         private readonly ListPiiEntitiesDetectionJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Comprehend.Model
         /// <summary>
         /// Enumerable containing all of the PiiEntitiesDetectionJobPropertiesList
         /// </summary>
-        public IPaginatedEnumerable<PiiEntitiesDetectionJobProperties> PiiEntitiesDetectionJobPropertiesList => 
+        public IPaginatedEnumerable<PiiEntitiesDetectionJobProperties> PiiEntitiesDetectionJobPropertiesList =>
             new PaginatedResultKeyResponse<ListPiiEntitiesDetectionJobsResponse, PiiEntitiesDetectionJobProperties>(this, (i) => i.PiiEntitiesDetectionJobPropertiesList ?? new List<PiiEntitiesDetectionJobProperties>());
 
         internal ListPiiEntitiesDetectionJobsPaginator(IAmazonComprehend client, ListPiiEntitiesDetectionJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Comprehend.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPiiEntitiesDetectionJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPiiEntitiesDetectionJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

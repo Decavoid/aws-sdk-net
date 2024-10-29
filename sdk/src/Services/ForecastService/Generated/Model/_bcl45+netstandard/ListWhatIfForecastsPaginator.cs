@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ForecastService.Model
@@ -36,7 +37,7 @@ namespace Amazon.ForecastService.Model
         private readonly IAmazonForecastService _client;
         private readonly ListWhatIfForecastsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ForecastService.Model
         /// <summary>
         /// Enumerable containing all of the WhatIfForecasts
         /// </summary>
-        public IPaginatedEnumerable<WhatIfForecastSummary> WhatIfForecasts => 
+        public IPaginatedEnumerable<WhatIfForecastSummary> WhatIfForecasts =>
             new PaginatedResultKeyResponse<ListWhatIfForecastsResponse, WhatIfForecastSummary>(this, (i) => i.WhatIfForecasts ?? new List<WhatIfForecastSummary>());
 
         internal ListWhatIfForecastsPaginator(IAmazonForecastService client, ListWhatIfForecastsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ForecastService.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListWhatIfForecastsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWhatIfForecastsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

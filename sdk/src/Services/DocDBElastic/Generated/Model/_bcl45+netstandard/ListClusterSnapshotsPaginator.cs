@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DocDBElastic.Model
@@ -36,7 +37,7 @@ namespace Amazon.DocDBElastic.Model
         private readonly IAmazonDocDBElastic _client;
         private readonly ListClusterSnapshotsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DocDBElastic.Model
         /// <summary>
         /// Enumerable containing all of the Snapshots
         /// </summary>
-        public IPaginatedEnumerable<ClusterSnapshotInList> Snapshots => 
+        public IPaginatedEnumerable<ClusterSnapshotInList> Snapshots =>
             new PaginatedResultKeyResponse<ListClusterSnapshotsResponse, ClusterSnapshotInList>(this, (i) => i.Snapshots ?? new List<ClusterSnapshotInList>());
 
         internal ListClusterSnapshotsPaginator(IAmazonDocDBElastic client, ListClusterSnapshotsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DocDBElastic.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListClusterSnapshotsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListClusterSnapshotsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

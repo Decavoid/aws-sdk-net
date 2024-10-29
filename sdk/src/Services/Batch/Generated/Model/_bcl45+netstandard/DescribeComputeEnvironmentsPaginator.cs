@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Batch.Model
@@ -36,7 +37,7 @@ namespace Amazon.Batch.Model
         private readonly IAmazonBatch _client;
         private readonly DescribeComputeEnvironmentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Batch.Model
         /// <summary>
         /// Enumerable containing all of the ComputeEnvironments
         /// </summary>
-        public IPaginatedEnumerable<ComputeEnvironmentDetail> ComputeEnvironments => 
+        public IPaginatedEnumerable<ComputeEnvironmentDetail> ComputeEnvironments =>
             new PaginatedResultKeyResponse<DescribeComputeEnvironmentsResponse, ComputeEnvironmentDetail>(this, (i) => i.ComputeEnvironments ?? new List<ComputeEnvironmentDetail>());
 
         internal DescribeComputeEnvironmentsPaginator(IAmazonBatch client, DescribeComputeEnvironmentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Batch.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeComputeEnvironmentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeComputeEnvironmentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

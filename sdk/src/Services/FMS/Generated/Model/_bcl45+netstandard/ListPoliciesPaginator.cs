@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.FMS.Model
@@ -36,7 +37,7 @@ namespace Amazon.FMS.Model
         private readonly IAmazonFMS _client;
         private readonly ListPoliciesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.FMS.Model
         /// <summary>
         /// Enumerable containing all of the PolicyList
         /// </summary>
-        public IPaginatedEnumerable<PolicySummary> PolicyList => 
+        public IPaginatedEnumerable<PolicySummary> PolicyList =>
             new PaginatedResultKeyResponse<ListPoliciesResponse, PolicySummary>(this, (i) => i.PolicyList ?? new List<PolicySummary>());
 
         internal ListPoliciesPaginator(IAmazonFMS client, ListPoliciesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.FMS.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPoliciesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPoliciesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

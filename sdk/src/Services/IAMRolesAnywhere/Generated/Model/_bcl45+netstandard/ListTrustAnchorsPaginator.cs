@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IAMRolesAnywhere.Model
@@ -36,7 +37,7 @@ namespace Amazon.IAMRolesAnywhere.Model
         private readonly IAmazonIAMRolesAnywhere _client;
         private readonly ListTrustAnchorsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IAMRolesAnywhere.Model
         /// <summary>
         /// Enumerable containing all of the TrustAnchors
         /// </summary>
-        public IPaginatedEnumerable<TrustAnchorDetail> TrustAnchors => 
+        public IPaginatedEnumerable<TrustAnchorDetail> TrustAnchors =>
             new PaginatedResultKeyResponse<ListTrustAnchorsResponse, TrustAnchorDetail>(this, (i) => i.TrustAnchors ?? new List<TrustAnchorDetail>());
 
         internal ListTrustAnchorsPaginator(IAmazonIAMRolesAnywhere client, ListTrustAnchorsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IAMRolesAnywhere.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTrustAnchorsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTrustAnchorsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

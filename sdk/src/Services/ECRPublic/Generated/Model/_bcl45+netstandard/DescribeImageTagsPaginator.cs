@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ECRPublic.Model
@@ -36,7 +37,7 @@ namespace Amazon.ECRPublic.Model
         private readonly IAmazonECRPublic _client;
         private readonly DescribeImageTagsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ECRPublic.Model
         /// <summary>
         /// Enumerable containing all of the ImageTagDetails
         /// </summary>
-        public IPaginatedEnumerable<ImageTagDetail> ImageTagDetails => 
+        public IPaginatedEnumerable<ImageTagDetail> ImageTagDetails =>
             new PaginatedResultKeyResponse<DescribeImageTagsResponse, ImageTagDetail>(this, (i) => i.ImageTagDetails ?? new List<ImageTagDetail>());
 
         internal DescribeImageTagsPaginator(IAmazonECRPublic client, DescribeImageTagsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ECRPublic.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeImageTagsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeImageTagsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

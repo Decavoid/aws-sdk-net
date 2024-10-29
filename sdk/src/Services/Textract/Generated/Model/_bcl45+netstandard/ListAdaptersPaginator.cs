@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Textract.Model
@@ -36,7 +37,7 @@ namespace Amazon.Textract.Model
         private readonly IAmazonTextract _client;
         private readonly ListAdaptersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Textract.Model
         /// <summary>
         /// Enumerable containing all of the Adapters
         /// </summary>
-        public IPaginatedEnumerable<AdapterOverview> Adapters => 
+        public IPaginatedEnumerable<AdapterOverview> Adapters =>
             new PaginatedResultKeyResponse<ListAdaptersResponse, AdapterOverview>(this, (i) => i.Adapters ?? new List<AdapterOverview>());
 
         internal ListAdaptersPaginator(IAmazonTextract client, ListAdaptersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Textract.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAdaptersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAdaptersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

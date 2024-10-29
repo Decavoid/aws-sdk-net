@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CleanRooms.Model
@@ -36,7 +37,7 @@ namespace Amazon.CleanRooms.Model
         private readonly IAmazonCleanRooms _client;
         private readonly ListPrivacyBudgetTemplatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CleanRooms.Model
         /// <summary>
         /// Enumerable containing all of the PrivacyBudgetTemplateSummaries
         /// </summary>
-        public IPaginatedEnumerable<PrivacyBudgetTemplateSummary> PrivacyBudgetTemplateSummaries => 
+        public IPaginatedEnumerable<PrivacyBudgetTemplateSummary> PrivacyBudgetTemplateSummaries =>
             new PaginatedResultKeyResponse<ListPrivacyBudgetTemplatesResponse, PrivacyBudgetTemplateSummary>(this, (i) => i.PrivacyBudgetTemplateSummaries ?? new List<PrivacyBudgetTemplateSummary>());
 
         internal ListPrivacyBudgetTemplatesPaginator(IAmazonCleanRooms client, ListPrivacyBudgetTemplatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CleanRooms.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPrivacyBudgetTemplatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPrivacyBudgetTemplatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

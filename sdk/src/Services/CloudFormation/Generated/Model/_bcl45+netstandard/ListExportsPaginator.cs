@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudFormation.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudFormation.Model
         private readonly IAmazonCloudFormation _client;
         private readonly ListExportsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudFormation.Model
         /// <summary>
         /// Enumerable containing all of the Exports
         /// </summary>
-        public IPaginatedEnumerable<Export> Exports => 
+        public IPaginatedEnumerable<Export> Exports =>
             new PaginatedResultKeyResponse<ListExportsResponse, Export>(this, (i) => i.Exports ?? new List<Export>());
 
         internal ListExportsPaginator(IAmazonCloudFormation client, ListExportsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudFormation.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListExportsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListExportsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

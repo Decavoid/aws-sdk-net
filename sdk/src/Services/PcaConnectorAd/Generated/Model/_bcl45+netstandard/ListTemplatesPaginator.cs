@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.PcaConnectorAd.Model
@@ -36,7 +37,7 @@ namespace Amazon.PcaConnectorAd.Model
         private readonly IAmazonPcaConnectorAd _client;
         private readonly ListTemplatesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.PcaConnectorAd.Model
         /// <summary>
         /// Enumerable containing all of the Templates
         /// </summary>
-        public IPaginatedEnumerable<TemplateSummary> Templates => 
+        public IPaginatedEnumerable<TemplateSummary> Templates =>
             new PaginatedResultKeyResponse<ListTemplatesResponse, TemplateSummary>(this, (i) => i.Templates ?? new List<TemplateSummary>());
 
         internal ListTemplatesPaginator(IAmazonPcaConnectorAd client, ListTemplatesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.PcaConnectorAd.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListTemplatesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListTemplatesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53.Model
         private readonly IAmazonRoute53 _client;
         private readonly ListHostedZonesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53.Model
         /// <summary>
         /// Enumerable containing all of the HostedZones
         /// </summary>
-        public IPaginatedEnumerable<HostedZone> HostedZones => 
+        public IPaginatedEnumerable<HostedZone> HostedZones =>
             new PaginatedResultKeyResponse<ListHostedZonesResponse, HostedZone>(this, (i) => i.HostedZones ?? new List<HostedZone>());
 
         internal ListHostedZonesPaginator(IAmazonRoute53 client, ListHostedZonesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Route53.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListHostedZonesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListHostedZonesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

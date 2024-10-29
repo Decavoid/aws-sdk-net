@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Connect.Model
@@ -36,7 +37,7 @@ namespace Amazon.Connect.Model
         private readonly IAmazonConnect _client;
         private readonly ListEvaluationFormsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Connect.Model
         /// <summary>
         /// Enumerable containing all of the EvaluationFormSummaryList
         /// </summary>
-        public IPaginatedEnumerable<EvaluationFormSummary> EvaluationFormSummaryList => 
+        public IPaginatedEnumerable<EvaluationFormSummary> EvaluationFormSummaryList =>
             new PaginatedResultKeyResponse<ListEvaluationFormsResponse, EvaluationFormSummary>(this, (i) => i.EvaluationFormSummaryList ?? new List<EvaluationFormSummary>());
 
         internal ListEvaluationFormsPaginator(IAmazonConnect client, ListEvaluationFormsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Connect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListEvaluationFormsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEvaluationFormsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

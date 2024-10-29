@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Personalize.Model
@@ -36,7 +37,7 @@ namespace Amazon.Personalize.Model
         private readonly IAmazonPersonalize _client;
         private readonly ListBatchInferenceJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Personalize.Model
         /// <summary>
         /// Enumerable containing all of the BatchInferenceJobs
         /// </summary>
-        public IPaginatedEnumerable<BatchInferenceJobSummary> BatchInferenceJobs => 
+        public IPaginatedEnumerable<BatchInferenceJobSummary> BatchInferenceJobs =>
             new PaginatedResultKeyResponse<ListBatchInferenceJobsResponse, BatchInferenceJobSummary>(this, (i) => i.BatchInferenceJobs ?? new List<BatchInferenceJobSummary>());
 
         internal ListBatchInferenceJobsPaginator(IAmazonPersonalize client, ListBatchInferenceJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Personalize.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListBatchInferenceJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListBatchInferenceJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

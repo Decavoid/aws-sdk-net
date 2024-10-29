@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EC2.Model
@@ -36,7 +37,7 @@ namespace Amazon.EC2.Model
         private readonly IAmazonEC2 _client;
         private readonly DescribeNetworkInterfacesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EC2.Model
         /// <summary>
         /// Enumerable containing all of the NetworkInterfaces
         /// </summary>
-        public IPaginatedEnumerable<NetworkInterface> NetworkInterfaces => 
+        public IPaginatedEnumerable<NetworkInterface> NetworkInterfaces =>
             new PaginatedResultKeyResponse<DescribeNetworkInterfacesResponse, NetworkInterface>(this, (i) => i.NetworkInterfaces ?? new List<NetworkInterface>());
 
         internal DescribeNetworkInterfacesPaginator(IAmazonEC2 client, DescribeNetworkInterfacesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EC2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeNetworkInterfacesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeNetworkInterfacesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

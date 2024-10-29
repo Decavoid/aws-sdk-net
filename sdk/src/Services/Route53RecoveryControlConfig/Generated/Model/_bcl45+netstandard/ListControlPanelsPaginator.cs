@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53RecoveryControlConfig.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53RecoveryControlConfig.Model
         private readonly IAmazonRoute53RecoveryControlConfig _client;
         private readonly ListControlPanelsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53RecoveryControlConfig.Model
         /// <summary>
         /// Enumerable containing all of the ControlPanels
         /// </summary>
-        public IPaginatedEnumerable<ControlPanel> ControlPanels => 
+        public IPaginatedEnumerable<ControlPanel> ControlPanels =>
             new PaginatedResultKeyResponse<ListControlPanelsResponse, ControlPanel>(this, (i) => i.ControlPanels ?? new List<ControlPanel>());
 
         internal ListControlPanelsPaginator(IAmazonRoute53RecoveryControlConfig client, ListControlPanelsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Route53RecoveryControlConfig.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListControlPanelsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListControlPanelsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Lambda.Model
@@ -36,7 +37,7 @@ namespace Amazon.Lambda.Model
         private readonly IAmazonLambda _client;
         private readonly ListEventSourceMappingsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Lambda.Model
         /// <summary>
         /// Enumerable containing all of the EventSourceMappings
         /// </summary>
-        public IPaginatedEnumerable<EventSourceMappingConfiguration> EventSourceMappings => 
+        public IPaginatedEnumerable<EventSourceMappingConfiguration> EventSourceMappings =>
             new PaginatedResultKeyResponse<ListEventSourceMappingsResponse, EventSourceMappingConfiguration>(this, (i) => i.EventSourceMappings ?? new List<EventSourceMappingConfiguration>());
 
         internal ListEventSourceMappingsPaginator(IAmazonLambda client, ListEventSourceMappingsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Lambda.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListEventSourceMappingsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEventSourceMappingsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

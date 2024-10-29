@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.LookoutforVision.Model
@@ -36,7 +37,7 @@ namespace Amazon.LookoutforVision.Model
         private readonly IAmazonLookoutforVision _client;
         private readonly ListModelPackagingJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.LookoutforVision.Model
         /// <summary>
         /// Enumerable containing all of the ModelPackagingJobs
         /// </summary>
-        public IPaginatedEnumerable<ModelPackagingJobMetadata> ModelPackagingJobs => 
+        public IPaginatedEnumerable<ModelPackagingJobMetadata> ModelPackagingJobs =>
             new PaginatedResultKeyResponse<ListModelPackagingJobsResponse, ModelPackagingJobMetadata>(this, (i) => i.ModelPackagingJobs ?? new List<ModelPackagingJobMetadata>());
 
         internal ListModelPackagingJobsPaginator(IAmazonLookoutforVision client, ListModelPackagingJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.LookoutforVision.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListModelPackagingJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListModelPackagingJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

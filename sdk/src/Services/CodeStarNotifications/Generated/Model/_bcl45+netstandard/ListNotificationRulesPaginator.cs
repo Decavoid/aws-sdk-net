@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CodeStarNotifications.Model
@@ -36,7 +37,7 @@ namespace Amazon.CodeStarNotifications.Model
         private readonly IAmazonCodeStarNotifications _client;
         private readonly ListNotificationRulesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CodeStarNotifications.Model
         /// <summary>
         /// Enumerable containing all of the NotificationRules
         /// </summary>
-        public IPaginatedEnumerable<NotificationRuleSummary> NotificationRules => 
+        public IPaginatedEnumerable<NotificationRuleSummary> NotificationRules =>
             new PaginatedResultKeyResponse<ListNotificationRulesResponse, NotificationRuleSummary>(this, (i) => i.NotificationRules ?? new List<NotificationRuleSummary>());
 
         internal ListNotificationRulesPaginator(IAmazonCodeStarNotifications client, ListNotificationRulesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CodeStarNotifications.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListNotificationRulesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListNotificationRulesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

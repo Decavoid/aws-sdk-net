@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Backup.Model
@@ -36,7 +37,7 @@ namespace Amazon.Backup.Model
         private readonly IAmazonBackup _client;
         private readonly ListProtectedResourcesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Backup.Model
         /// <summary>
         /// Enumerable containing all of the Results
         /// </summary>
-        public IPaginatedEnumerable<ProtectedResource> Results => 
+        public IPaginatedEnumerable<ProtectedResource> Results =>
             new PaginatedResultKeyResponse<ListProtectedResourcesResponse, ProtectedResource>(this, (i) => i.Results ?? new List<ProtectedResource>());
 
         internal ListProtectedResourcesPaginator(IAmazonBackup client, ListProtectedResourcesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Backup.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListProtectedResourcesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListProtectedResourcesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

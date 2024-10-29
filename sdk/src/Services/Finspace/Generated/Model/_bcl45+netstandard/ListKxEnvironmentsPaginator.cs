@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Finspace.Model
@@ -36,7 +37,7 @@ namespace Amazon.Finspace.Model
         private readonly IAmazonFinspace _client;
         private readonly ListKxEnvironmentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Finspace.Model
         /// <summary>
         /// Enumerable containing all of the Environments
         /// </summary>
-        public IPaginatedEnumerable<KxEnvironment> Environments => 
+        public IPaginatedEnumerable<KxEnvironment> Environments =>
             new PaginatedResultKeyResponse<ListKxEnvironmentsResponse, KxEnvironment>(this, (i) => i.Environments ?? new List<KxEnvironment>());
 
         internal ListKxEnvironmentsPaginator(IAmazonFinspace client, ListKxEnvironmentsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Finspace.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListKxEnvironmentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListKxEnvironmentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

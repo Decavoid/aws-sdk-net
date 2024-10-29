@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Redshift.Model
@@ -36,7 +37,7 @@ namespace Amazon.Redshift.Model
         private readonly IAmazonRedshift _client;
         private readonly DescribeClusterVersionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Redshift.Model
         /// <summary>
         /// Enumerable containing all of the ClusterVersions
         /// </summary>
-        public IPaginatedEnumerable<ClusterVersion> ClusterVersions => 
+        public IPaginatedEnumerable<ClusterVersion> ClusterVersions =>
             new PaginatedResultKeyResponse<DescribeClusterVersionsResponse, ClusterVersion>(this, (i) => i.ClusterVersions ?? new List<ClusterVersion>());
 
         internal DescribeClusterVersionsPaginator(IAmazonRedshift client, DescribeClusterVersionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Redshift.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeClusterVersionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeClusterVersionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

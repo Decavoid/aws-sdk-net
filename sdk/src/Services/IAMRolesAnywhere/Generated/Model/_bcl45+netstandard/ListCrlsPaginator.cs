@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IAMRolesAnywhere.Model
@@ -36,7 +37,7 @@ namespace Amazon.IAMRolesAnywhere.Model
         private readonly IAmazonIAMRolesAnywhere _client;
         private readonly ListCrlsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IAMRolesAnywhere.Model
         /// <summary>
         /// Enumerable containing all of the Crls
         /// </summary>
-        public IPaginatedEnumerable<CrlDetail> Crls => 
+        public IPaginatedEnumerable<CrlDetail> Crls =>
             new PaginatedResultKeyResponse<ListCrlsResponse, CrlDetail>(this, (i) => i.Crls ?? new List<CrlDetail>());
 
         internal ListCrlsPaginator(IAmazonIAMRolesAnywhere client, ListCrlsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IAMRolesAnywhere.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListCrlsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCrlsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

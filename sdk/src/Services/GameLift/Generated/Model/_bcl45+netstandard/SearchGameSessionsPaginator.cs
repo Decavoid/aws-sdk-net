@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.GameLift.Model
@@ -36,7 +37,7 @@ namespace Amazon.GameLift.Model
         private readonly IAmazonGameLift _client;
         private readonly SearchGameSessionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.GameLift.Model
         /// <summary>
         /// Enumerable containing all of the GameSessions
         /// </summary>
-        public IPaginatedEnumerable<GameSession> GameSessions => 
+        public IPaginatedEnumerable<GameSession> GameSessions =>
             new PaginatedResultKeyResponse<SearchGameSessionsResponse, GameSession>(this, (i) => i.GameSessions ?? new List<GameSession>());
 
         internal SearchGameSessionsPaginator(IAmazonGameLift client, SearchGameSessionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.GameLift.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchGameSessionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchGameSessionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DevOpsGuru.Model
@@ -36,7 +37,7 @@ namespace Amazon.DevOpsGuru.Model
         private readonly IAmazonDevOpsGuru _client;
         private readonly ListInsightsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,13 +46,13 @@ namespace Amazon.DevOpsGuru.Model
         /// <summary>
         /// Enumerable containing all of the ProactiveInsights
         /// </summary>
-        public IPaginatedEnumerable<ProactiveInsightSummary> ProactiveInsights => 
+        public IPaginatedEnumerable<ProactiveInsightSummary> ProactiveInsights =>
             new PaginatedResultKeyResponse<ListInsightsResponse, ProactiveInsightSummary>(this, (i) => i.ProactiveInsights ?? new List<ProactiveInsightSummary>());
 
         /// <summary>
         /// Enumerable containing all of the ReactiveInsights
         /// </summary>
-        public IPaginatedEnumerable<ReactiveInsightSummary> ReactiveInsights => 
+        public IPaginatedEnumerable<ReactiveInsightSummary> ReactiveInsights =>
             new PaginatedResultKeyResponse<ListInsightsResponse, ReactiveInsightSummary>(this, (i) => i.ReactiveInsights ?? new List<ReactiveInsightSummary>());
 
         internal ListInsightsPaginator(IAmazonDevOpsGuru client, ListInsightsRequest request)
@@ -92,7 +93,7 @@ namespace Amazon.DevOpsGuru.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListInsightsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListInsightsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

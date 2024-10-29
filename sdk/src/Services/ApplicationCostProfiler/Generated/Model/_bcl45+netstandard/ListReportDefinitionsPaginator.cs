@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ApplicationCostProfiler.Model
@@ -36,7 +37,7 @@ namespace Amazon.ApplicationCostProfiler.Model
         private readonly IAmazonApplicationCostProfiler _client;
         private readonly ListReportDefinitionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ApplicationCostProfiler.Model
         /// <summary>
         /// Enumerable containing all of the ReportDefinitions
         /// </summary>
-        public IPaginatedEnumerable<ReportDefinition> ReportDefinitions => 
+        public IPaginatedEnumerable<ReportDefinition> ReportDefinitions =>
             new PaginatedResultKeyResponse<ListReportDefinitionsResponse, ReportDefinition>(this, (i) => i.ReportDefinitions ?? new List<ReportDefinition>());
 
         internal ListReportDefinitionsPaginator(IAmazonApplicationCostProfiler client, ListReportDefinitionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ApplicationCostProfiler.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListReportDefinitionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListReportDefinitionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

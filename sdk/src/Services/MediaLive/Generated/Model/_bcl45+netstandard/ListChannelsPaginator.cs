@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MediaLive.Model
@@ -36,7 +37,7 @@ namespace Amazon.MediaLive.Model
         private readonly IAmazonMediaLive _client;
         private readonly ListChannelsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MediaLive.Model
         /// <summary>
         /// Enumerable containing all of the Channels
         /// </summary>
-        public IPaginatedEnumerable<ChannelSummary> Channels => 
+        public IPaginatedEnumerable<ChannelSummary> Channels =>
             new PaginatedResultKeyResponse<ListChannelsResponse, ChannelSummary>(this, (i) => i.Channels ?? new List<ChannelSummary>());
 
         internal ListChannelsPaginator(IAmazonMediaLive client, ListChannelsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MediaLive.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListChannelsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListChannelsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

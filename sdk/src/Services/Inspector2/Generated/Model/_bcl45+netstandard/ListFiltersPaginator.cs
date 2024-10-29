@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Inspector2.Model
@@ -36,7 +37,7 @@ namespace Amazon.Inspector2.Model
         private readonly IAmazonInspector2 _client;
         private readonly ListFiltersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Inspector2.Model
         /// <summary>
         /// Enumerable containing all of the Filters
         /// </summary>
-        public IPaginatedEnumerable<Filter> Filters => 
+        public IPaginatedEnumerable<Filter> Filters =>
             new PaginatedResultKeyResponse<ListFiltersResponse, Filter>(this, (i) => i.Filters ?? new List<Filter>());
 
         internal ListFiltersPaginator(IAmazonInspector2 client, ListFiltersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Inspector2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListFiltersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListFiltersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

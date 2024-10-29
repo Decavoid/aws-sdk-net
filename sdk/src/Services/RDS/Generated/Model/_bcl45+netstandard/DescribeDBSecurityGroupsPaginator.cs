@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.RDS.Model
@@ -36,7 +37,7 @@ namespace Amazon.RDS.Model
         private readonly IAmazonRDS _client;
         private readonly DescribeDBSecurityGroupsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.RDS.Model
         /// <summary>
         /// Enumerable containing all of the DBSecurityGroups
         /// </summary>
-        public IPaginatedEnumerable<DBSecurityGroup> DBSecurityGroups => 
+        public IPaginatedEnumerable<DBSecurityGroup> DBSecurityGroups =>
             new PaginatedResultKeyResponse<DescribeDBSecurityGroupsResponse, DBSecurityGroup>(this, (i) => i.DBSecurityGroups ?? new List<DBSecurityGroup>());
 
         internal DescribeDBSecurityGroupsPaginator(IAmazonRDS client, DescribeDBSecurityGroupsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.RDS.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeDBSecurityGroupsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeDBSecurityGroupsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

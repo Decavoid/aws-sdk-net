@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.B2bi.Model
@@ -36,7 +37,7 @@ namespace Amazon.B2bi.Model
         private readonly IAmazonB2bi _client;
         private readonly ListPartnershipsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.B2bi.Model
         /// <summary>
         /// Enumerable containing all of the Partnerships
         /// </summary>
-        public IPaginatedEnumerable<PartnershipSummary> Partnerships => 
+        public IPaginatedEnumerable<PartnershipSummary> Partnerships =>
             new PaginatedResultKeyResponse<ListPartnershipsResponse, PartnershipSummary>(this, (i) => i.Partnerships ?? new List<PartnershipSummary>());
 
         internal ListPartnershipsPaginator(IAmazonB2bi client, ListPartnershipsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.B2bi.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListPartnershipsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListPartnershipsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

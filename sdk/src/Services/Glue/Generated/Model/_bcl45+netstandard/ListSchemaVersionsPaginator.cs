@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Glue.Model
@@ -36,7 +37,7 @@ namespace Amazon.Glue.Model
         private readonly IAmazonGlue _client;
         private readonly ListSchemaVersionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Glue.Model
         /// <summary>
         /// Enumerable containing all of the Schemas
         /// </summary>
-        public IPaginatedEnumerable<SchemaVersionListItem> Schemas => 
+        public IPaginatedEnumerable<SchemaVersionListItem> Schemas =>
             new PaginatedResultKeyResponse<ListSchemaVersionsResponse, SchemaVersionListItem>(this, (i) => i.Schemas ?? new List<SchemaVersionListItem>());
 
         internal ListSchemaVersionsPaginator(IAmazonGlue client, ListSchemaVersionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Glue.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSchemaVersionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSchemaVersionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

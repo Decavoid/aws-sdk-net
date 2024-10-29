@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IdentityManagement.Model
@@ -36,7 +37,7 @@ namespace Amazon.IdentityManagement.Model
         private readonly IAmazonIdentityManagementService _client;
         private readonly ListAccountAliasesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IdentityManagement.Model
         /// <summary>
         /// Enumerable containing all of the AccountAliases
         /// </summary>
-        public IPaginatedEnumerable<string> AccountAliases => 
+        public IPaginatedEnumerable<string> AccountAliases =>
             new PaginatedResultKeyResponse<ListAccountAliasesResponse, string>(this, (i) => i.AccountAliases ?? new List<string>());
 
         internal ListAccountAliasesPaginator(IAmazonIdentityManagementService client, ListAccountAliasesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IdentityManagement.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListAccountAliasesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAccountAliasesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

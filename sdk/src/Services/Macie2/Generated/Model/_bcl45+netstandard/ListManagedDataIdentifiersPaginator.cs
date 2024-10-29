@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Macie2.Model
@@ -36,7 +37,7 @@ namespace Amazon.Macie2.Model
         private readonly IAmazonMacie2 _client;
         private readonly ListManagedDataIdentifiersRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Macie2.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<ManagedDataIdentifierSummary> Items => 
+        public IPaginatedEnumerable<ManagedDataIdentifierSummary> Items =>
             new PaginatedResultKeyResponse<ListManagedDataIdentifiersResponse, ManagedDataIdentifierSummary>(this, (i) => i.Items ?? new List<ManagedDataIdentifierSummary>());
 
         internal ListManagedDataIdentifiersPaginator(IAmazonMacie2 client, ListManagedDataIdentifiersRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Macie2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListManagedDataIdentifiersAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListManagedDataIdentifiersAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

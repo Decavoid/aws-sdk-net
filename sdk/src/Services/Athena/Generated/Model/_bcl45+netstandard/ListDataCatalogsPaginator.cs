@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Athena.Model
@@ -36,7 +37,7 @@ namespace Amazon.Athena.Model
         private readonly IAmazonAthena _client;
         private readonly ListDataCatalogsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Athena.Model
         /// <summary>
         /// Enumerable containing all of the DataCatalogsSummary
         /// </summary>
-        public IPaginatedEnumerable<DataCatalogSummary> DataCatalogsSummary => 
+        public IPaginatedEnumerable<DataCatalogSummary> DataCatalogsSummary =>
             new PaginatedResultKeyResponse<ListDataCatalogsResponse, DataCatalogSummary>(this, (i) => i.DataCatalogsSummary ?? new List<DataCatalogSummary>());
 
         internal ListDataCatalogsPaginator(IAmazonAthena client, ListDataCatalogsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Athena.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDataCatalogsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDataCatalogsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ApplicationAutoScaling.Model
@@ -36,7 +37,7 @@ namespace Amazon.ApplicationAutoScaling.Model
         private readonly IAmazonApplicationAutoScaling _client;
         private readonly DescribeScalingPoliciesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ApplicationAutoScaling.Model
         /// <summary>
         /// Enumerable containing all of the ScalingPolicies
         /// </summary>
-        public IPaginatedEnumerable<ScalingPolicy> ScalingPolicies => 
+        public IPaginatedEnumerable<ScalingPolicy> ScalingPolicies =>
             new PaginatedResultKeyResponse<DescribeScalingPoliciesResponse, ScalingPolicy>(this, (i) => i.ScalingPolicies ?? new List<ScalingPolicy>());
 
         internal DescribeScalingPoliciesPaginator(IAmazonApplicationAutoScaling client, DescribeScalingPoliciesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ApplicationAutoScaling.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeScalingPoliciesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeScalingPoliciesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DatabaseMigrationService.Model
@@ -36,7 +37,7 @@ namespace Amazon.DatabaseMigrationService.Model
         private readonly IAmazonDatabaseMigrationService _client;
         private readonly DescribeDataMigrationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DatabaseMigrationService.Model
         /// <summary>
         /// Enumerable containing all of the DataMigrations
         /// </summary>
-        public IPaginatedEnumerable<DataMigration> DataMigrations => 
+        public IPaginatedEnumerable<DataMigration> DataMigrations =>
             new PaginatedResultKeyResponse<DescribeDataMigrationsResponse, DataMigration>(this, (i) => i.DataMigrations ?? new List<DataMigration>());
 
         internal DescribeDataMigrationsPaginator(IAmazonDatabaseMigrationService client, DescribeDataMigrationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DatabaseMigrationService.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeDataMigrationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeDataMigrationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

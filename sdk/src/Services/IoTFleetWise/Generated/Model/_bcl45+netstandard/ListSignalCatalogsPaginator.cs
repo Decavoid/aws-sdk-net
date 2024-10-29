@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IoTFleetWise.Model
@@ -36,7 +37,7 @@ namespace Amazon.IoTFleetWise.Model
         private readonly IAmazonIoTFleetWise _client;
         private readonly ListSignalCatalogsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IoTFleetWise.Model
         /// <summary>
         /// Enumerable containing all of the Summaries
         /// </summary>
-        public IPaginatedEnumerable<SignalCatalogSummary> Summaries => 
+        public IPaginatedEnumerable<SignalCatalogSummary> Summaries =>
             new PaginatedResultKeyResponse<ListSignalCatalogsResponse, SignalCatalogSummary>(this, (i) => i.Summaries ?? new List<SignalCatalogSummary>());
 
         internal ListSignalCatalogsPaginator(IAmazonIoTFleetWise client, ListSignalCatalogsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IoTFleetWise.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSignalCatalogsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSignalCatalogsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

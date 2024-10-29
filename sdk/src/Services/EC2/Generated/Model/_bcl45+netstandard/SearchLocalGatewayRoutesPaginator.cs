@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EC2.Model
@@ -36,7 +37,7 @@ namespace Amazon.EC2.Model
         private readonly IAmazonEC2 _client;
         private readonly SearchLocalGatewayRoutesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EC2.Model
         /// <summary>
         /// Enumerable containing all of the Routes
         /// </summary>
-        public IPaginatedEnumerable<LocalGatewayRoute> Routes => 
+        public IPaginatedEnumerable<LocalGatewayRoute> Routes =>
             new PaginatedResultKeyResponse<SearchLocalGatewayRoutesResponse, LocalGatewayRoute>(this, (i) => i.Routes ?? new List<LocalGatewayRoute>());
 
         internal SearchLocalGatewayRoutesPaginator(IAmazonEC2 client, SearchLocalGatewayRoutesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EC2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.SearchLocalGatewayRoutesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.SearchLocalGatewayRoutesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

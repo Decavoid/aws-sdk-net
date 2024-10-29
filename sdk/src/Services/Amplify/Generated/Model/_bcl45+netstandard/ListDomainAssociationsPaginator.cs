@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Amplify.Model
@@ -36,7 +37,7 @@ namespace Amazon.Amplify.Model
         private readonly IAmazonAmplify _client;
         private readonly ListDomainAssociationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Amplify.Model
         /// <summary>
         /// Enumerable containing all of the DomainAssociations
         /// </summary>
-        public IPaginatedEnumerable<DomainAssociation> DomainAssociations => 
+        public IPaginatedEnumerable<DomainAssociation> DomainAssociations =>
             new PaginatedResultKeyResponse<ListDomainAssociationsResponse, DomainAssociation>(this, (i) => i.DomainAssociations ?? new List<DomainAssociation>());
 
         internal ListDomainAssociationsPaginator(IAmazonAmplify client, ListDomainAssociationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Amplify.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDomainAssociationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDomainAssociationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

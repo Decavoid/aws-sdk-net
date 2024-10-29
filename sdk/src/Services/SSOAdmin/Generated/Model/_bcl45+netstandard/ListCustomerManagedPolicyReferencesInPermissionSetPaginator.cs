@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SSOAdmin.Model
@@ -36,7 +37,7 @@ namespace Amazon.SSOAdmin.Model
         private readonly IAmazonSSOAdmin _client;
         private readonly ListCustomerManagedPolicyReferencesInPermissionSetRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SSOAdmin.Model
         /// <summary>
         /// Enumerable containing all of the CustomerManagedPolicyReferences
         /// </summary>
-        public IPaginatedEnumerable<CustomerManagedPolicyReference> CustomerManagedPolicyReferences => 
+        public IPaginatedEnumerable<CustomerManagedPolicyReference> CustomerManagedPolicyReferences =>
             new PaginatedResultKeyResponse<ListCustomerManagedPolicyReferencesInPermissionSetResponse, CustomerManagedPolicyReference>(this, (i) => i.CustomerManagedPolicyReferences ?? new List<CustomerManagedPolicyReference>());
 
         internal ListCustomerManagedPolicyReferencesInPermissionSetPaginator(IAmazonSSOAdmin client, ListCustomerManagedPolicyReferencesInPermissionSetRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SSOAdmin.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListCustomerManagedPolicyReferencesInPermissionSetAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCustomerManagedPolicyReferencesInPermissionSetAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

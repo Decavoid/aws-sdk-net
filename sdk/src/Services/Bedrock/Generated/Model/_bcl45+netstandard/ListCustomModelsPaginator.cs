@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Bedrock.Model
@@ -36,7 +37,7 @@ namespace Amazon.Bedrock.Model
         private readonly IAmazonBedrock _client;
         private readonly ListCustomModelsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Bedrock.Model
         /// <summary>
         /// Enumerable containing all of the ModelSummaries
         /// </summary>
-        public IPaginatedEnumerable<CustomModelSummary> ModelSummaries => 
+        public IPaginatedEnumerable<CustomModelSummary> ModelSummaries =>
             new PaginatedResultKeyResponse<ListCustomModelsResponse, CustomModelSummary>(this, (i) => i.ModelSummaries ?? new List<CustomModelSummary>());
 
         internal ListCustomModelsPaginator(IAmazonBedrock client, ListCustomModelsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Bedrock.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListCustomModelsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListCustomModelsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

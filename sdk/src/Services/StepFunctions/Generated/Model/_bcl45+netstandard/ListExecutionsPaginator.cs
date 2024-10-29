@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.StepFunctions.Model
@@ -36,7 +37,7 @@ namespace Amazon.StepFunctions.Model
         private readonly IAmazonStepFunctions _client;
         private readonly ListExecutionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.StepFunctions.Model
         /// <summary>
         /// Enumerable containing all of the Executions
         /// </summary>
-        public IPaginatedEnumerable<ExecutionListItem> Executions => 
+        public IPaginatedEnumerable<ExecutionListItem> Executions =>
             new PaginatedResultKeyResponse<ListExecutionsResponse, ExecutionListItem>(this, (i) => i.Executions ?? new List<ExecutionListItem>());
 
         internal ListExecutionsPaginator(IAmazonStepFunctions client, ListExecutionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.StepFunctions.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListExecutionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListExecutionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

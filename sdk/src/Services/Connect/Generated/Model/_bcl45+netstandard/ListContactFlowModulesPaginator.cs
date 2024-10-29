@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Connect.Model
@@ -36,7 +37,7 @@ namespace Amazon.Connect.Model
         private readonly IAmazonConnect _client;
         private readonly ListContactFlowModulesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Connect.Model
         /// <summary>
         /// Enumerable containing all of the ContactFlowModulesSummaryList
         /// </summary>
-        public IPaginatedEnumerable<ContactFlowModuleSummary> ContactFlowModulesSummaryList => 
+        public IPaginatedEnumerable<ContactFlowModuleSummary> ContactFlowModulesSummaryList =>
             new PaginatedResultKeyResponse<ListContactFlowModulesResponse, ContactFlowModuleSummary>(this, (i) => i.ContactFlowModulesSummaryList ?? new List<ContactFlowModuleSummary>());
 
         internal ListContactFlowModulesPaginator(IAmazonConnect client, ListContactFlowModulesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Connect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListContactFlowModulesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListContactFlowModulesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

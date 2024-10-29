@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IdentityManagement.Model
@@ -36,7 +37,7 @@ namespace Amazon.IdentityManagement.Model
         private readonly IAmazonIdentityManagementService _client;
         private readonly ListEntitiesForPolicyRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,19 +46,19 @@ namespace Amazon.IdentityManagement.Model
         /// <summary>
         /// Enumerable containing all of the PolicyGroups
         /// </summary>
-        public IPaginatedEnumerable<PolicyGroup> PolicyGroups => 
+        public IPaginatedEnumerable<PolicyGroup> PolicyGroups =>
             new PaginatedResultKeyResponse<ListEntitiesForPolicyResponse, PolicyGroup>(this, (i) => i.PolicyGroups ?? new List<PolicyGroup>());
 
         /// <summary>
         /// Enumerable containing all of the PolicyUsers
         /// </summary>
-        public IPaginatedEnumerable<PolicyUser> PolicyUsers => 
+        public IPaginatedEnumerable<PolicyUser> PolicyUsers =>
             new PaginatedResultKeyResponse<ListEntitiesForPolicyResponse, PolicyUser>(this, (i) => i.PolicyUsers ?? new List<PolicyUser>());
 
         /// <summary>
         /// Enumerable containing all of the PolicyRoles
         /// </summary>
-        public IPaginatedEnumerable<PolicyRole> PolicyRoles => 
+        public IPaginatedEnumerable<PolicyRole> PolicyRoles =>
             new PaginatedResultKeyResponse<ListEntitiesForPolicyResponse, PolicyRole>(this, (i) => i.PolicyRoles ?? new List<PolicyRole>());
 
         internal ListEntitiesForPolicyPaginator(IAmazonIdentityManagementService client, ListEntitiesForPolicyRequest request)
@@ -98,7 +99,7 @@ namespace Amazon.IdentityManagement.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListEntitiesForPolicyAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEntitiesForPolicyAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

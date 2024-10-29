@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.CloudFront.Model
@@ -36,7 +37,7 @@ namespace Amazon.CloudFront.Model
         private readonly IAmazonCloudFront _client;
         private readonly ListKeyValueStoresRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.CloudFront.Model
         /// <summary>
         /// Enumerable containing all of the Items
         /// </summary>
-        public IPaginatedEnumerable<KeyValueStore> Items => 
+        public IPaginatedEnumerable<KeyValueStore> Items =>
             new PaginatedResultKeyResponse<ListKeyValueStoresResponse, KeyValueStore>(this, (i) => i.KeyValueStoreList.Items ?? new List<KeyValueStore>());
 
         internal ListKeyValueStoresPaginator(IAmazonCloudFront client, ListKeyValueStoresRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.CloudFront.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.ListKeyValueStoresAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListKeyValueStoresAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.KeyValueStoreList.NextMarker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

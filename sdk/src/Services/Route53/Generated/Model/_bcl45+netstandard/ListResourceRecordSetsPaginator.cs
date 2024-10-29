@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Route53.Model
@@ -36,7 +37,7 @@ namespace Amazon.Route53.Model
         private readonly IAmazonRoute53 _client;
         private readonly ListResourceRecordSetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Route53.Model
         /// <summary>
         /// Enumerable containing all of the ResourceRecordSets
         /// </summary>
-        public IPaginatedEnumerable<ResourceRecordSet> ResourceRecordSets => 
+        public IPaginatedEnumerable<ResourceRecordSet> ResourceRecordSets =>
             new PaginatedResultKeyResponse<ListResourceRecordSetsResponse, ResourceRecordSet>(this, (i) => i.ResourceRecordSets ?? new List<ResourceRecordSet>());
 
         internal ListResourceRecordSetsPaginator(IAmazonRoute53 client, ListResourceRecordSetsRequest request)
@@ -96,7 +97,7 @@ namespace Amazon.Route53.Model
                 _request.StartRecordName = startRecordName;
                 _request.StartRecordType = startRecordType;
                 _request.StartRecordIdentifier = startRecordIdentifier;
-                response = await _client.ListResourceRecordSetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListResourceRecordSetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 startRecordName = response.NextRecordName;
                 startRecordType = response.NextRecordType;
                 startRecordIdentifier = response.NextRecordIdentifier;

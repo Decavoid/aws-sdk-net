@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.SocialMessaging.Model
@@ -36,7 +37,7 @@ namespace Amazon.SocialMessaging.Model
         private readonly IAmazonSocialMessaging _client;
         private readonly ListLinkedWhatsAppBusinessAccountsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.SocialMessaging.Model
         /// <summary>
         /// Enumerable containing all of the LinkedAccounts
         /// </summary>
-        public IPaginatedEnumerable<LinkedWhatsAppBusinessAccountSummary> LinkedAccounts => 
+        public IPaginatedEnumerable<LinkedWhatsAppBusinessAccountSummary> LinkedAccounts =>
             new PaginatedResultKeyResponse<ListLinkedWhatsAppBusinessAccountsResponse, LinkedWhatsAppBusinessAccountSummary>(this, (i) => i.LinkedAccounts ?? new List<LinkedWhatsAppBusinessAccountSummary>());
 
         internal ListLinkedWhatsAppBusinessAccountsPaginator(IAmazonSocialMessaging client, ListLinkedWhatsAppBusinessAccountsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.SocialMessaging.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListLinkedWhatsAppBusinessAccountsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListLinkedWhatsAppBusinessAccountsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MemoryDB.Model
@@ -36,7 +37,7 @@ namespace Amazon.MemoryDB.Model
         private readonly IAmazonMemoryDB _client;
         private readonly DescribeACLsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MemoryDB.Model
         /// <summary>
         /// Enumerable containing all of the ACLs
         /// </summary>
-        public IPaginatedEnumerable<ACL> ACLs => 
+        public IPaginatedEnumerable<ACL> ACLs =>
             new PaginatedResultKeyResponse<DescribeACLsResponse, ACL>(this, (i) => i.ACLs ?? new List<ACL>());
 
         internal DescribeACLsPaginator(IAmazonMemoryDB client, DescribeACLsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MemoryDB.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeACLsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeACLsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

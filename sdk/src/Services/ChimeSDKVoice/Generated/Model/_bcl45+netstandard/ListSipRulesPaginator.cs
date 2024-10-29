@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ChimeSDKVoice.Model
@@ -36,7 +37,7 @@ namespace Amazon.ChimeSDKVoice.Model
         private readonly IAmazonChimeSDKVoice _client;
         private readonly ListSipRulesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ChimeSDKVoice.Model
         /// <summary>
         /// Enumerable containing all of the SipRules
         /// </summary>
-        public IPaginatedEnumerable<SipRule> SipRules => 
+        public IPaginatedEnumerable<SipRule> SipRules =>
             new PaginatedResultKeyResponse<ListSipRulesResponse, SipRule>(this, (i) => i.SipRules ?? new List<SipRule>());
 
         internal ListSipRulesPaginator(IAmazonChimeSDKVoice client, ListSipRulesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ChimeSDKVoice.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListSipRulesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListSipRulesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

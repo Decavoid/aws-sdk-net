@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.EC2.Model
@@ -36,7 +37,7 @@ namespace Amazon.EC2.Model
         private readonly IAmazonEC2 _client;
         private readonly GetNetworkInsightsAccessScopeAnalysisFindingsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.EC2.Model
         /// <summary>
         /// Enumerable containing all of the AnalysisFindings
         /// </summary>
-        public IPaginatedEnumerable<AccessScopeAnalysisFinding> AnalysisFindings => 
+        public IPaginatedEnumerable<AccessScopeAnalysisFinding> AnalysisFindings =>
             new PaginatedResultKeyResponse<GetNetworkInsightsAccessScopeAnalysisFindingsResponse, AccessScopeAnalysisFinding>(this, (i) => i.AnalysisFindings ?? new List<AccessScopeAnalysisFinding>());
 
         internal GetNetworkInsightsAccessScopeAnalysisFindingsPaginator(IAmazonEC2 client, GetNetworkInsightsAccessScopeAnalysisFindingsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.EC2.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.GetNetworkInsightsAccessScopeAnalysisFindingsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.GetNetworkInsightsAccessScopeAnalysisFindingsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

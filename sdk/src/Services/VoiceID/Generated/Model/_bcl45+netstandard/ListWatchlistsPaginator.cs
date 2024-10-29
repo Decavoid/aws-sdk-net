@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.VoiceID.Model
@@ -36,7 +37,7 @@ namespace Amazon.VoiceID.Model
         private readonly IAmazonVoiceID _client;
         private readonly ListWatchlistsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.VoiceID.Model
         /// <summary>
         /// Enumerable containing all of the WatchlistSummaries
         /// </summary>
-        public IPaginatedEnumerable<WatchlistSummary> WatchlistSummaries => 
+        public IPaginatedEnumerable<WatchlistSummary> WatchlistSummaries =>
             new PaginatedResultKeyResponse<ListWatchlistsResponse, WatchlistSummary>(this, (i) => i.WatchlistSummaries ?? new List<WatchlistSummary>());
 
         internal ListWatchlistsPaginator(IAmazonVoiceID client, ListWatchlistsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.VoiceID.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListWatchlistsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListWatchlistsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

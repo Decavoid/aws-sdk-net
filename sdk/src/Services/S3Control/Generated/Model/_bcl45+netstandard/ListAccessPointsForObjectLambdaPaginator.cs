@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.S3Control.Model
@@ -36,7 +37,7 @@ namespace Amazon.S3Control.Model
         private readonly IAmazonS3Control _client;
         private readonly ListAccessPointsForObjectLambdaRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.S3Control.Model
         /// <summary>
         /// Enumerable containing all of the ObjectLambdaAccessPointList
         /// </summary>
-        public IPaginatedEnumerable<ObjectLambdaAccessPoint> ObjectLambdaAccessPointList => 
+        public IPaginatedEnumerable<ObjectLambdaAccessPoint> ObjectLambdaAccessPointList =>
             new PaginatedResultKeyResponse<ListAccessPointsForObjectLambdaResponse, ObjectLambdaAccessPoint>(this, (i) => i.ObjectLambdaAccessPointList ?? new List<ObjectLambdaAccessPoint>());
 
         internal ListAccessPointsForObjectLambdaPaginator(IAmazonS3Control client, ListAccessPointsForObjectLambdaRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.S3Control.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAccessPointsForObjectLambdaAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAccessPointsForObjectLambdaAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

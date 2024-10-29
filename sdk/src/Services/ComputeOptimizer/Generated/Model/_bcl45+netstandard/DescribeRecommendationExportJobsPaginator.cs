@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ComputeOptimizer.Model
@@ -36,7 +37,7 @@ namespace Amazon.ComputeOptimizer.Model
         private readonly IAmazonComputeOptimizer _client;
         private readonly DescribeRecommendationExportJobsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ComputeOptimizer.Model
         /// <summary>
         /// Enumerable containing all of the RecommendationExportJobs
         /// </summary>
-        public IPaginatedEnumerable<RecommendationExportJob> RecommendationExportJobs => 
+        public IPaginatedEnumerable<RecommendationExportJob> RecommendationExportJobs =>
             new PaginatedResultKeyResponse<DescribeRecommendationExportJobsResponse, RecommendationExportJob>(this, (i) => i.RecommendationExportJobs ?? new List<RecommendationExportJob>());
 
         internal DescribeRecommendationExportJobsPaginator(IAmazonComputeOptimizer client, DescribeRecommendationExportJobsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ComputeOptimizer.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeRecommendationExportJobsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeRecommendationExportJobsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

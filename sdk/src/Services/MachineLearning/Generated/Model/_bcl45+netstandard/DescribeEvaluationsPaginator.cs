@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MachineLearning.Model
@@ -36,7 +37,7 @@ namespace Amazon.MachineLearning.Model
         private readonly IAmazonMachineLearning _client;
         private readonly DescribeEvaluationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MachineLearning.Model
         /// <summary>
         /// Enumerable containing all of the Results
         /// </summary>
-        public IPaginatedEnumerable<Evaluation> Results => 
+        public IPaginatedEnumerable<Evaluation> Results =>
             new PaginatedResultKeyResponse<DescribeEvaluationsResponse, Evaluation>(this, (i) => i.Results ?? new List<Evaluation>());
 
         internal DescribeEvaluationsPaginator(IAmazonMachineLearning client, DescribeEvaluationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MachineLearning.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeEvaluationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeEvaluationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

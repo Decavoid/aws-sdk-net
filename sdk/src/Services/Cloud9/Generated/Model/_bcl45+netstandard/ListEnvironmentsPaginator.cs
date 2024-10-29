@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Cloud9.Model
@@ -36,7 +37,7 @@ namespace Amazon.Cloud9.Model
         private readonly IAmazonCloud9 _client;
         private readonly ListEnvironmentsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -80,7 +81,7 @@ namespace Amazon.Cloud9.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListEnvironmentsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListEnvironmentsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

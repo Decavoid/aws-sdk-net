@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ControlTower.Model
@@ -36,7 +37,7 @@ namespace Amazon.ControlTower.Model
         private readonly IAmazonControlTower _client;
         private readonly ListBaselinesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ControlTower.Model
         /// <summary>
         /// Enumerable containing all of the Baselines
         /// </summary>
-        public IPaginatedEnumerable<BaselineSummary> Baselines => 
+        public IPaginatedEnumerable<BaselineSummary> Baselines =>
             new PaginatedResultKeyResponse<ListBaselinesResponse, BaselineSummary>(this, (i) => i.Baselines ?? new List<BaselineSummary>());
 
         internal ListBaselinesPaginator(IAmazonControlTower client, ListBaselinesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ControlTower.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListBaselinesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListBaselinesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.ElasticInference.Model
@@ -36,7 +37,7 @@ namespace Amazon.ElasticInference.Model
         private readonly IAmazonElasticInference _client;
         private readonly DescribeAcceleratorsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.ElasticInference.Model
         /// <summary>
         /// Enumerable containing all of the AcceleratorSet
         /// </summary>
-        public IPaginatedEnumerable<ElasticInferenceAccelerator> AcceleratorSet => 
+        public IPaginatedEnumerable<ElasticInferenceAccelerator> AcceleratorSet =>
             new PaginatedResultKeyResponse<DescribeAcceleratorsResponse, ElasticInferenceAccelerator>(this, (i) => i.AcceleratorSet ?? new List<ElasticInferenceAccelerator>());
 
         internal DescribeAcceleratorsPaginator(IAmazonElasticInference client, DescribeAcceleratorsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.ElasticInference.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeAcceleratorsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeAcceleratorsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Budgets.Model
@@ -36,7 +37,7 @@ namespace Amazon.Budgets.Model
         private readonly IAmazonBudgets _client;
         private readonly DescribeBudgetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Budgets.Model
         /// <summary>
         /// Enumerable containing all of the Budgets
         /// </summary>
-        public IPaginatedEnumerable<Budget> Budgets => 
+        public IPaginatedEnumerable<Budget> Budgets =>
             new PaginatedResultKeyResponse<DescribeBudgetsResponse, Budget>(this, (i) => i.Budgets ?? new List<Budget>());
 
         internal DescribeBudgetsPaginator(IAmazonBudgets client, DescribeBudgetsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Budgets.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.DescribeBudgetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeBudgetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

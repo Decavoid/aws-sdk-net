@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.Redshift.Model
@@ -36,7 +37,7 @@ namespace Amazon.Redshift.Model
         private readonly IAmazonRedshift _client;
         private readonly DescribeInboundIntegrationsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.Redshift.Model
         /// <summary>
         /// Enumerable containing all of the InboundIntegrations
         /// </summary>
-        public IPaginatedEnumerable<InboundIntegration> InboundIntegrations => 
+        public IPaginatedEnumerable<InboundIntegration> InboundIntegrations =>
             new PaginatedResultKeyResponse<DescribeInboundIntegrationsResponse, InboundIntegration>(this, (i) => i.InboundIntegrations ?? new List<InboundIntegration>());
 
         internal DescribeInboundIntegrationsPaginator(IAmazonRedshift client, DescribeInboundIntegrationsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.Redshift.Model
             do
             {
                 _request.Marker = marker;
-                response = await _client.DescribeInboundIntegrationsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.DescribeInboundIntegrationsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 marker = response.Marker;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

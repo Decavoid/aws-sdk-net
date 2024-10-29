@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.DataExchange.Model
@@ -36,7 +37,7 @@ namespace Amazon.DataExchange.Model
         private readonly IAmazonDataExchange _client;
         private readonly ListDataSetRevisionsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.DataExchange.Model
         /// <summary>
         /// Enumerable containing all of the Revisions
         /// </summary>
-        public IPaginatedEnumerable<RevisionEntry> Revisions => 
+        public IPaginatedEnumerable<RevisionEntry> Revisions =>
             new PaginatedResultKeyResponse<ListDataSetRevisionsResponse, RevisionEntry>(this, (i) => i.Revisions ?? new List<RevisionEntry>());
 
         internal ListDataSetRevisionsPaginator(IAmazonDataExchange client, ListDataSetRevisionsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.DataExchange.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListDataSetRevisionsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListDataSetRevisionsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

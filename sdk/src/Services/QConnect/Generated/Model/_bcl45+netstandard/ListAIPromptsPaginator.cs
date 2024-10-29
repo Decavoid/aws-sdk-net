@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.QConnect.Model
@@ -36,7 +37,7 @@ namespace Amazon.QConnect.Model
         private readonly IAmazonQConnect _client;
         private readonly ListAIPromptsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.QConnect.Model
         /// <summary>
         /// Enumerable containing all of the AiPromptSummaries
         /// </summary>
-        public IPaginatedEnumerable<AIPromptSummary> AiPromptSummaries => 
+        public IPaginatedEnumerable<AIPromptSummary> AiPromptSummaries =>
             new PaginatedResultKeyResponse<ListAIPromptsResponse, AIPromptSummary>(this, (i) => i.AiPromptSummaries ?? new List<AIPromptSummary>());
 
         internal ListAIPromptsPaginator(IAmazonQConnect client, ListAIPromptsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.QConnect.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListAIPromptsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListAIPromptsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

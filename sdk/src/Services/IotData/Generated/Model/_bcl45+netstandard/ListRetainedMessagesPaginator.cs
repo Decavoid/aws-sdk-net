@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.IotData.Model
@@ -36,7 +37,7 @@ namespace Amazon.IotData.Model
         private readonly IAmazonIotData _client;
         private readonly ListRetainedMessagesRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.IotData.Model
         /// <summary>
         /// Enumerable containing all of the RetainedTopics
         /// </summary>
-        public IPaginatedEnumerable<RetainedMessageSummary> RetainedTopics => 
+        public IPaginatedEnumerable<RetainedMessageSummary> RetainedTopics =>
             new PaginatedResultKeyResponse<ListRetainedMessagesResponse, RetainedMessageSummary>(this, (i) => i.RetainedTopics ?? new List<RetainedMessageSummary>());
 
         internal ListRetainedMessagesPaginator(IAmazonIotData client, ListRetainedMessagesRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.IotData.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRetainedMessagesAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRetainedMessagesAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;

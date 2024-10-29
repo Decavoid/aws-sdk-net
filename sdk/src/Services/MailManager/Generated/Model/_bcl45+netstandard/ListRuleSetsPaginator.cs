@@ -24,6 +24,7 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 
 #pragma warning disable CS0612,CS0618
 namespace Amazon.MailManager.Model
@@ -36,7 +37,7 @@ namespace Amazon.MailManager.Model
         private readonly IAmazonMailManager _client;
         private readonly ListRuleSetsRequest _request;
         private int _isPaginatorInUse = 0;
-        
+
         /// <summary>
         /// Enumerable containing all full responses for the operation
         /// </summary>
@@ -45,7 +46,7 @@ namespace Amazon.MailManager.Model
         /// <summary>
         /// Enumerable containing all of the RuleSets
         /// </summary>
-        public IPaginatedEnumerable<RuleSet> RuleSets => 
+        public IPaginatedEnumerable<RuleSet> RuleSets =>
             new PaginatedResultKeyResponse<ListRuleSetsResponse, RuleSet>(this, (i) => i.RuleSets ?? new List<RuleSet>());
 
         internal ListRuleSetsPaginator(IAmazonMailManager client, ListRuleSetsRequest request)
@@ -86,7 +87,7 @@ namespace Amazon.MailManager.Model
             do
             {
                 _request.NextToken = nextToken;
-                response = await _client.ListRuleSetsAsync(_request, cancellationToken).ConfigureAwait(false);
+                response = await _client.ListRuleSetsAsync(_request, cancellationToken).ConfigureAwaitEx();
                 nextToken = response.NextToken;
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return response;
