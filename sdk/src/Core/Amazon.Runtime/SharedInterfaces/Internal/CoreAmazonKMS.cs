@@ -63,13 +63,13 @@ namespace Amazon.Runtime.SharedInterfaces.Internal
         public async System.Threading.Tasks.Task<byte[]> DecryptAsync(byte[] ciphertextBlob, Dictionary<string, string> encryptionContext)
         {
             EnsureWrappedClientIsInstantiated();
-            return await wrappedClient.DecryptAsync(ciphertextBlob, encryptionContext).ConfigureAwait(false);
+            return await wrappedClient.DecryptAsync(ciphertextBlob, encryptionContext).ConfigureAwaitEx();
         }
 
         public async System.Threading.Tasks.Task<GenerateDataKeyResult> GenerateDataKeyAsync(string keyID, Dictionary<string, string> encryptionContext, string keySpec)
         {
             EnsureWrappedClientIsInstantiated();
-            return await wrappedClient.GenerateDataKeyAsync(keyID, encryptionContext, keySpec).ConfigureAwait(false);
+            return await wrappedClient.GenerateDataKeyAsync(keyID, encryptionContext, keySpec).ConfigureAwaitEx();
         }
 #endif
 

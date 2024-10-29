@@ -12,6 +12,7 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+using Amazon.Util.Internal;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,7 +68,7 @@ namespace Amazon.Runtime.Internal
 #endif
                     {
                         thread.Start();
-                        await semaphore.WaitAsync().ConfigureAwait(false);
+                        await semaphore.WaitAsync().ConfigureAwaitEx();
                         thread.Join();
 
                         if (exception != null)

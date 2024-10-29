@@ -12,6 +12,7 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -132,7 +133,7 @@ namespace Amazon.Runtime.Internal.Util
 
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            int bytesRead = await BaseStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            int bytesRead = await BaseStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwaitEx();
             if (this.OnRead != null)
             {
                 this.OnRead(bytesRead);

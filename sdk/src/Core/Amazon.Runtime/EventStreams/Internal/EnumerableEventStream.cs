@@ -19,6 +19,7 @@
  *
  */
 
+using Amazon.Util.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -176,7 +177,7 @@ namespace Amazon.Runtime.EventStreams.Internal
             // If they are/have enumerated, the event-driven mode should be disabled
             if (IsEnumerated) throw new InvalidOperationException(MutuallyExclusiveExceptionMessage);
 
-            await base.StartProcessingAsync().ConfigureAwait(false);
+            await base.StartProcessingAsync().ConfigureAwaitEx();
         }
 #endif
     }

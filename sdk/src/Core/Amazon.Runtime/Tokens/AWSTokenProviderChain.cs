@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Util.Internal;
 using System.Linq;
 #if AWS_ASYNC_API 
 using System.Threading;
@@ -54,7 +55,7 @@ namespace Amazon.Runtime
         {
             foreach (var provider in _chain)
             {
-                var token = await provider.TryResolveTokenAsync(cancellationToken).ConfigureAwait(false);
+                var token = await provider.TryResolveTokenAsync(cancellationToken).ConfigureAwaitEx();
                 
                 if (token.Success)
                     return token;

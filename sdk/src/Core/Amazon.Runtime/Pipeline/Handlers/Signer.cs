@@ -18,6 +18,7 @@ using Amazon.Runtime.Internal.Util;
 using Amazon.Runtime.Telemetry;
 using Amazon.Runtime.Telemetry.Metrics;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.IO;
 #if AWS_ASYNC_API 
@@ -54,8 +55,8 @@ namespace Amazon.Runtime.Internal
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async System.Threading.Tasks.Task<T> InvokeAsync<T>(IExecutionContext executionContext)
         {
-            await PreInvokeAsync(executionContext).ConfigureAwait(false);
-            return await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+            await PreInvokeAsync(executionContext).ConfigureAwaitEx();
+            return await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
         }
 
 #elif AWS_APM_API
@@ -94,7 +95,7 @@ namespace Amazon.Runtime.Internal
         {
             if (ShouldSign(executionContext.RequestContext))
             {
-                await SignRequestAsync(executionContext.RequestContext).ConfigureAwait(false);
+                await SignRequestAsync(executionContext.RequestContext).ConfigureAwaitEx();
                 executionContext.RequestContext.IsSigned = true;
             }
         }
@@ -187,7 +188,7 @@ namespace Amazon.Runtime.Internal
                         requestContext.ClientConfig, 
                         requestContext.Metrics, 
                         immutableCredentials)
-                    .ConfigureAwait(false);
+                    .ConfigureAwaitEx();
             }
         }
 #endif

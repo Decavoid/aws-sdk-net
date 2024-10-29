@@ -118,7 +118,7 @@ namespace Amazon.Runtime.Internal.Util
         /// that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            return await ReadInternal(buffer, offset, count, true, cancellationToken).ConfigureAwait(false);
+            return await ReadInternal(buffer, offset, count, true, cancellationToken).ConfigureAwaitEx();
         }
 #endif
 
@@ -152,7 +152,7 @@ namespace Amazon.Runtime.Internal.Util
                 else
                 {
 #if AWS_ASYNC_API
-                    countFromStream = await base.ReadAsync(thisBuffer, 0, countRemainingForThisRead, cancellationToken).ConfigureAwait(false);
+                    countFromStream = await base.ReadAsync(thisBuffer, 0, countRemainingForThisRead, cancellationToken).ConfigureAwaitEx();
 #else
                     throw new AmazonClientException($"Attempted to call {nameof(TrailingHeadersWrapperStream)}.ReadAsync from an unsupported target platform.");
 #endif

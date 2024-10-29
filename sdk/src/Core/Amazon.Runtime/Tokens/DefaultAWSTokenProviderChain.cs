@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Util.Internal;
 using System;
 #if AWS_ASYNC_API 
 using System.Threading;
@@ -75,7 +76,7 @@ namespace Amazon.Runtime
 #if AWS_ASYNC_API
         public async Task<TryResponse<AWSToken>> TryResolveTokenAsync(CancellationToken cancellationToken = default)
         {
-            return await _chain.Value.TryResolveTokenAsync(cancellationToken).ConfigureAwait(false);
+            return await _chain.Value.TryResolveTokenAsync(cancellationToken).ConfigureAwaitEx();
         }
 #endif
 

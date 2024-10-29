@@ -16,6 +16,7 @@
 using Amazon.Runtime.Internal.Transform;
 using Amazon.Runtime.Internal.Util;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -88,7 +89,7 @@ namespace Amazon.Runtime.Internal
 
             using(httpErrorResponse.ResponseBody)
             {
-                var responseStream = await httpErrorResponse.ResponseBody.OpenResponseAsync().ConfigureAwait(false);
+                var responseStream = await httpErrorResponse.ResponseBody.OpenResponseAsync().ConfigureAwaitEx();
                 return HandleExceptionStream(requestContext, httpErrorResponse, exception, responseStream);
             }
         }

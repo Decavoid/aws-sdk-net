@@ -17,6 +17,7 @@
  *
  *  AWS SDK for .NET
  */
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -151,7 +152,7 @@ namespace Amazon.Util
             HttpMethod httpMethod = new HttpMethod(httpMethodValue);
             var headers = new List<Tuple<string, IEnumerable<string>, HttpStatusCode>>();
             var request = new HttpRequestMessage(httpMethod, url);
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var response = await _httpClient.SendAsync(request).ConfigureAwaitEx();
             foreach (var header in response.Headers)
             {
                 headers.Add(new Tuple<string, IEnumerable<string>, HttpStatusCode>(header.Key, header.Value, response.StatusCode));

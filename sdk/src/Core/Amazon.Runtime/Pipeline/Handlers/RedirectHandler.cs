@@ -16,6 +16,7 @@
 using Amazon.Runtime.Internal.Transform;
 using Amazon.Runtime.Internal.Util;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.Net;
 
@@ -56,7 +57,7 @@ namespace Amazon.Runtime.Internal
             T result = null;
             do
             {
-                result = await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+                result = await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
             } while (HandleRedirect(executionContext));
             return result;
         }

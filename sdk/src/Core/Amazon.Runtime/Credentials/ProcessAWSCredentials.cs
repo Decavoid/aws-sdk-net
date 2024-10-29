@@ -129,7 +129,7 @@ namespace Amazon.Runtime
         {    
             try
             {
-                var processInfo = await AWSSDKUtils.RunProcessAsync(_processStartInfo).ConfigureAwait(false);
+                var processInfo = await AWSSDKUtils.RunProcessAsync(_processStartInfo).ConfigureAwaitEx();
                 return SetCredentialsRefreshState(processInfo);
             }
             catch (ProcessAWSCredentialException)

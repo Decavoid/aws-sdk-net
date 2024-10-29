@@ -96,12 +96,12 @@ namespace Amazon.Runtime.Internal
         {
             try
             {
-                return await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+                return await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
             }
             catch (Exception exception)
             {
                 DisposeReponse(executionContext.ResponseContext);
-                bool rethrowOriginalException = await ProcessExceptionAsync(executionContext, exception).ConfigureAwait(false);
+                bool rethrowOriginalException = await ProcessExceptionAsync(executionContext, exception).ConfigureAwaitEx();
                 if (rethrowOriginalException)
                 {
                     throw;
@@ -240,7 +240,7 @@ namespace Amazon.Runtime.Internal
 
                 if (this.ExceptionHandlers.TryGetValue(exceptionType, out exceptionHandler))
                 {
-                    return await exceptionHandler.HandleAsync(executionContext, exception).ConfigureAwait(false);
+                    return await exceptionHandler.HandleAsync(executionContext, exception).ConfigureAwaitEx();
                 }
 
                 exceptionType = exceptionType.BaseType;

@@ -19,6 +19,7 @@ using Amazon.Runtime.Telemetry;
 using Amazon.Runtime.Telemetry.Metrics;
 using Amazon.Runtime.Telemetry.Tracing;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.IO;
 
@@ -96,13 +97,13 @@ namespace Amazon.Runtime.Internal
                 using (MetricsUtilities.MeasureDuration(executionContext.RequestContext, TelemetryConstants.ResolveIdentityDurationMetricName))
                 using(executionContext.RequestContext.Metrics.StartEvent(Metric.CredentialsRequestTime))
                 {
-                    ic = await Credentials.GetCredentialsAsync().ConfigureAwait(false);
+                    ic = await Credentials.GetCredentialsAsync().ConfigureAwaitEx();
                 }
             }
 
             executionContext.RequestContext.ImmutableCredentials = ic;
 
-            return await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+            return await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
         }
 
 #elif AWS_APM_API

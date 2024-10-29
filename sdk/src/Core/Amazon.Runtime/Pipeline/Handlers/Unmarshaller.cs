@@ -18,6 +18,7 @@ using Amazon.Runtime.Internal.Transform;
 using Amazon.Runtime.Telemetry;
 using Amazon.Runtime.Telemetry.Metrics;
 using Amazon.Util;
+using Amazon.Util.Internal;
 
 namespace Amazon.Runtime.Internal
 {
@@ -67,7 +68,7 @@ namespace Amazon.Runtime.Internal
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async System.Threading.Tasks.Task<T> InvokeAsync<T>(IExecutionContext executionContext)
         {
-            await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+            await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
             // Unmarshall the response
             Unmarshall(executionContext);
             return (T)executionContext.ResponseContext.Response;
@@ -84,9 +85,9 @@ namespace Amazon.Runtime.Internal
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async System.Threading.Tasks.Task<T> InvokeAsync<T>(IExecutionContext executionContext)
         {
-            await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+            await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
             // Unmarshall the response
-            await UnmarshallAsync(executionContext).ConfigureAwait(false);
+            await UnmarshallAsync(executionContext).ConfigureAwaitEx();
             return (T)executionContext.ResponseContext.Response;
         }
 
@@ -185,7 +186,7 @@ namespace Amazon.Runtime.Internal
                         || AWSConfigs.LoggingConfig.LogResponses != ResponseLoggingOption.Never);
 
                     var responseStream = await responseContext.HttpResponse.
-                        ResponseBody.OpenResponseAsync().ConfigureAwait(false);
+                        ResponseBody.OpenResponseAsync().ConfigureAwaitEx();
                     var context = unmarshaller.CreateContext(responseContext.HttpResponse,
                         readEntireResponse,
                         responseStream,

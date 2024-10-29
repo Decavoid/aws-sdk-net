@@ -232,7 +232,7 @@ namespace Amazon.Runtime.Internal.Util
                     }
                 }
 
-                bytesRead = await FillInputBufferAsync(cancellationToken).ConfigureAwait(false);
+                bytesRead = await FillInputBufferAsync(cancellationToken).ConfigureAwaitEx();
             }
 
             return AdjustBufferAfterReading(buffer, offset, count, bytesRead);
@@ -258,7 +258,7 @@ namespace Amazon.Runtime.Internal.Util
                     if (chunkBufferRemaining > _wrappedStreamBufferSize)
                         chunkBufferRemaining = _wrappedStreamBufferSize;
 
-                    var bytesRead = await BaseStream.ReadAsync(_inputBuffer, inputBufferPos, chunkBufferRemaining, cancellationToken).ConfigureAwait(false);
+                    var bytesRead = await BaseStream.ReadAsync(_inputBuffer, inputBufferPos, chunkBufferRemaining, cancellationToken).ConfigureAwaitEx();
                     if (bytesRead == 0)
                         _wrappedStreamConsumed = true;
                     else
@@ -270,7 +270,7 @@ namespace Amazon.Runtime.Internal.Util
                 var readBuffer = new byte[_wrappedStreamBufferSize];
                 while (inputBufferPos < _inputBuffer.Length && !_wrappedStreamConsumed)
                 {
-                    var bytesRead = await BaseStream.ReadAsync(readBuffer, 0, _wrappedStreamBufferSize, cancellationToken).ConfigureAwait(false);
+                    var bytesRead = await BaseStream.ReadAsync(readBuffer, 0, _wrappedStreamBufferSize, cancellationToken).ConfigureAwaitEx();
                     if (bytesRead == 0)
                         _wrappedStreamConsumed = true;
                     else

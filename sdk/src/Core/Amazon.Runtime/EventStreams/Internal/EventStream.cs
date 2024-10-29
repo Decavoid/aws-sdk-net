@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -278,7 +279,7 @@ namespace Amazon.Runtime.EventStreams.Internal
             {
                 while (IsProcessing)
                 {
-                    await ReadFromStreamAsync(buffer).ConfigureAwait(false);
+                    await ReadFromStreamAsync(buffer).ConfigureAwaitEx();
                 }
             }
             // These exceptions are raised on the background thread. They are fired as events for visibility.
@@ -353,7 +354,7 @@ namespace Amazon.Runtime.EventStreams.Internal
         /// <param name="buffer">The buffer to store the read bytes from the stream.</param>
         protected async Task ReadFromStreamAsync(byte[] buffer)
         {
-            var bytesRead = await NetworkStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            var bytesRead = await NetworkStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwaitEx();
             if (bytesRead > 0)
             {
                 // Decoder raises MessageReceived for every message it encounters.
@@ -414,7 +415,7 @@ namespace Amazon.Runtime.EventStreams.Internal
                 return;
 
             IsProcessing = true;
-            await ProcessLoopAsync().ConfigureAwait(false);
+            await ProcessLoopAsync().ConfigureAwaitEx();
         }
 #endif
 

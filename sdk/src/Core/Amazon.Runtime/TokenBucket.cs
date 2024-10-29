@@ -13,6 +13,7 @@
 * permissions and limitations under the License.
 */
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -184,7 +185,7 @@ namespace Amazon.Runtime.Internal
                     return false;
                 }
 
-                await WaitForTokenAsync(delay, cancellationToken).ConfigureAwait(false);
+                await WaitForTokenAsync(delay, cancellationToken).ConfigureAwaitEx();
             }
 
             return true;
@@ -354,7 +355,7 @@ namespace Amazon.Runtime.Internal
 #if AWS_ASYNC_API
         protected virtual async System.Threading.Tasks.Task WaitForTokenAsync(int delayMs, CancellationToken cancellationToken)
         {
-            await System.Threading.Tasks.Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+            await System.Threading.Tasks.Task.Delay(delayMs, cancellationToken).ConfigureAwaitEx();
         }
 #endif
 

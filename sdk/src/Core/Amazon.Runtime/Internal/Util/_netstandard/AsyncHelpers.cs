@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amazon.Util.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -26,7 +27,7 @@ namespace Amazon.Runtime.Internal.Util
                 {
                     try
                     {
-                        await workItem().ConfigureAwait(false);
+                        await workItem().ConfigureAwaitEx();
                     }
                     catch (Exception e)
                     {
@@ -58,7 +59,7 @@ namespace Amazon.Runtime.Internal.Util
                 {
                     try
                     {
-                        ret = await workItem().ConfigureAwait(false);
+                        ret = await workItem().ConfigureAwaitEx();
                     }
                     catch (Exception e)
                     {

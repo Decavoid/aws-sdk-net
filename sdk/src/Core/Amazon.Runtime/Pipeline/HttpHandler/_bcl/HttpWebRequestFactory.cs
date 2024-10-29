@@ -226,10 +226,10 @@ namespace Amazon.Runtime.Internal
                 int bytesRead = 0;
                 int bytesToRead = buffer.Length;
 
-                while ((bytesRead = await contentStream.ReadAsync(buffer, 0, bytesToRead, requestContext.CancellationToken).ConfigureAwait(false)) > 0)
+                while ((bytesRead = await contentStream.ReadAsync(buffer, 0, bytesToRead, requestContext.CancellationToken).ConfigureAwaitEx()) > 0)
                 {
                     requestContext.CancellationToken.ThrowIfCancellationRequested();
-                    await requestContent.WriteAsync(buffer, 0, bytesRead, requestContext.CancellationToken).ConfigureAwait(false);
+                    await requestContent.WriteAsync(buffer, 0, bytesRead, requestContext.CancellationToken).ConfigureAwaitEx();
                 }
             }
             catch
@@ -270,7 +270,7 @@ namespace Amazon.Runtime.Internal
             cancellationToken.ThrowIfCancellationRequested();
             using (requestContent)
             {
-                await requestContent.WriteAsync(content, 0, content.Length, cancellationToken).ConfigureAwait(false);
+                await requestContent.WriteAsync(content, 0, content.Length, cancellationToken).ConfigureAwaitEx();
             }
         }
 
@@ -280,7 +280,7 @@ namespace Amazon.Runtime.Internal
         /// <returns></returns>
         public async Task<Stream> GetRequestContentAsync()
         {
-            return await GetRequestContentAsync(CancellationToken.None).ConfigureAwait(false);
+            return await GetRequestContentAsync(CancellationToken.None).ConfigureAwaitEx();
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Amazon.Runtime.Internal
             {
                 try
                 {
-                    return await _request.GetRequestStreamAsync().ConfigureAwait(false);
+                    return await _request.GetRequestStreamAsync().ConfigureAwaitEx();
                 }
                 catch (WebException webException)
                 {
@@ -335,7 +335,7 @@ namespace Amazon.Runtime.Internal
                 
                 try
                 {
-                    var response = await _request.GetResponseAsync().ConfigureAwait(false) as HttpWebResponse;
+                    var response = await _request.GetResponseAsync().ConfigureAwaitEx() as HttpWebResponse;
                     return new HttpWebRequestResponseData(response);
                 }
                 catch (WebException webException)

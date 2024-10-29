@@ -14,6 +14,7 @@
  */
 
 using Amazon.Runtime.Internal.Util;
+using Amazon.Util.Internal;
 using System;
 
 namespace Amazon.Runtime.Internal
@@ -43,7 +44,7 @@ namespace Amazon.Runtime.Internal
 #if AWS_ASYNC_API
         public async System.Threading.Tasks.Task<bool> HandleAsync(IExecutionContext executionContext, Exception exception)
         {
-            return await HandleExceptionAsync(executionContext, exception as T).ConfigureAwait(false);
+            return await HandleExceptionAsync(executionContext, exception as T).ConfigureAwaitEx();
         }
         public abstract System.Threading.Tasks.Task<bool> HandleExceptionAsync(IExecutionContext executionContext, T exception);
 #endif

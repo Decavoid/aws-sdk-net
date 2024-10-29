@@ -20,6 +20,7 @@ using Amazon.Runtime.Internal;
 using Amazon.Runtime.Internal.Transform;
 using Amazon.Runtime.Internal.Util;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System.Threading.Tasks;
 
 namespace Amazon.Runtime
@@ -43,7 +44,7 @@ namespace Amazon.Runtime
             if (canRetry || executionContext.RequestContext.CSMEnabled)
             {
                 var isClockSkewError = IsClockskew(executionContext, exception);
-                if (isClockSkewError || await RetryForExceptionAsync(executionContext, exception).ConfigureAwait(false))
+                if (isClockSkewError || await RetryForExceptionAsync(executionContext, exception).ConfigureAwaitEx())
                 {
                     executionContext.RequestContext.IsLastExceptionRetryable = true;
                     if (!canRetry)

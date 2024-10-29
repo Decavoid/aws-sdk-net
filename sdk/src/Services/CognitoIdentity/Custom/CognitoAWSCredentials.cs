@@ -17,6 +17,7 @@ using Amazon.CognitoIdentity.Model;
 using Amazon.Runtime;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,7 +110,7 @@ namespace Amazon.CognitoIdentity
         private enum RefreshIdentityOptions
         {
             /// <summary>
-            /// Dont refresh identity. 
+            /// Dont refresh identity.
             /// </summary>
             None = 0,
 
@@ -369,14 +370,14 @@ namespace Amazon.CognitoIdentity
         /// </summary>
         public async System.Threading.Tasks.Task<string> GetIdentityIdAsync()
         {
-            return await GetIdentityIdAsync(RefreshIdentityOptions.None).ConfigureAwait(false);
+            return await GetIdentityIdAsync(RefreshIdentityOptions.None).ConfigureAwaitEx();
         }
 
         private async System.Threading.Tasks.Task<string> GetIdentityIdAsync(RefreshIdentityOptions options)
         {
             if (!IsIdentitySet || options == RefreshIdentityOptions.Refresh)
             {
-                _identityState = await RefreshIdentityAsync().ConfigureAwait(false);
+                _identityState = await RefreshIdentityAsync().ConfigureAwaitEx();
                 if (!string.IsNullOrEmpty(_identityState.LoginProvider))
                 {
                     Logins[_identityState.LoginProvider] = _identityState.LoginToken;
@@ -403,7 +404,7 @@ namespace Amazon.CognitoIdentity
                     IdentityPoolId = IdentityPoolId,
                     Logins = Logins
                 };
-                var response = await cib.GetIdAsync(getIdRequest).ConfigureAwait(false);
+                var response = await cib.GetIdAsync(getIdRequest).ConfigureAwaitEx();
                 isCached = false;
                 UpdateIdentity(response.IdentityId);
             }
@@ -413,7 +414,7 @@ namespace Amazon.CognitoIdentity
 #endif
 
         /// <summary>
-        /// Checks the exception from a call that used an identity id and determines if the 
+        /// Checks the exception from a call that used an identity id and determines if the
         /// failure was caused by a cached identity id. If it was determined then the cache
         /// is cleared and true is return.
         /// </summary>
@@ -557,9 +558,9 @@ namespace Amazon.CognitoIdentity
 
             // Get credentials from determined role or from identity pool
             if (roleSpecified)
-                credentialsState = await GetCredentialsForRoleAsync(roleArn).ConfigureAwait(false);
+                credentialsState = await GetCredentialsForRoleAsync(roleArn).ConfigureAwaitEx();
             else
-                credentialsState = await GetPoolCredentialsAsync().ConfigureAwait(false);
+                credentialsState = await GetPoolCredentialsAsync().ConfigureAwaitEx();
 
             CacheCredentials(credentialsState);
 
@@ -571,7 +572,7 @@ namespace Amazon.CognitoIdentity
             CredentialsRefreshState credentialsState;
             // Retrieve Open Id Token
             // (Reuses existing IdentityId or creates a new one)
-            var identity = await GetIdentityIdAsync(RefreshIdentityOptions.Refresh).ConfigureAwait(false);
+            var identity = await GetIdentityIdAsync(RefreshIdentityOptions.Refresh).ConfigureAwaitEx();
             var getTokenRequest = new GetOpenIdTokenRequest { IdentityId = identity };
             // If logins are set, pass them to the GetOpenId call
             if (Logins.Count > 0)
@@ -581,7 +582,7 @@ namespace Amazon.CognitoIdentity
             GetOpenIdTokenResponse getTokenResult = null;
             try
             {
-                getTokenResult = await cib.GetOpenIdTokenAsync(getTokenRequest).ConfigureAwait(false);
+                getTokenResult = await cib.GetOpenIdTokenAsync(getTokenRequest).ConfigureAwaitEx();
             }
             catch (AmazonCognitoIdentityException e)
             {
@@ -593,7 +594,7 @@ namespace Amazon.CognitoIdentity
 
             if (retry)
             {
-                return await GetCredentialsForRoleAsync(roleArn).ConfigureAwait(false);
+                return await GetCredentialsForRoleAsync(roleArn).ConfigureAwaitEx();
             }
 
             string token = getTokenResult.Token;
@@ -609,7 +610,7 @@ namespace Amazon.CognitoIdentity
                 RoleSessionName = "NetProviderSession",
                 DurationSeconds = DefaultDurationSeconds
             };
-            var credentials = (await sts.AssumeRoleWithWebIdentityAsync(assumeRequest).ConfigureAwait(false)).Credentials;
+            var credentials = (await sts.AssumeRoleWithWebIdentityAsync(assumeRequest).ConfigureAwaitEx()).Credentials;
 
             // Return new refresh state (credentials and expiration)
             credentialsState = new CredentialsRefreshState(credentials.GetCredentials(), credentials.Expiration);
@@ -620,7 +621,7 @@ namespace Amazon.CognitoIdentity
         private async System.Threading.Tasks.Task<CredentialsRefreshState> GetPoolCredentialsAsync()
         {
             CredentialsRefreshState credentialsState;
-            var identity = await GetIdentityIdAsync(RefreshIdentityOptions.Refresh).ConfigureAwait(false);
+            var identity = await GetIdentityIdAsync(RefreshIdentityOptions.Refresh).ConfigureAwaitEx();
             var getCredentialsRequest = new GetCredentialsForIdentityRequest { IdentityId = identity };
             if (Logins.Count > 0)
                 getCredentialsRequest.Logins = Logins;
@@ -634,7 +635,7 @@ namespace Amazon.CognitoIdentity
             GetCredentialsForIdentityResponse response = null;
             try
             {
-                response = (await cib.GetCredentialsForIdentityAsync(getCredentialsRequest).ConfigureAwait(false));
+                response = (await cib.GetCredentialsForIdentityAsync(getCredentialsRequest).ConfigureAwaitEx());
                 // IdentityId may have changed, save the new value
                 UpdateIdentity(response.IdentityId);
             }
@@ -648,7 +649,7 @@ namespace Amazon.CognitoIdentity
 
             if (retry)
             {
-                return await GetPoolCredentialsAsync().ConfigureAwait(false);
+                return await GetPoolCredentialsAsync().ConfigureAwaitEx();
             }
 
 

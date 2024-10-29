@@ -188,7 +188,7 @@ namespace Amazon.Runtime.Internal.Util
         /// </returns>
         public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            int result = await base.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            int result = await base.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwaitEx();
 
             CurrentPosition += result;
             if (!FinishedHashing)

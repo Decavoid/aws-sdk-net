@@ -22,6 +22,7 @@ using Amazon.Runtime.Internal;
 using Amazon.Runtime.Internal.Util;
 using Amazon.Runtime.SharedInterfaces;
 using Amazon.Util;
+using Amazon.Util.Internal;
 
 namespace Amazon.Runtime.Credentials.Internal
 {
@@ -406,7 +407,7 @@ namespace Amazon.Runtime.Credentials.Internal
                     options,
                     options.CacheFolderLocation,
                     cancellationToken)
-                .ConfigureAwait(false);
+                .ConfigureAwaitEx();
 
             if (cachedToken.Success)
             {
@@ -443,7 +444,7 @@ namespace Amazon.Runtime.Credentials.Internal
                     //if registration is within 5 minutes of expiration, generate a new token
                     if (ssoToken.RegisteredClientExpired() && options.SupportsGettingNewToken)
                     {
-                        return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwait(false);
+                        return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwaitEx();
                     }
                     // did we recently try to refresh the token?
                     if (true == inMemoryToken?.RefreshState.IsInRefreshCoolDown())
@@ -456,7 +457,7 @@ namespace Amazon.Runtime.Credentials.Internal
                         // if we can't refresh, but can generate a new token, do that
                         else if (options.SupportsGettingNewToken)
                         {
-                            return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwait(false);
+                            return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwaitEx();
                         }
                         // we've already tried to refresh and failed, nothing more can be done.
                         else
@@ -469,11 +470,11 @@ namespace Amazon.Runtime.Credentials.Internal
                     {
                         _logger.InfoFormat($"Refreshing SSOToken for [{options.Session}]");
 
-                        var response = await _ssooidcClient.RefreshTokenAsync(MapSsoTokenToGetSsoTokenResponse(ssoToken)).ConfigureAwait(false);
+                        var response = await _ssooidcClient.RefreshTokenAsync(MapSsoTokenToGetSsoTokenResponse(ssoToken)).ConfigureAwaitEx();
 
                         var newToken = MapGetSsoTokenResponseToSsoToken(response, options.Session);
 
-                        await _ssoTokenFileCache.SaveSsoTokenAsync(newToken, options.CacheFolderLocation, cancellationToken).ConfigureAwait(false);
+                        await _ssoTokenFileCache.SaveSsoTokenAsync(newToken, options.CacheFolderLocation, cancellationToken).ConfigureAwaitEx();
 
                         var newInMemoryToken = new CacheState
                         {
@@ -491,7 +492,7 @@ namespace Amazon.Runtime.Credentials.Internal
                         _logger.Error(ex, $"Refreshing SSOToken for [{options.Session}] failed: {ex.Message}");
                         if (ssoToken.IsExpired() && options.SupportsGettingNewToken)
                         {
-                            return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwait(false);
+                            return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwaitEx();
                         }
                         else if (!ssoToken.IsExpired())
                         {
@@ -523,7 +524,7 @@ namespace Amazon.Runtime.Credentials.Internal
                 {
                     if (options.SupportsGettingNewToken)
                     {
-                        return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwait(false);
+                        return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwaitEx();
                     }
                     else
                     {
@@ -540,7 +541,7 @@ namespace Amazon.Runtime.Credentials.Internal
             // if no token found on disk, create one if we can
             else if (options.SupportsGettingNewToken)
             {
-                return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwait(false);
+                return await GenerateNewTokenAsync(options, cancellationToken).ConfigureAwaitEx();
             }
             // can't find a token and can't create one
             else
@@ -551,7 +552,7 @@ namespace Amazon.Runtime.Credentials.Internal
 
         public async Task LogoutAsync(string ssoCacheDirectory = null, CancellationToken cancellationToken = default)
         {
-            var cachedFileTokens = await _ssoTokenFileCache.ScanSsoTokensAsync(ssoCacheDirectory, cancellationToken).ConfigureAwait(false);
+            var cachedFileTokens = await _ssoTokenFileCache.ScanSsoTokensAsync(ssoCacheDirectory, cancellationToken).ConfigureAwaitEx();
 #pragma warning disable CA1031 // Do not catch general exception types.
             // specific exceptions cannot be caught here since the exception types exist in Amazon.SSO.Model namespace
             // and are not accessible in Core.
@@ -568,7 +569,7 @@ namespace Amazon.Runtime.Credentials.Internal
                     {
                         // create a new sso client using the region from the cached token.
                         var _ssoClient = CreateSSOLogoutClient(cachedFileToken.SsoToken.Region);
-                        await _ssoClient.LogoutAsync(cachedFileToken.SsoToken.AccessToken, cancellationToken).ConfigureAwait(false);
+                        await _ssoClient.LogoutAsync(cachedFileToken.SsoToken.AccessToken, cancellationToken).ConfigureAwaitEx();
                     }
                     catch (Exception ex)
                     {
@@ -588,7 +589,7 @@ namespace Amazon.Runtime.Credentials.Internal
                  options,
                  options.CacheFolderLocation,
                  cancellationToken)
-             .ConfigureAwait(false);
+             .ConfigureAwaitEx();
 
             if (cachedToken.Success)
             {
@@ -602,7 +603,7 @@ namespace Amazon.Runtime.Credentials.Internal
                 {
                     // create a new sso client using the region from the cached file.
                     var _ssoClient = CreateSSOLogoutClient(options.Region);
-                    await _ssoClient.LogoutAsync(ssoToken.AccessToken, cancellationToken).ConfigureAwait(false);
+                    await _ssoClient.LogoutAsync(ssoToken.AccessToken, cancellationToken).ConfigureAwaitEx();
                 }
                 catch (Exception ex)
                 {
@@ -658,15 +659,15 @@ namespace Amazon.Runtime.Credentials.Internal
             // original client (which still works, but will not allow the GetSsoTokenAsync operation to be cancelled).
             if (ssooidc_V2Client != null)
             {
-                response = await ssooidc_V2Client.GetSsoTokenAsync(request, cancellationToken).ConfigureAwait(false);
+                response = await ssooidc_V2Client.GetSsoTokenAsync(request, cancellationToken).ConfigureAwaitEx();
             }
             else
             {
-                response = await _ssooidcClient.GetSsoTokenAsync(request).ConfigureAwait(false);
+                response = await _ssooidcClient.GetSsoTokenAsync(request).ConfigureAwaitEx();
             }
 
             var token = MapGetSsoTokenResponseToSsoToken(response, options.Session);
-            await _ssoTokenFileCache.SaveSsoTokenAsync(token, options.CacheFolderLocation, cancellationToken).ConfigureAwait(false);
+            await _ssoTokenFileCache.SaveSsoTokenAsync(token, options.CacheFolderLocation, cancellationToken).ConfigureAwaitEx();
 
             return token;
         }

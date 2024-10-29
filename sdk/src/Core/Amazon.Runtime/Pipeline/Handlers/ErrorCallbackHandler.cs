@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace Amazon.Runtime.Internal
         {
             try
             {   
-                return await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+                return await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
             }
             catch(Exception exception)
             {

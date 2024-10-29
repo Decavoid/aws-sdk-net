@@ -17,6 +17,7 @@ using Amazon.Runtime.Internal.Util;
 using Amazon.Runtime.Telemetry;
 using Amazon.Runtime.Telemetry.Metrics;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.Net;
 
@@ -123,7 +124,7 @@ namespace Amazon.Runtime.Internal
             var requestContext = executionContext.RequestContext;
             var responseContext = executionContext.ResponseContext;
             bool shouldRetry = false;
-            await this.RetryPolicy.ObtainSendTokenAsync(executionContext, null).ConfigureAwait(false);
+            await this.RetryPolicy.ObtainSendTokenAsync(executionContext, null).ConfigureAwaitEx();
 
             do
             {
@@ -132,7 +133,7 @@ namespace Amazon.Runtime.Internal
                 try
                 {        
                     SetRetryHeaders(requestContext);
-                    T result = await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+                    T result = await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
                     this.RetryPolicy.NotifySuccess(executionContext);
                     return result;
                 }
@@ -143,7 +144,7 @@ namespace Amazon.Runtime.Internal
 
                 if (capturedException != null)
                 {
-                    shouldRetry = await this.RetryPolicy.RetryAsync(executionContext, capturedException.SourceException).ConfigureAwait(false);
+                    shouldRetry = await this.RetryPolicy.RetryAsync(executionContext, capturedException.SourceException).ConfigureAwaitEx();
                     if (!shouldRetry)
                     {
                         LogForError(requestContext, capturedException.SourceException);
@@ -158,13 +159,13 @@ namespace Amazon.Runtime.Internal
                         LogForRetry(requestContext, capturedException.SourceException);
                     }
 
-                    await this.RetryPolicy.ObtainSendTokenAsync(executionContext, capturedException.SourceException).ConfigureAwait(false);
+                    await this.RetryPolicy.ObtainSendTokenAsync(executionContext, capturedException.SourceException).ConfigureAwaitEx();
                 }
 
                 PrepareForRetry(requestContext);
 
                 using (requestContext.Metrics.StartEvent(Metric.RetryPauseTime))
-                    await RetryPolicy.WaitBeforeRetryAsync(executionContext).ConfigureAwait(false);
+                    await RetryPolicy.WaitBeforeRetryAsync(executionContext).ConfigureAwaitEx();
 
             } while (shouldRetry);
             throw new AmazonClientException("Neither a response was returned nor an exception was thrown in the Runtime RetryHandler.");

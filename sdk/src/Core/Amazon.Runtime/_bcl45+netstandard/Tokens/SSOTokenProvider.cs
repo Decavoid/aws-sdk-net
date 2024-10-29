@@ -16,7 +16,8 @@
 using System;
 using Amazon.Runtime.Credentials.Internal;
 using Amazon.Runtime.Internal.Util;
-#if AWS_ASYNC_API 
+using Amazon.Util.Internal;
+#if AWS_ASYNC_API
 using System.Threading;
 using System.Threading.Tasks;
 #endif
@@ -95,7 +96,7 @@ namespace Amazon.Runtime
             {
                 var requestOptions = BuildSsoTokenManagerGetTokenOptions();
 
-                var ssoToken = await _ssoTokenManager.GetTokenAsync(requestOptions, cancellationToken).ConfigureAwait(false);
+                var ssoToken = await _ssoTokenManager.GetTokenAsync(requestOptions, cancellationToken).ConfigureAwaitEx();
 
                 return new TryResponse<AWSToken>
                 {

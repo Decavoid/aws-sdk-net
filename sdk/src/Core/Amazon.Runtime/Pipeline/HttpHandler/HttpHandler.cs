@@ -205,10 +205,10 @@ namespace Amazon.Runtime.Internal
                                 // does not accept a cancellation token. A workaround is used. This isn't necessary in .NET Standard
                                 // where the stream is a property of the request.
 #if BCL45
-                            var requestContent = await httpRequest.GetRequestContentAsync(executionContext.RequestContext.CancellationToken).ConfigureAwait(false);
-                            await WriteContentToRequestBodyAsync(requestContent, httpRequest, executionContext.RequestContext).ConfigureAwait(false);
+                            var requestContent = await httpRequest.GetRequestContentAsync(executionContext.RequestContext.CancellationToken).ConfigureAwaitEx();
+                            await WriteContentToRequestBodyAsync(requestContent, httpRequest, executionContext.RequestContext).ConfigureAwaitEx();
 #else
-                                var requestContent = await httpRequest.GetRequestContentAsync().ConfigureAwait(false);
+                                var requestContent = await httpRequest.GetRequestContentAsync().ConfigureAwaitEx();
                                 WriteContentToRequestBody(requestContent, httpRequest, executionContext.RequestContext);
 #endif
                             }
@@ -220,14 +220,14 @@ namespace Amazon.Runtime.Internal
 
                             if (edi != null)
                             {
-                                await CompleteFailedRequest(executionContext, httpRequest).ConfigureAwait(false);
+                                await CompleteFailedRequest(executionContext, httpRequest).ConfigureAwaitEx();
 
                                 edi.Throw();
                             }
                         }
 
                         var response = await httpRequest.GetResponseAsync(executionContext.RequestContext.CancellationToken).
-                            ConfigureAwait(false);
+                            ConfigureAwaitEx();
                         executionContext.ResponseContext.HttpResponse = response;
                         RecordHttpTelemetryData(executionContext, traceSpan, wrappedRequest);
                 }
@@ -249,7 +249,7 @@ namespace Amazon.Runtime.Internal
             IWebResponseData iwrd = null;
             try
             {
-                iwrd = await httpRequest.GetResponseAsync(executionContext.RequestContext.CancellationToken).ConfigureAwait(false);
+                iwrd = await httpRequest.GetResponseAsync(executionContext.RequestContext.CancellationToken).ConfigureAwaitEx();
             }
             catch { }
             finally
@@ -479,7 +479,7 @@ namespace Amazon.Runtime.Internal
             {
                 byte[] requestData = wrappedRequest.Content;
                 requestContext.Metrics.AddProperty(Metric.RequestSize, requestData.Length);
-                await httpRequest.WriteToRequestBodyAsync(requestContent, requestData, requestContext.Request.Headers, requestContext.CancellationToken).ConfigureAwait(false);
+                await httpRequest.WriteToRequestBodyAsync(requestContent, requestData, requestContext.Request.Headers, requestContext.CancellationToken).ConfigureAwaitEx();
             }
             else
             {
@@ -487,7 +487,7 @@ namespace Amazon.Runtime.Internal
                 if (wrappedRequest.ContentStream == null)
                 {
                     originalStream = new System.IO.MemoryStream();
-                    await originalStream.WriteAsync(wrappedRequest.Content, 0, wrappedRequest.Content.Length, requestContext.CancellationToken).ConfigureAwait(false);
+                    await originalStream.WriteAsync(wrappedRequest.Content, 0, wrappedRequest.Content.Length, requestContext.CancellationToken).ConfigureAwaitEx();
                     originalStream.Position = 0;
                 }
                 else
@@ -500,7 +500,7 @@ namespace Amazon.Runtime.Internal
                     originalStream = httpRequest.SetupProgressListeners(originalStream, requestContext.ClientConfig.ProgressUpdateInterval, this.CallbackSender, callback);
                 var inputStream = GetInputStream(requestContext, originalStream, wrappedRequest);
                 await httpRequest.WriteToRequestBodyAsync(requestContent, inputStream,
-                    requestContext.Request.Headers, requestContext).ConfigureAwait(false);
+                    requestContext.Request.Headers, requestContext).ConfigureAwaitEx();
 
             }
         }

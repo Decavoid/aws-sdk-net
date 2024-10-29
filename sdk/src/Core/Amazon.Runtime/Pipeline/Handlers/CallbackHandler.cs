@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Util.Internal;
 using System;
 
 namespace Amazon.Runtime.Internal
@@ -58,7 +59,7 @@ namespace Amazon.Runtime.Internal
         public override async System.Threading.Tasks.Task<T> InvokeAsync<T>(IExecutionContext executionContext)
         {
             PreInvoke(executionContext);
-            var response = await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+            var response = await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
             PostInvoke(executionContext);
             return response;
         }

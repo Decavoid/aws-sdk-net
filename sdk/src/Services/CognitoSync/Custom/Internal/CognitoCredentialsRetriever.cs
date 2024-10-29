@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
- * 
+ *
  *  http://aws.amazon.com/apache2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
@@ -64,7 +64,7 @@ namespace Amazon.CognitoSync.Internal
             var cognitoCredentials = Credentials as CognitoAWSCredentials;
             if (cognitoCredentials != null)
             {
-                SetIdentity(executionContext, cognitoCredentials.GetIdentityId(), cognitoCredentials.IdentityPoolId);       
+                SetIdentity(executionContext, cognitoCredentials.GetIdentityId(), cognitoCredentials.IdentityPoolId);
             }
         }
 #elif AWS_ASYNC_API
@@ -76,14 +76,14 @@ namespace Amazon.CognitoSync.Internal
         /// <returns></returns>
         public override async System.Threading.Tasks.Task<T> InvokeAsync<T>(IExecutionContext executionContext)
         {
-            T result = await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+            T result = await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
 
             // Only configure IdentityPoolId and IdentityId when using CognitoAWSCredentials
             var cognitoCredentials = Credentials as CognitoAWSCredentials;
             if (cognitoCredentials != null)
             {
-                string identityId = await cognitoCredentials.GetIdentityIdAsync().ConfigureAwait(false);
-                SetIdentity(executionContext, identityId, cognitoCredentials.IdentityPoolId);                
+                string identityId = await cognitoCredentials.GetIdentityIdAsync().ConfigureAwaitEx();
+                SetIdentity(executionContext, identityId, cognitoCredentials.IdentityPoolId);
             }
 
             return result;
@@ -102,7 +102,7 @@ namespace Amazon.CognitoSync.Internal
         }
 
         /// <summary>
-        /// A cache of objects that store the reflection objects. This is done so that reflection is only used once in order to 
+        /// A cache of objects that store the reflection objects. This is done so that reflection is only used once in order to
         /// set the fields on the request.
         /// </summary>
 #if NET8_0_OR_GREATER

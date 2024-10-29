@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Amazon.Util;
+using Amazon.Util.Internal;
 
 namespace Amazon.Runtime.Internal
 {
@@ -73,7 +74,7 @@ namespace Amazon.Runtime.Internal
                         
             try
             {
-                return await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);    
+                return await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();    
             }
             catch (Exception exception)
             {

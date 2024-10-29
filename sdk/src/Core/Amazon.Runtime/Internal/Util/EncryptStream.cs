@@ -25,6 +25,7 @@ using System.IO;
 using Amazon.Runtime;
 using System.Collections;
 using System.Diagnostics;
+using Amazon.Util.Internal;
 #if AWS_ASYNC_API
 using System.Threading;
 using System.Threading.Tasks;
@@ -133,7 +134,7 @@ namespace Amazon.Runtime.Internal.Util
 
             long previousPosition = this.Position;
             int maxBytesRead = count - (count % internalEncryptionBlockSize);
-            int readBytes = await base.ReadAsync(buffer, offset, maxBytesRead, cancellationToken).ConfigureAwait(false);
+            int readBytes = await base.ReadAsync(buffer, offset, maxBytesRead, cancellationToken).ConfigureAwaitEx();
 
             return Append(buffer, offset, previousPosition, readBytes);
         }

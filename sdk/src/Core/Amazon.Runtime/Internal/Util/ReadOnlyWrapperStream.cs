@@ -20,6 +20,7 @@
  *
  */
 
+using Amazon.Util.Internal;
 using System;
 using System.IO;
 #if AWS_ASYNC_API
@@ -189,7 +190,7 @@ namespace Amazon.Runtime.Internal.Util
             if (bytesToRead <= 0)
                 return 0;
 
-            int result = await base.ReadAsync(buffer, offset, bytesToRead, cancellationToken).ConfigureAwait(false);
+            int result = await base.ReadAsync(buffer, offset, bytesToRead, cancellationToken).ConfigureAwaitEx();
             _currentPosition += result;
             return result;
         }

@@ -53,6 +53,8 @@ namespace Amazon.Util.Internal
         public bool DisableDangerousDisablePathAndQueryCanonicalization { get; set; }
 #endif
 
+        public bool AsyncTasksContinueOnCapturedContext { get; set; }
+
         private const string _rootAwsSectionName = "aws";
         public RootConfig()
         {

@@ -36,76 +36,85 @@ namespace ServiceClientGenerator.Generators.SourceFiles
             
             #line default
             #line hidden
-            this.Write("\r\nusing System;\r\nusing System.Collections.Generic;\r\nusing System.Text;\r\nusing Sys" +
-                    "tem.Collections;\r\nusing System.Threading;\r\nusing System.Threading.Tasks;\r\nusing " +
-                    "Amazon.Runtime;\r\n\r\n#pragma warning disable CS0612,CS0618\r\nnamespace ");
+            this.Write(@"
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
+using Amazon.Runtime;
+using Amazon.Util.Internal;
+
+#pragma warning disable CS0612,CS0618
+namespace ");
             
-            #line 19 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 20 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Config.Namespace));
             
             #line default
             #line hidden
             this.Write(".Model\r\n{\r\n    /// <summary>\r\n    /// Base class for ");
             
-            #line 22 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 23 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write(" paginators.\r\n    /// </summary>\r\n    internal sealed partial class ");
             
-            #line 24 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 25 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Paginator : IPaginator<");
             
-            #line 24 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 25 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response>, I");
             
-            #line 24 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 25 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Paginator\r\n    {\r\n        private readonly IAmazon");
             
-            #line 26 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 27 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Config.ClassName));
             
             #line default
             #line hidden
             this.Write(" _client;\r\n        private readonly ");
             
-            #line 27 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 28 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
-            this.Write("Request _request;\r\n        private int _isPaginatorInUse = 0;\r\n        \r\n        " +
-                    "/// <summary>\r\n        /// Enumerable containing all full responses for the oper" +
-                    "ation\r\n        /// </summary>\r\n        public IPaginatedEnumerable<");
+            this.Write("Request _request;\r\n        private int _isPaginatorInUse = 0;\r\n\r\n        /// <sum" +
+                    "mary>\r\n        /// Enumerable containing all full responses for the operation\r\n " +
+                    "       /// </summary>\r\n        public IPaginatedEnumerable<");
             
-            #line 33 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 34 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response> Responses => new PaginatedResponse<");
             
-            #line 33 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 34 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response>(this);\r\n");
             
-            #line 34 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 35 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 foreach(var resultKey in this.Operation.Paginators.ResultKeys.Where(r => r.ListItemType != null))
 {
@@ -115,56 +124,56 @@ foreach(var resultKey in this.Operation.Paginators.ResultKeys.Where(r => r.ListI
             #line hidden
             this.Write("\r\n        /// <summary>\r\n        /// Enumerable containing all of the ");
             
-            #line 40 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 41 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(resultKey.Member.PropertyName));
             
             #line default
             #line hidden
             this.Write("\r\n        /// </summary>\r\n        public IPaginatedEnumerable<");
             
-            #line 42 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 43 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(resultKey.ListItemType));
             
             #line default
             #line hidden
             this.Write("> ");
             
-            #line 42 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 43 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(resultKey.Member.PropertyName));
             
             #line default
             #line hidden
-            this.Write(" => \r\n            new PaginatedResultKeyResponse<");
+            this.Write(" =>\r\n            new PaginatedResultKeyResponse<");
             
-            #line 43 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 44 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response, ");
             
-            #line 43 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 44 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(resultKey.ListItemType));
             
             #line default
             #line hidden
             this.Write(">(this, (i) => i.");
             
-            #line 43 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 44 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(resultKey.PropertyName));
             
             #line default
             #line hidden
             this.Write(" ?? new ");
             
-            #line 43 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 44 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(resultKey.Member.DetermineType()));
             
             #line default
             #line hidden
             this.Write("());\r\n");
             
-            #line 44 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 45 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -173,21 +182,21 @@ foreach(var resultKey in this.Operation.Paginators.ResultKeys.Where(r => r.ListI
             #line hidden
             this.Write("\r\n        internal ");
             
-            #line 48 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 49 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Paginator(IAmazon");
             
-            #line 48 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 49 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Config.ClassName));
             
             #line default
             #line hidden
             this.Write(" client, ");
             
-            #line 48 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 49 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
@@ -195,14 +204,14 @@ foreach(var resultKey in this.Operation.Paginators.ResultKeys.Where(r => r.ListI
             this.Write("Request request)\r\n        {\r\n            this._client = client;\r\n            this" +
                     "._request = request;\r\n        }\r\n#if BCL\r\n        IEnumerable<");
             
-            #line 54 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 55 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response> IPaginator<");
             
-            #line 54 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 55 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
@@ -216,7 +225,7 @@ foreach(var resultKey in this.Operation.Paginators.ResultKeys.Where(r => r.ListI
             PaginatorUtils.SetUserAgentAdditionOnRequest(_request);
 ");
             
-            #line 61 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 62 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 foreach(var inputToken in this.Operation.Paginators.InputTokens)
 {
@@ -226,21 +235,21 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("            var ");
             
-            #line 65 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 66 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(" = _request.");
             
-            #line 65 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 66 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.PropertyName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 66 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 67 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -249,14 +258,14 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("            ");
             
-            #line 69 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 70 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response response;\r\n            do\r\n            {\r\n");
             
-            #line 72 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 73 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 foreach(var inputToken in this.Operation.Paginators.InputTokens)
 {
@@ -266,21 +275,21 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("                _request.");
             
-            #line 76 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 77 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.PropertyName));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 76 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 77 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 77 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 78 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -289,14 +298,14 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("                response = _client.");
             
-            #line 80 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 81 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("(_request);\r\n");
             
-            #line 81 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 82 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 for(var i = 0; i < this.Operation.Paginators.InputTokens.Count; i++)
 {
@@ -306,21 +315,21 @@ for(var i = 0; i < this.Operation.Paginators.InputTokens.Count; i++)
             #line hidden
             this.Write("                ");
             
-            #line 85 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 86 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[i].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(" = response.");
             
-            #line 85 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 86 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.OutputTokens[i].PropertyName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 86 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 87 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -329,7 +338,7 @@ for(var i = 0; i < this.Operation.Paginators.InputTokens.Count; i++)
             #line hidden
             this.Write("                yield return response;\r\n            }\r\n");
             
-            #line 91 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 92 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 if (this.Operation.Paginators.MoreResults != null)
 {
@@ -339,16 +348,16 @@ if (this.Operation.Paginators.MoreResults != null)
             #line hidden
             this.Write("            while (response.");
             
-            #line 95 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 96 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.MoreResults.PropertyName));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 96 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 97 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
-} 
+}
 else if (this.Operation.Paginators.InputTokens[0].IsListOrDict)
 {
 
@@ -357,14 +366,14 @@ else if (this.Operation.Paginators.InputTokens[0].IsListOrDict)
             #line hidden
             this.Write("            while (");
             
-            #line 101 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 102 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(".Count > 0);\r\n");
             
-            #line 102 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 103 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 else if (this.Operation.StopPaginationOnSameToken)
@@ -375,21 +384,21 @@ else if (this.Operation.StopPaginationOnSameToken)
             #line hidden
             this.Write("            while (");
             
-            #line 107 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 108 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(" != _request.");
             
-            #line 107 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 108 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].PropertyName));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 108 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 109 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 else
@@ -400,14 +409,14 @@ else
             #line hidden
             this.Write("            while (!string.IsNullOrEmpty(");
             
-            #line 113 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 114 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write("));\r\n");
             
-            #line 114 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 115 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -417,14 +426,14 @@ else
             this.Write("        }\r\n#endif\r\n#if AWS_ASYNC_ENUMERABLES_API\r\n        async IAsyncEnumerable<" +
                     "");
             
-            #line 120 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 121 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response> IPaginator<");
             
-            #line 120 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 121 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
@@ -438,7 +447,7 @@ else
             PaginatorUtils.SetUserAgentAdditionOnRequest(_request);
 ");
             
-            #line 127 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 128 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 foreach(var inputToken in this.Operation.Paginators.InputTokens)
 {
@@ -448,21 +457,21 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("            var ");
             
-            #line 131 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 132 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(" = _request.");
             
-            #line 131 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 132 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.PropertyName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 132 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 133 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -471,14 +480,14 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("            ");
             
-            #line 135 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 136 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
             this.Write("Response response;\r\n            do\r\n            {\r\n");
             
-            #line 138 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 139 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 foreach(var inputToken in this.Operation.Paginators.InputTokens)
 {
@@ -488,21 +497,21 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("                _request.");
             
-            #line 142 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 143 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.PropertyName));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 142 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 143 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(inputToken.Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 143 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 144 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -511,14 +520,14 @@ foreach(var inputToken in this.Operation.Paginators.InputTokens)
             #line hidden
             this.Write("                response = await _client.");
             
-            #line 146 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 147 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Name));
             
             #line default
             #line hidden
-            this.Write("Async(_request, cancellationToken).ConfigureAwait(false);\r\n");
+            this.Write("Async(_request, cancellationToken).ConfigureAwaitEx();\r\n");
             
-            #line 147 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 148 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 for(var i = 0; i < this.Operation.Paginators.InputTokens.Count; i++)
 {
@@ -528,21 +537,21 @@ for(var i = 0; i < this.Operation.Paginators.InputTokens.Count; i++)
             #line hidden
             this.Write("                ");
             
-            #line 151 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 152 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[i].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(" = response.");
             
-            #line 151 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 152 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.OutputTokens[i].PropertyName));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 152 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 153 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
@@ -552,7 +561,7 @@ for(var i = 0; i < this.Operation.Paginators.InputTokens.Count; i++)
             this.Write("                cancellationToken.ThrowIfCancellationRequested();\r\n              " +
                     "  yield return response;\r\n            }\r\n");
             
-            #line 158 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 159 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 if (this.Operation.Paginators.MoreResults != null)
 {
@@ -562,16 +571,16 @@ if (this.Operation.Paginators.MoreResults != null)
             #line hidden
             this.Write("            while (response.");
             
-            #line 162 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 163 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.MoreResults.PropertyName));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 163 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 164 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
-} 
+}
 else if (this.Operation.Paginators.InputTokens[0].IsListOrDict)
 {
 
@@ -580,14 +589,14 @@ else if (this.Operation.Paginators.InputTokens[0].IsListOrDict)
             #line hidden
             this.Write("            while (");
             
-            #line 168 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 169 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(".Count > 0);\r\n");
             
-            #line 169 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 170 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 else if (this.Operation.StopPaginationOnSameToken)
@@ -598,21 +607,21 @@ else if (this.Operation.StopPaginationOnSameToken)
             #line hidden
             this.Write("            while (");
             
-            #line 174 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 175 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write(" != _request.");
             
-            #line 174 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 175 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].PropertyName));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 175 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 176 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 else
@@ -623,28 +632,28 @@ else
             #line hidden
             this.Write("            while (!string.IsNullOrEmpty(");
             
-            #line 180 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 181 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Operation.Paginators.InputTokens[0].Member.ArgumentName));
             
             #line default
             #line hidden
             this.Write("));\r\n");
             
-            #line 181 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+            #line 182 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
 }
 
             
             #line default
             #line hidden
-            this.Write("        }\r\n#endif\r\n    }\r\n}\r\n \r\n");
+            this.Write("        }\r\n#endif\r\n    }\r\n}\r\n\r\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 189 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
+        #line 190 "C:\repos\aws-sdk-net-staging\generator\ServiceClientGeneratorLib\Generators\SourceFiles\BasePaginator.tt"
 
     // The operation the marshaller will be used on
-	public Operation Operation { get; set; }	
+	public Operation Operation { get; set; }
 
         
         #line default

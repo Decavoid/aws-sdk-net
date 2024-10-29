@@ -15,6 +15,7 @@
 
 using Amazon.Util;
 using Amazon.Runtime.Internal.Util;
+using Amazon.Util.Internal;
 using System.Globalization;
 using System;
 using Amazon.Runtime.Telemetry;
@@ -91,7 +92,7 @@ namespace Amazon.Runtime.Internal
             {
                 callDurationMetricsMeasurer = MetricsUtilities.MeasureDuration(executionContext.RequestContext, TelemetryConstants.CallDurationMetricName);
                 executionContext.RequestContext.Metrics.StartEvent(Metric.ClientExecuteTime);
-                var response = await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+                var response = await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
 
                 var requestId = executionContext.ResponseContext.Response.ResponseMetadata?.RequestId;
                 if (requestId != null)

@@ -145,7 +145,7 @@ namespace Amazon.SecurityToken
             var request = SetupAssumeRoleWithWebIdentityRequest(webIdentityToken, roleArn, roleSessionName, options);
             try
             {
-                var response = await AssumeRoleWithWebIdentityAsync(request).ConfigureAwait(false);
+                var response = await AssumeRoleWithWebIdentityAsync(request).ConfigureAwaitEx();
                 return new AssumeRoleImmutableCredentials(response.Credentials.AccessKeyId, response.Credentials.SecretAccessKey,
                     response.Credentials.SessionToken, response.Credentials.Expiration);
             }

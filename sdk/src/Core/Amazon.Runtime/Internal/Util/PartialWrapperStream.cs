@@ -20,6 +20,7 @@
  *
  */
 
+using Amazon.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -186,7 +187,7 @@ namespace Amazon.Runtime.Internal.Util
             int bytesToRead = count < this.RemainingPartSize ? count : (int)this.RemainingPartSize;
             if (bytesToRead <= 0)
                 return 0;
-            return await base.ReadAsync(buffer, offset, bytesToRead, cancellationToken).ConfigureAwait(false);
+            return await base.ReadAsync(buffer, offset, bytesToRead, cancellationToken).ConfigureAwaitEx();
         }
 
         /// <summary>

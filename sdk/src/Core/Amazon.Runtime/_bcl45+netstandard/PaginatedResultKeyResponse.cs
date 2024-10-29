@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amazon.Util.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -37,7 +38,7 @@ namespace Amazon.Runtime
         /// <returns></returns>
          public async IAsyncEnumerator<TResultKey> GetAsyncEnumerator(CancellationToken cancellationToken = default)
          {
-             await foreach (var parent in _paginator.PaginateAsync().WithCancellation(cancellationToken).ConfigureAwait(false))
+             await foreach (var parent in _paginator.PaginateAsync().WithCancellation(cancellationToken).ConfigureAwaitEx())
              {
                  foreach (var resultKey in _resultKeySelector(parent))
                  {
@@ -62,7 +63,7 @@ namespace Amazon.Runtime
                  }
              }
          }
- 
+
          IEnumerator IEnumerable.GetEnumerator()
          {
              return GetEnumerator();

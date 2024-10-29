@@ -191,7 +191,7 @@ namespace Amazon.Runtime
                     {
                         using (var streamReader = new StreamReader(fileStream))
                         {
-                            token = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+                            token = await streamReader.ReadToEndAsync().ConfigureAwaitEx();
                         }
                     }
                     break;
@@ -211,7 +211,7 @@ namespace Amazon.Runtime
             AssumeRoleImmutableCredentials credentials;
             using (var coreStsClient = CreateClient())
             {
-                credentials = await coreStsClient.CredentialsFromAssumeRoleWithWebIdentityAuthenticationAsync(token, RoleArn, RoleSessionName, _options).ConfigureAwait(false); // Will retry InvalidIdentityToken and IDPCommunicationError
+                credentials = await coreStsClient.CredentialsFromAssumeRoleWithWebIdentityAuthenticationAsync(token, RoleArn, RoleSessionName, _options).ConfigureAwaitEx(); // Will retry InvalidIdentityToken and IDPCommunicationError
             }
             _logger.InfoFormat("New credentials created using assume role with web identity that expire at {0}", credentials.Expiration.ToString("yyyy-MM-ddTHH:mm:ss.fffffffK", CultureInfo.InvariantCulture));
             return new CredentialsRefreshState(credentials, credentials.Expiration);

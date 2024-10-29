@@ -15,6 +15,7 @@
 
 using Amazon.Util;
 using Amazon.Runtime.Internal.Util;
+using Amazon.Util.Internal;
 using System.Globalization;
 using System;
 using System.Text;
@@ -64,7 +65,7 @@ namespace Amazon.Runtime.Internal
             try
             {
                 PreInvoke(executionContext);
-                var response = await base.InvokeAsync<T>(executionContext).ConfigureAwait(false);
+                var response = await base.InvokeAsync<T>(executionContext).ConfigureAwaitEx();
                 return response;
             }
 

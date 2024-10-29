@@ -14,6 +14,7 @@
  */
 
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.Threading.Tasks;
 
@@ -56,7 +57,7 @@ namespace Amazon.Runtime.Internal
         public override async Task ObtainSendTokenAsync(IExecutionContext executionContext, Exception exception)
         {
             if (!(await TokenBucket.TryAcquireTokenAsync(1, executionContext.RequestContext.ClientConfig.FastFailRequests,
-                executionContext.RequestContext.CancellationToken).ConfigureAwait(false)))
+                executionContext.RequestContext.CancellationToken).ConfigureAwaitEx()))
             {
                 var whyFail = exception == null ? "The initial request cannot be attempted because capacity could not be obtained"
                     : "While attempting to retry a request error capacity could not be obtained";

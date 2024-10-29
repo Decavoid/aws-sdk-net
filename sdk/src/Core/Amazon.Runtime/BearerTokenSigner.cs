@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Amazon.Runtime.Internal;
 using Amazon.Runtime.Internal.Auth;
 using Amazon.Runtime.Internal.Util;
+using Amazon.Util.Internal;
 
 namespace Amazon.Runtime
 {
@@ -84,7 +85,7 @@ namespace Amazon.Runtime
             if (null == clientConfig.AWSTokenProvider)
                 return;
 
-            var result = await clientConfig.AWSTokenProvider.TryResolveTokenAsync(token).ConfigureAwait(false);
+            var result = await clientConfig.AWSTokenProvider.TryResolveTokenAsync(token).ConfigureAwaitEx();
 
             if (true != result.Success || string.IsNullOrEmpty(result.Value.Token))
                 throw new AmazonClientException("No Token found.  Operation requires a Bearer token.");

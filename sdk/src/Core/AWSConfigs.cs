@@ -33,7 +33,7 @@ namespace Amazon
 {
     /// <summary>
     /// Configuration options that apply to the entire SDK.
-    /// 
+    ///
     /// These settings can be configured through app.config or web.config.
     /// Below is a full sample configuration that illustrates all the possible options.
     /// <code>
@@ -44,15 +44,15 @@ namespace Amazon
     ///   &lt;logging logTo="Log4Net, SystemDiagnostics" logResponses="Always" logMetrics="true" /&gt;
     ///   &lt;s3 useSignatureVersion4="true" /&gt;
     ///   &lt;proxy host="localhost" port="8888" username="1" password="1" /&gt;
-    ///   
+    ///
     ///   &lt;dynamoDB&gt;
     ///     &lt;dynamoDBContext tableNamePrefix="Prod-" metadataCachingMode="Default" disableFetchingTableMetadata="false" retrieveDateTimeInUtc="false"&gt;
-    /// 
+    ///
     ///       &lt;tableAliases&gt;
     ///         &lt;alias fromTable="FakeTable" toTable="People" /&gt;
     ///         &lt;alias fromTable="Persons" toTable="People" /&gt;
     ///       &lt;/tableAliases&gt;
-    /// 
+    ///
     ///       &lt;mappings&gt;
     ///         &lt;map type="Sample.Tests.Author, SampleDLL" targetTable="People" /&gt;
     ///         &lt;map type="Sample.Tests.Editor, SampleDLL" targetTable="People"&gt;
@@ -63,7 +63,7 @@ namespace Amazon
     ///           &lt;property name="Password" ignore="true" /&gt;
     ///         &lt;/map&gt;
     ///       &lt;/mappings&gt;
-    /// 
+    ///
     ///     &lt;/dynamoDBContext&gt;
     ///   &lt;/dynamoDB&gt;
     /// &lt;/aws&gt;
@@ -108,7 +108,7 @@ namespace Amazon
         #region Clock Skew
 
         /// <summary>
-        /// Manual offset to apply to client clock.  This is a global setting that overrides 
+        /// Manual offset to apply to client clock.  This is a global setting that overrides
         /// ClockOffset value calculated for all service endpoints.
         /// </summary>
         public static TimeSpan? ManualClockCorrection
@@ -144,7 +144,7 @@ namespace Amazon
         /// This field will be set if a service call resulted in an exception
         /// and the SDK has determined that there is a difference between local
         /// and server times.
-        /// 
+        ///
         /// If <seealso cref="CorrectForClockSkew"/> is set to true, this
         /// value will be set to the correction, but it will not be used by the
         /// SDK and clock skew errors will not be retried.
@@ -168,7 +168,7 @@ namespace Amazon
         /// <summary>
         /// Configures the default AWS region for clients which have not explicitly specified a region.
         /// Changes to this setting will only take effect for newly constructed instances of AWS clients.
-        /// 
+        ///
         /// This setting can be configured through the App.config. For example:
         /// <code>
         /// &lt;configSections&gt;
@@ -227,7 +227,7 @@ namespace Amazon
         /// <summary>
         /// Location of the credentials file shared with other AWS SDKs.
         /// By default, the credentials file is stored in the .aws directory in the current user's home directory.
-        /// 
+        ///
         /// Changes to this setting will only take effect in newly-constructed clients.
         /// <para>
         /// To reference the profile from an application's App.config or Web.config use the AWSProfileName setting.
@@ -260,7 +260,7 @@ namespace Amazon
         /// <summary>
         /// Configures how the SDK should log events, if at all.
         /// Changes to this setting will only take effect in newly-constructed clients.
-        /// 
+        ///
         /// The setting can be configured through App.config, for example:
         /// <code>
         /// &lt;appSettings&gt;
@@ -300,7 +300,7 @@ namespace Amazon
 
         /// <summary>
         /// Key for the ResponseLogging property.
-        /// 
+        ///
         /// <seealso cref="Amazon.AWSConfigs.ResponseLogging"/>
         /// </summary>
         public const string ResponseLoggingKey = "AWSResponseLogging";
@@ -308,7 +308,7 @@ namespace Amazon
         /// <summary>
         /// Configures when the SDK should log service responses.
         /// Changes to this setting will take effect immediately.
-        /// 
+        ///
         /// The setting can be configured through App.config, for example:
         /// <code>
         /// &lt;appSettings&gt;
@@ -337,7 +337,7 @@ namespace Amazon
         /// Configures if the SDK should log performance metrics.
         /// This setting configures the default LogMetrics property for all clients/configs.
         /// Changes to this setting will only take effect in newly-constructed clients.
-        /// 
+        ///
         /// The setting can be configured through App.config, for example:
         /// <code>
         /// &lt;appSettings&gt;
@@ -414,15 +414,15 @@ namespace Amazon
         /// <summary>
         /// When true the collections used on the service API request and response objects are initialized
         /// to an empty collection. The collections are sent as part of requests when a collection is non-empty.
-        /// 
-        /// Setting InitializeCollections to false means all collections used on the service API request and 
+        ///
+        /// Setting InitializeCollections to false means all collections used on the service API request and
         /// response objects are initialized to null. The collections are sent as part of requests when
         /// the collection non-null including an empty collection.
-        /// 
+        ///
         /// The default value is true. In the next major version of the SDK the default will change to false.
         /// This will improve performance not creating unnecessary collection instances and provide more
         /// control when the collection is sent to the service.
-        /// 
+        ///
         /// Setting this property is not thread safe and should only be set at application startup.
         /// </summary>
         public static bool InitializeCollections
@@ -442,11 +442,11 @@ namespace Amazon
 
         /// <summary>
         /// Starting with .NET 8 the AWS SDK for .NET uses the DangerousDisablePathAndQueryCanonicalization setting when creating Uri instances.
-        /// This prevents the .NET Uri class from altering the resource path of the URI for paths like S3 object keys. For 
+        /// This prevents the .NET Uri class from altering the resource path of the URI for paths like S3 object keys. For
         /// example if an S3 object key was "foo/../bar.txt" without enabling DangerousDisablePathAndQueryCanonicalization the
         /// .NET Uri class would change the resource path to "bar.txt".
-        /// 
-        /// Using Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory for mock testing throws an exception when the 
+        ///
+        /// Using Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory for mock testing throws an exception when the
         /// DangerousDisablePathAndQueryCanonicalization is enabled. To continue using WebApplicationFactory with the SDK
         /// this property can be set to true to prevent the SDK from using the DangerousDisablePathAndQueryCanonicalization flag.
         /// </summary>
@@ -463,7 +463,7 @@ namespace Amazon
         /// <summary>
         /// Configuration for the Logging section of AWS configuration.
         /// Changes to some settings may not take effect until a new client is constructed.
-        /// 
+        ///
         /// Example section:
         /// <code>
         /// &lt;configSections&gt;
@@ -479,7 +479,7 @@ namespace Amazon
         /// <summary>
         /// Configuration for the Proxy section of AWS configuration.
         /// Changes to some settings may not take effect until a new client is constructed.
-        /// 
+        ///
         /// Example section:
         /// <code>
         /// &lt;configSections&gt;
@@ -509,7 +509,7 @@ namespace Amazon
         /// <summary>
         /// Gets or sets the global <see cref="TelemetryProvider"/> instance.
         /// <para>
-        /// This global telemetry provider is used to collect and report telemetry data 
+        /// This global telemetry provider is used to collect and report telemetry data
         /// (such as traces and metrics) for all AWS SDK operations.
         /// </para>
         /// </summary>
@@ -522,7 +522,7 @@ namespace Amazon
         /// <summary>
         /// Configuration for the region endpoint section of AWS configuration.
         /// Changes may not take effect until a new client is constructed.
-        /// 
+        ///
         /// Example section:
         /// <code>
         /// &lt;configSections&gt;
@@ -541,6 +541,16 @@ namespace Amazon
         {
             get { return _rootConfig.CSMConfig; }
             set { _rootConfig.CSMConfig = value; }
+        }
+
+        /// <summary>
+        /// Sets a bool parameter passed to ConfigureAwait(bool continueOnCapturedContext). Default is false.
+        /// Useful for platforms that do not support threading (Unity WebGL).
+        /// </summary>
+        public static bool AsyncTasksContinueOnCapturedContext
+        {
+            get { return _rootConfig.AsyncTasksContinueOnCapturedContext; }
+            set { _rootConfig.AsyncTasksContinueOnCapturedContext = value; }
         }
         #endregion
 

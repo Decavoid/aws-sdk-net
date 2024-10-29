@@ -18,6 +18,7 @@ using Amazon.Runtime.Internal.Compression;
 using System.IO;
 using System.Threading;
 using System;
+using Amazon.Util.Internal;
 #if AWS_ASYNC_API
 using System.Threading.Tasks;
 #endif
@@ -159,7 +160,7 @@ namespace Amazon.Runtime.Internal.Util
              // read leftover bytes from last compressed chunk
             if (_outputBufferStream.Position < _outputBufferStream.Length)
             {
-                return await _outputBufferStream.ReadAsync(buffer, offset, count).ConfigureAwait(false);
+                return await _outputBufferStream.ReadAsync(buffer, offset, count).ConfigureAwaitEx();
             }
             else
             {
@@ -169,7 +170,7 @@ namespace Amazon.Runtime.Internal.Util
                 // Loop while GzipStream has not written data to the compressed stream or we haven't read the full stream yet
                 while (_outputBufferStream.Length == 0 && !_hitEnd)
                 {
-                    var readCount = await BaseStream.ReadAsync(_inputBuffer, 0, _inputBuffer.Length).ConfigureAwait(false);
+                    var readCount = await BaseStream.ReadAsync(_inputBuffer, 0, _inputBuffer.Length).ConfigureAwaitEx();
                     if (readCount == 0)
                     {
                         _hitEnd = true;
@@ -178,12 +179,12 @@ namespace Amazon.Runtime.Internal.Util
                     }
                     else
                     {
-                        await _compressionStream.WriteAsync(_inputBuffer, 0, readCount).ConfigureAwait(false);
+                        await _compressionStream.WriteAsync(_inputBuffer, 0, readCount).ConfigureAwaitEx();
                     }
                 }
 
                 _outputBufferStream.Position = 0;
-                return await _outputBufferStream.ReadAsync(buffer, offset, count).ConfigureAwait(false);
+                return await _outputBufferStream.ReadAsync(buffer, offset, count).ConfigureAwaitEx();
             }
         }
 #endif

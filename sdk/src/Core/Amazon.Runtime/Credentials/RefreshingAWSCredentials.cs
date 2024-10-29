@@ -15,6 +15,7 @@
 
 using Amazon.Runtime.Internal.Util;
 using Amazon.Util;
+using Amazon.Util.Internal;
 using System;
 using System.Globalization;
 using System.Threading;
@@ -38,7 +39,7 @@ namespace Amazon.Runtime
         {
             public ImmutableCredentials Credentials
             {
-                get; 
+                get;
                 set;
             }
             public DateTime Expiration { get; set; }
@@ -143,7 +144,7 @@ namespace Amazon.Runtime
 #if AWS_ASYNC_API
         public override async System.Threading.Tasks.Task<ImmutableCredentials> GetCredentialsAsync()
         {
-            await _updateGeneratedCredentialsSemaphore.WaitAsync().ConfigureAwait(false);
+            await _updateGeneratedCredentialsSemaphore.WaitAsync().ConfigureAwaitEx();
             try
             {
                 // We save the currentState as it might be modified or cleared.
@@ -151,7 +152,7 @@ namespace Amazon.Runtime
                 // If credentials are expired, update
                 if (ShouldUpdateState(tempState, PreemptExpiryTime))
                 {
-                    tempState = await GenerateNewCredentialsAsync().ConfigureAwait(false);
+                    tempState = await GenerateNewCredentialsAsync().ConfigureAwaitEx();
                     UpdateToGeneratedCredentials(tempState, PreemptExpiryTime);
                     currentState = tempState;
                 }
@@ -190,7 +191,7 @@ namespace Amazon.Runtime
                 throw new AmazonClientException(errorMessage);
             }
 
-            // Offset the Expiration by PreemptExpiryTime. This produces the expiration window 
+            // Offset the Expiration by PreemptExpiryTime. This produces the expiration window
             // where the credentials should be updated before they actually expire.
             state.Expiration -= preemptExpiryTime;
 
@@ -227,15 +228,15 @@ namespace Amazon.Runtime
         // Test credentials existence and expiration time
         // should update if:
         //  credentials have not been loaded yet
-        // it's past the expiration time. At this point currentState.Expiration may 
-        // have the PreemptExpiryTime baked into to the expiration from a call to 
-        // UpdateToGeneratedCredentials but it may not if this is new application 
+        // it's past the expiration time. At this point currentState.Expiration may
+        // have the PreemptExpiryTime baked into to the expiration from a call to
+        // UpdateToGeneratedCredentials but it may not if this is new application
         // load.
         private static bool ShouldUpdateState(CredentialsRefreshState state, TimeSpan preemptExpiryTime)
         {
-            // it's past the expiration time. At this point currentState.Expiration may 
-            // have the PreemptExpiryTime baked into to the expiration from a call to 
-            // UpdateToGeneratedCredentials but it may not if this is new application 
+            // it's past the expiration time. At this point currentState.Expiration may
+            // have the PreemptExpiryTime baked into to the expiration from a call to
+            // UpdateToGeneratedCredentials but it may not if this is new application
             // load.
             var isExpired = state?.IsExpiredWithin(TimeSpan.Zero);
             if (isExpired == true)
@@ -253,7 +254,7 @@ namespace Amazon.Runtime
 
         /// <summary>
         /// When overridden in a derived class, generates new credentials and new expiration date.
-        /// 
+        ///
         /// Called on first credentials request and when expiration date is in the past.
         /// </summary>
         /// <returns></returns>
@@ -264,7 +265,7 @@ namespace Amazon.Runtime
 #if AWS_ASYNC_API
         /// <summary>
         /// When overridden in a derived class, generates new credentials and new expiration date.
-        /// 
+        ///
         /// Called on first credentials request and when expiration date is in the past.
         /// </summary>
         /// <returns></returns>

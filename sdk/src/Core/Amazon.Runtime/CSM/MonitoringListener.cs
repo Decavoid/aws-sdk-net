@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 #endif
 using Amazon.Runtime.Internal;
 using Amazon.Runtime.Internal.Util;
+using Amazon.Util.Internal;
 
 namespace Amazon.Runtime
 {
@@ -88,7 +89,7 @@ namespace Amazon.Runtime
             try
             {
                 await _udpClient.SendAsync(Encoding.UTF8.GetBytes(response),
-                    Encoding.UTF8.GetBytes(response).Length, _host, _port).ConfigureAwait(false);
+                    Encoding.UTF8.GetBytes(response).Length, _host, _port).ConfigureAwaitEx();
             }
             catch(Exception e)
             {

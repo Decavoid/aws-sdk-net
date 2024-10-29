@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amazon.Util.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -32,7 +33,7 @@ namespace Amazon.Runtime
         /// <returns></returns>
          public async IAsyncEnumerator<TResponse> GetAsyncEnumerator(CancellationToken cancellationToken = default)
          {
-             await foreach (var response in _paginator.PaginateAsync().WithCancellation(cancellationToken).ConfigureAwait(false))
+             await foreach (var response in _paginator.PaginateAsync().WithCancellation(cancellationToken).ConfigureAwaitEx())
              {
                  cancellationToken.ThrowIfCancellationRequested();
                  yield return response;

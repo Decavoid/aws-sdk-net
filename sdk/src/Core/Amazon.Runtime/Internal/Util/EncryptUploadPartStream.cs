@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using Amazon.Runtime;
+using Amazon.Util.Internal;
 #if AWS_ASYNC_API
 using System.Threading;
 using System.Threading.Tasks;
@@ -119,7 +120,7 @@ namespace Amazon.Runtime.Internal.Util
         /// </returns>
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            int readBytes = await base.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            int readBytes = await base.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwaitEx();
             return Append(buffer, offset, readBytes);
         }
 #endif

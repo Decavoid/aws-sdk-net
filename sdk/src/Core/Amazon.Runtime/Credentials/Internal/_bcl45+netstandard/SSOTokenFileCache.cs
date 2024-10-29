@@ -166,7 +166,7 @@ namespace Amazon.Runtime.Credentials.Internal
                     return result;
                 }
 
-                var json = await _file.ReadAllTextAsync(cacheFilePath, cancellationToken).ConfigureAwait(false);
+                var json = await _file.ReadAllTextAsync(cacheFilePath, cancellationToken).ConfigureAwaitEx();
 
                 result.Value = SsoTokenUtils.FromJson(json);
                 result.Success = true;
@@ -193,7 +193,7 @@ namespace Amazon.Runtime.Credentials.Internal
 
             foreach (var cacheFilePath in cachedFiles)
             {
-                var json = await _file.ReadAllTextAsync(cacheFilePath, cancellationToken).ConfigureAwait(false);
+                var json = await _file.ReadAllTextAsync(cacheFilePath, cancellationToken).ConfigureAwaitEx();
                 var ssoToken = SsoTokenUtils.FromJson(json, false);
                 if (ssoToken != null)
                 {
@@ -245,7 +245,7 @@ namespace Amazon.Runtime.Credentials.Internal
 
                 var json = SsoTokenUtils.ToJson(token);
                 _directory.CreateDirectory(Path.GetDirectoryName(cacheFilePath));
-                await _file.WriteAllTextAsync(cacheFilePath, json, cancellationToken).ConfigureAwait(false);
+                await _file.WriteAllTextAsync(cacheFilePath, json, cancellationToken).ConfigureAwaitEx();
             }
 
             catch (Exception e)

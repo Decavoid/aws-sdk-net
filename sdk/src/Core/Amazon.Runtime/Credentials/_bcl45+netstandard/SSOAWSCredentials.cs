@@ -137,7 +137,7 @@ namespace Amazon.Runtime
 #else
         protected override CredentialsRefreshState GenerateNewCredentials()
         {
-            return GenerateNewCredentialsAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            return GenerateNewCredentialsAsync().ConfigureAwaitEx().GetAwaiter().GetResult();
         }
 #endif
 
@@ -151,7 +151,7 @@ namespace Amazon.Runtime
                     Options.ProxySettings);
 
             var credentials =
-                await GetSsoCredentialsAsync(ssoClient).ConfigureAwait(false) as SSOImmutableCredentials;
+                await GetSsoCredentialsAsync(ssoClient).ConfigureAwaitEx() as SSOImmutableCredentials;
 
             if (credentials == null)
             {
@@ -227,10 +227,10 @@ namespace Amazon.Runtime
                 PkceFlowOptions = Options.PkceFlowOptions,
             };
 
-            var token = await _ssoTokenManager.GetTokenAsync(ssoTokenManagerGetTokenOptions).ConfigureAwait(false);
+            var token = await _ssoTokenManager.GetTokenAsync(ssoTokenManagerGetTokenOptions).ConfigureAwaitEx();
 
             // Use SSO token to get credentials
-            return await GetSsoRoleCredentialsAsync(sso, token.AccessToken).ConfigureAwait(false);
+            return await GetSsoRoleCredentialsAsync(sso, token.AccessToken).ConfigureAwaitEx();
         }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace Amazon.Runtime
         private async Task<ImmutableCredentials> GetSsoRoleCredentialsAsync(ICoreAmazonSSO sso, string accessToken)
         {
             return await sso.CredentialsFromSsoAccessTokenAsync(AccountId, RoleName, accessToken, null)
-                .ConfigureAwait(false);
+                .ConfigureAwaitEx();
         }
     }
 }

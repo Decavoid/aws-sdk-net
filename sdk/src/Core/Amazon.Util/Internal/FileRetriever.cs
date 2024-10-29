@@ -63,7 +63,7 @@ namespace Amazon.Util.Internal
         {
             using (var fs = File.OpenRead(path))
             using (var reader = new StreamReader(fs))
-                return await reader.ReadToEndAsync().ConfigureAwait(false);
+                return await reader.ReadToEndAsync().ConfigureAwaitEx();
 
         }
 
@@ -72,7 +72,7 @@ namespace Amazon.Util.Internal
             //we use  FileMode.Create because we want to truncate the file first if the file exists then write to it.
             using (var fs = new FileStream(path, FileMode.Create))
             using (var writer = new StreamWriter(fs))
-                await writer.WriteAsync(contents).ConfigureAwait(false);
+                await writer.WriteAsync(contents).ConfigureAwaitEx();
 
         }
 #endif
